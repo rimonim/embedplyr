@@ -1,4 +1,4 @@
-# textembeddings: Tools for Working With Text Embeddings
+# embeddingplyr: Tools for Working With Text Embeddings
 
 ## About
 
@@ -8,5 +8,5 @@ Common operations with word and text embeddings within a 'tidyverse'/'quanteda' 
 
 ``` r
 # devtools package required to install quanteda from Github 
-remotes::install_github("rimonim/textembeddings") 
+remotes::install_github("rimonim/embeddingplyr") 
 ```

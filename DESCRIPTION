@@ -1,4 +1,4 @@
-Package: textembeddings
+Package: embeddingplyr
 Type: Package
 Title: Tools for Working With Text Embeddings
 Version: 0.1.0
