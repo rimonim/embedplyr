@@ -14,22 +14,22 @@ find_nearest(
 )
 }
 \arguments{
-\item{object}{an embeddings object made by `load_embeddings()` or `as.embeddings()`}
+\item{object}{an embeddings object made by \code{load_embeddings()} or \code{as.embeddings()}}
 
 \item{newdata}{a character vector of tokens}
 
-\item{top_n}{integer. How many nearest neighbors should be output? If `each = TRUE`,
+\item{top_n}{integer. How many nearest neighbors should be output? If \code{each = TRUE},
 how many nearest neighbors should be output for each token?}
 
 \item{sim_func}{a function that takes two vectors and outputs a scalar
 similarity metric. Defaults to cosine similarity.}
 
-\item{each}{logical. If `FALSE` (the default), the embeddings of newdata are
-averaged and the function will output an embeddings object with the `top_n`
-nearest tokens to the overall average embedding. If `TRUE`, the function will
+\item{each}{logical. If \code{FALSE} (the default), the embeddings of newdata are
+averaged and the function will output an embeddings object with the \code{top_n}
+nearest tokens to the overall average embedding. If \code{TRUE}, the function will
 output a named list with one embeddings object for each token in newdata.}
 
-\item{include_self}{logical. Should the token(s) in `newdata` be included in
+\item{include_self}{logical. Should the token(s) in \code{newdata} be included in
 the output?}
 }
 \description{

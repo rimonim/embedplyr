@@ -7,7 +7,7 @@
 \method{predict}{embeddings}(object, newdata)
 }
 \arguments{
-\item{object}{an embeddings object made by `load_embeddings()` or `as.embeddings()`}
+\item{object}{an embeddings object made by \code{load_embeddings()} or \code{as.embeddings()}}
 
 \item{newdata}{a character vector of tokens}
 }
@@ -16,20 +16,20 @@ Retrieve Token Embeddings
 }
 \section{Value}{
 
-An embeddings object with a row for each item in `newdata`
+An embeddings object with a row for each item in \code{newdata}
 }
 
 \examples{
-   words <- c("happy", "sad")
+words <- c("happy", "sad")
 
-   fake_mod <- as.embeddings(
+fake_mod <- as.embeddings(
     matrix(
-      sample(1:10, 20, replace = TRUE),
-      nrow = 2,
-      dimnames = list(c("happy", "sad"))
-      )
+        sample(1:10, 20, replace = TRUE),
+        nrow = 2,
+        dimnames = list(c("happy", "sad"))
     )
+)
 
-   texts_embeddings <- predict(fake_mod, words)
-   texts_embeddings
+texts_embeddings <- predict(fake_mod, words)
+texts_embeddings
 }

@@ -2,25 +2,18 @@
 % Please edit documentation in R/load_embeddings.R
 \name{load_embeddings}
 \alias{load_embeddings}
-\title{Load Embeddings Model From File}
+\title{Load Embeddings Model From a Text or Binary File}
 \usage{
-load_embeddings(
-  path,
-  dimensions = as.numeric(str_extract(path, "[:digit:]+(?=d\\\\.txt)"))
-)
+load_embeddings(path)
 }
 \arguments{
 \item{path}{a file path}
-
-\item{dimensions}{the dimensionality of the embeddings. The defaults assumes
-that this information is included in the file name as per the standard for
-GloVe models.}
 }
 \description{
-Load Embeddings Model From File
+Reads GloVe text format, word2vec binary format, and most tabular formats (csv, tsv, etc.)
 }
 \details{
-The file must have tokens in the first column and numbers in all other columns.
+If using a custom tabular format, the file must have tokens in the first column and numbers in all other columns.
 }
 \section{Value}{
 

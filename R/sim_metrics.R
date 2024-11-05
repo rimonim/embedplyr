@@ -4,8 +4,7 @@
 #'
 #' @param x a numeric vector
 #' @param y a numeric vector the same length as x
-#' @param pos a numeric vector the same length as x; the positive end of the anchored vector
-#' @param neg a numeric vector the same length as x; the negative end of the anchored vector
+#' @param pos,neg a pair of numeric vectors the same length as x; the positive and negative ends of the anchored vector
 #'
 #' @details
 #' `dot_prod` gives the dot product. `cos_sim` gives the cosine similarity (i.e.
@@ -16,21 +15,23 @@
 #' [Data Science for Psychology: Natural Language, Chapter 20](https://ds4psych.com/navigating-vectorspace#sec-dimension-projection).
 #'
 #' @examples
-#'    vec1 <- c(1, 5, 2)
-#'    vec2 <- c(4, 2, 2)
-#'    vec3 <- c(1, -2, -13)
+#' vec1 <- c(1, 5, 2)
+#' vec2 <- c(4, 2, 2)
+#' vec3 <- c(1, -2, -13)
 #'
-#'    dot_prod(vec1, vec2)
-#'    cos_sim(vec1, vec2)
-#'    euc_dist(vec1, vec2)
-#'    anchored_sim(vec1, vec2, vec3)
+#' dot_prod(vec1, vec2)
+#' cos_sim(vec1, vec2)
+#' euc_dist(vec1, vec2)
+#' anchored_sim(vec1, vec2, vec3)
 
+#' @rdname sim_metrics
 #' @export
 dot_prod <- function(x, y){
   dot <- x %*% y
   as.vector(dot)
 }
 
+#' @rdname sim_metrics
 #' @export
 cos_sim <- function(x, y){
   dot <- x %*% y
@@ -39,12 +40,14 @@ cos_sim <- function(x, y){
   as.vector( dot / (normx*normy) )
 }
 
+#' @rdname sim_metrics
 #' @export
 euc_dist <- function(x, y){
   diff <- x - y
   sqrt(sum(diff^2))
 }
 
+#' @rdname sim_metrics
 #' @export
 anchored_sim <- function(x, pos, neg){
   # direction vector of the line segment

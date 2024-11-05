@@ -2,12 +2,23 @@
 % Please edit documentation in R/reduce_dimensionality.R
 \name{reduce_dimensionality}
 \alias{reduce_dimensionality}
+\alias{reduce_dimensionality.data.frame}
+\alias{reduce_dimensionality.embeddings}
+\alias{reduce_dimensionality.matrix}
 \title{Reduce the Dimensionality of Embeddings}
 \usage{
-reduce_dimensionality(x)
+reduce_dimensionality(x, ...)
+
+\method{reduce_dimensionality}{data.frame}(x, cols, reduce_to, scale = FALSE, ...)
+
+\method{reduce_dimensionality}{embeddings}(x, reduce_to, scale = FALSE, ...)
+
+\method{reduce_dimensionality}{matrix}(x, reduce_to, scale = FALSE, ...)
 }
 \arguments{
-\item{data}{a dataframe with one embedding per row}
+\item{x}{a dataframe with one embedding per row}
+
+\item{...}{additional parameters to be passed to class-specific methods}
 
 \item{cols}{tidyselect - columns that contain numeric embedding values}
 
@@ -16,7 +27,7 @@ reduce_dimensionality(x)
 \item{scale}{perform scaling in addition to centering?}
 }
 \description{
-Includes methods for dataframes (in the style of `dplyr`) embeddings objects, and matrices.
+Includes methods for dataframes (in the style of \code{dplyr}) embeddings objects, and matrices.
 }
 \details{
 The file must have tokens in the first column and numbers in all other columns.

@@ -18,7 +18,7 @@ point to be projected onto the line}
 Additional Vector Utilities
 }
 \details{
-`project_points_onto_line` calculated the projections of a group of points onto
+\code{project_points_onto_line} calculated the projections of a group of points onto
 a line defined by two end points. It is useful for graphing the positions of
 embeddings with respect to an anchored vector.
 }

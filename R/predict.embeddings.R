@@ -8,18 +8,18 @@
 #' An embeddings object with a row for each item in `newdata`
 #'
 #' @examples
-#'    words <- c("happy", "sad")
+#' words <- c("happy", "sad")
 #'
-#'    fake_mod <- as.embeddings(
+#' fake_mod <- as.embeddings(
 #'     matrix(
-#'       sample(1:10, 20, replace = TRUE),
-#'       nrow = 2,
-#'       dimnames = list(c("happy", "sad"))
-#'       )
+#'         sample(1:10, 20, replace = TRUE),
+#'         nrow = 2,
+#'         dimnames = list(c("happy", "sad"))
 #'     )
+#' )
 #'
-#'    texts_embeddings <- predict(fake_mod, words)
-#'    texts_embeddings
+#' texts_embeddings <- predict(fake_mod, words)
+#' texts_embeddings
 
 #' @rdname predict.embeddings
 #' @export
