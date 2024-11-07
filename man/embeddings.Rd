@@ -4,6 +4,7 @@
 \alias{as.embeddings}
 \alias{as.embeddings.data.frame}
 \alias{is.embeddings}
+\alias{as.matrix.embeddings}
 \title{Coercion and checking functions for embeddings objects}
 \usage{
 as.embeddings(x, ...)
@@ -11,13 +12,15 @@ as.embeddings(x, ...)
 \method{as.embeddings}{data.frame}(x, id_col = "token", ...)
 
 is.embeddings(x, ...)
+
+\method{as.matrix}{embeddings}(x, ...)
 }
 \arguments{
-\item{x}{a numeric matrix or dataframe in which the only non-numeric column is specified by \code{id_col}}
+\item{x}{A data frame to be converted into embeddings.}
 
-\item{...}{additional arguments to be passed to class-specific methods}
+\item{...}{Additional arguments passed to or from other methods.}
 
-\item{id_col}{column to take row names from. Defaults to "token"}
+\item{id_col}{Column to take row names from. Defaults to \code{"token"}.}
 }
 \description{
 An embeddings object is a numeric matrix with rownames (generally tokens). Convert an
@@ -31,4 +34,5 @@ random_mat <- matrix(
   dimnames = list(c("happy", "sad"))
   )
 as.embeddings(random_mat)
+as.matrix(as.embeddings(random_mat))
 }

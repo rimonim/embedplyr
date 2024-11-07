@@ -16,6 +16,7 @@
 #' @section Value:
 #' A tibble with columns `doc_id`, and `V1`, `V2`, etc. or similar. If `.keep_all = TRUE`, the new columns will appear after existing ones.
 #'
+#' @aliases embed_docs
 #' @examples
 #' # quanteda workflow
 #' library(quanteda)

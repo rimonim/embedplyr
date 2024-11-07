@@ -33,7 +33,7 @@ load_embeddings <- function(path) {
     x <- as.matrix(x)
     # set row and column names
     rownames(x) <- id
-    if (is.null(colnames(x))){
+    if (all(colnames(x) == paste0("V",2:(ncol(x)+1L)))){
       colnames(x) <- paste0("dim_", 1:ncol(x))
     }
     # update class

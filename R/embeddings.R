@@ -13,6 +13,7 @@
 #'   dimnames = list(c("happy", "sad"))
 #'   )
 #' as.embeddings(random_mat)
+#' as.matrix(as.embeddings(random_mat))
 
 #' @rdname embeddings
 #' @export
@@ -23,12 +24,11 @@ as.embeddings <- function(x, ...) {
 #' @noRd
 #' @export
 as.embeddings.default <- function(x, ...) {
-  if(!any(class(x) %in% c("embeddings", "matrix", "Matrix", "data.frame"))){stop(paste(class(x),collapse = "/"), " object cannot be coerced to embeddings.")}
+  if(!any(class(x) %in% c("embeddings", "matrix", "Matrix", "data.frame", "array"))){stop(paste(class(x),collapse = "/"), " object cannot be coerced to embeddings.")}
   if (is.null(colnames(x))){
     colnames(x) <- paste0("dim_", 1:ncol(x))
   }
-  class(x) <- c("embeddings", "matrix", "array")
-  x
+  structure(x, class = c("embeddings", "matrix", "array"))
 }
 
 #' @noRd
@@ -52,8 +52,11 @@ as.embeddings.Matrix <- function(x, ...){
 }
 
 #' @rdname embeddings
-#' @param id_col column to take row names from. Defaults to "token"
-#' @method as.embeddings data.frame
+#' @usage
+#' \method{as.embeddings}{data.frame}(x, id_col = "token", ...)
+#' @param x A data frame to be converted into embeddings.
+#' @param id_col Column to take row names from. Defaults to `"token"`.
+#' @param ... Additional arguments passed to or from other methods.
 #' @export
 as.embeddings.data.frame <- function(x, id_col = "token", ...){
   x <- tibble::column_to_rownames(x, id_col)
@@ -69,3 +72,39 @@ as.embeddings.data.frame <- function(x, id_col = "token", ...){
 is.embeddings <- function(x, ...){
   inherits(x, "embeddings")
 }
+
+#' @rdname embeddings
+#' @method as.matrix embeddings
+#' @export
+as.matrix.embeddings <- function(x, ...){
+  structure(x, class = c("matrix", "array"))
+}
+
+#' @noRd
+#' @method '[' embeddings
+#' @export
+'[.embeddings' = function(x, ..., drop = FALSE) {
+  out <- NextMethod('[')
+  if (any(class(out) %in% c("embeddings", "matrix", "Matrix", "data.frame", "array"))) {
+    as.embeddings(out)
+  }else{
+    out
+  }
+}
+
+#' @noRd
+#' @method 'rownames<-' embeddings
+#' @export
+'rownames<-.embeddings' = function(x, value) {
+  attr(x, "dimnames")[[1]] <- value
+  x <- as.embeddings(x)
+}
+
+#' @noRd
+#' @method 'colnames<-' embeddings
+#' @export
+'colnames<-.embeddings' = function(x, value) {
+  attr(x, "dimnames")[[2]] <- value
+  x <- as.embeddings(x)
+}
+
