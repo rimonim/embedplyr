@@ -51,13 +51,13 @@ find_nearest <- function(object, newdata,
     sims <- apply(object, 1, cos_sim, target)
     embeddings <- embeddings[rev(order(sims)),]
     if (!include_self) {embeddings <- embeddings[!(rownames(embeddings) %in% newdata),]}
-    utils::head(embeddings, top_n)
+    as.embeddings(utils::head(embeddings, top_n))
   }else{
     target <- lapply(newdata, function(tok){as.vector(embeddings[tok,])})
     names(target) <- newdata
     sims <- lapply(target, function(vec){apply(object, 1, cos_sim, vec)})
     embeddings <- lapply(sims, function(sim){embeddings[rev(order(sim)),]})
     if (!include_self) {embeddings <- lapply(embeddings, function(x){x[!(rownames(x) %in% newdata),]})}
-    lapply(embeddings, function(x){utils::head(x, top_n)})
+    lapply(embeddings, function(x){as.embeddings(utils::head(x, top_n))})
   }
 }

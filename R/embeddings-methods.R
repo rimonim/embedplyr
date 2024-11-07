@@ -45,6 +45,6 @@ print.embeddings <- function(x, ...) {
     }else{
         n <- getOption("max.print")
     }
-    cat("\033[38;5;247m# ", ncol(x),"-dimensional embeddings with ",nrow(x)," rows \033[0m\n",sep = "")
+    cat(pillar::style_subtle(paste0("# ", ncol(x),"-dimensional embeddings with ",nrow(x)," rows\n")))
     print(format(x, n = n), quote = FALSE)
 }

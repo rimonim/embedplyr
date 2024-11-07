@@ -10,6 +10,7 @@ Imports:
     data.table,
     dplyr,
     methods,
+    pillar,
     quanteda,
     rlang,
     stats,

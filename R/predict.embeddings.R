@@ -27,5 +27,5 @@ predict.embeddings <- function(object, newdata){
   embeddings <- as.matrix(object)
   embeddings <- rbind(embeddings, matrix(ncol = ncol(embeddings), dimnames = list("NOT_IN_DICT")))
   newdata[!(newdata %in% rownames(embeddings))] <- "NOT_IN_DICT"
-  embeddings[newdata,]
+  as.embeddings(embeddings[newdata,])
 }
