@@ -41,16 +41,8 @@ An embeddings object or list of embeddings objects.
 }
 
 \examples{
-   words <- c("happy", "sad")
+words <- c("happy", "sad")
 
-   fake_mod <- as.embeddings(
-    matrix(
-      sample(1:10, 20, replace = TRUE),
-      nrow = 2,
-      dimnames = list(c("happy", "sad"))
-      )
-    )
-
-   texts_embeddings <- predict(fake_mod, words)
-   texts_embeddings
+find_nearest(glove_twitter_25d, words)
+find_nearest(glove_twitter_25d, words, each = TRUE)
 }

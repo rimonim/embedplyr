@@ -4,16 +4,13 @@
 \alias{reduce_dimensionality}
 \alias{reduce_dimensionality.data.frame}
 \alias{reduce_dimensionality.embeddings}
-\alias{reduce_dimensionality.matrix}
 \title{Reduce the Dimensionality of Embeddings}
 \usage{
 reduce_dimensionality(x, ...)
 
-\method{reduce_dimensionality}{data.frame}(x, cols, reduce_to, scale = FALSE, ...)
+\method{reduce_dimensionality}{data.frame}(x, cols, reduce_to, center = TRUE, scale = FALSE, ...)
 
-\method{reduce_dimensionality}{embeddings}(x, reduce_to, scale = FALSE, ...)
-
-\method{reduce_dimensionality}{matrix}(x, reduce_to, scale = FALSE, ...)
+\method{reduce_dimensionality}{embeddings}(x, reduce_to, center = TRUE, scale = FALSE, ...)
 }
 \arguments{
 \item{x}{a dataframe with one embedding per row}
@@ -24,7 +21,9 @@ reduce_dimensionality(x, ...)
 
 \item{reduce_to}{number of dimensions to keep}
 
-\item{scale}{perform scaling in addition to centering?}
+\item{center}{logical. Should dimensions be shifted to be centered at zero?}
+
+\item{scale}{logical. Should dimensions be scaled to have unit variance?}
 }
 \description{
 Includes methods for dataframes (in the style of \code{dplyr}) embeddings objects, and matrices.
@@ -37,3 +36,12 @@ The file must have tokens in the first column and numbers in all other columns.
 An embeddings object (a numeric matrix with tokens as rownames)
 }
 
+\examples{
+glove_2d <- reduce_dimensionality(glove_twitter_25d, 2)
+glove_2d
+
+library(tibble)
+glove_tbl <- as_tibble(glove_twitter_25d, rownames = "token")
+glove_tbl_2d <- glove_tbl |> reduce_dimensionality(dim_1:dim_25, 2)
+glove_tbl_2d
+}

@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 ## About
 
-Common operations with word and text embeddings within a 'tidyverse'/'quanteda' workflow, as demonstrated in [Data Science for Psychology: Natural Language](http://ds4psych.com). Includes simple functions for calculating common similarity metrics, as well as higher level functions for loading pretrained word embedding models (e.g. 'GloVe'), applying them to words, aggregating to produce text embeddings, and reducing dimensionality.
+Common operations with word and text embeddings within a 'tidyverse'/'quanteda' workflow, as demonstrated in [Data Science for Psychology: Natural Language](http://ds4psych.com). Includes simple functions for calculating common similarity metrics, as well as higher level functions for loading pretrained word embedding models (e.g. [GloVe](https://nlp.stanford.edu/projects/glove/)), applying them to words, aggregating to produce text embeddings, and reducing dimensionality.
 
 ## Installation
 
@@ -35,7 +35,7 @@ remotes::install_github("rimonim/embeddingplyr")
 
 embeddingplyr is designed to facilitate the use of word and text embeddings in common data manipulation and text analysis workflows, without introducing new syntax or unfamiliar data structures.
 
-embeddingplyr is model agnostic; it can be used to work with embeddings from decontextualized models like [GloVe](https://nlp.stanford.edu/projects/glove/) and [word2vec](https://code.google.com/archive/p/word2vec/), or from contextualized models like BERT or others made available through the [text](https://r-text.org) package.
+embeddingplyr is model agnostic; it can be used to work with embeddings from decontextualized models like [GloVe](https://nlp.stanford.edu/projects/glove/) and [word2vec](https://code.google.com/archive/p/word2vec/), or from contextualized models like BERT or others made available through the '[text](https://r-text.org)' package.
 
 ### Loading Pretrained Embeddings
 
@@ -47,13 +47,13 @@ library(embeddingplyr)
 glove_twitter_25d <- load_embeddings("~/Documents/data/glove/glove.twitter.27B.25d.txt")
 ```
 
-The outcome is an "embeddings" object. An embeddings object is just a numeric matrix with tokens as rownames. This means that it can be easily coerced to a dataframe or tibble, while also allowing special embeddings-specific methods and functions, such as `predict.embeddings()` and `find_nearest()`:
+The outcome is an embeddings object. An embeddings object is just a numeric matrix with tokens as rownames. This means that it can be easily coerced to a dataframe or tibble, while also allowing special embeddings-specific methods and functions, such as `predict.embeddings()` and `find_nearest()`:
 
 ```{r}
 moral_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
 moral_embeddings
 
-find_nearest(glove_twitter_25d, "dog", 5L)
+find_nearest(glove_twitter_25d, "dog", 5L, sim_func = cos_sim)
 ```
 
 ### Similarity Metrics

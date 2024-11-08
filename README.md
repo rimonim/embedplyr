@@ -13,8 +13,9 @@ Common operations with word and text embeddings within a
 Psychology: Natural Language](http://ds4psych.com). Includes simple
 functions for calculating common similarity metrics, as well as higher
 level functions for loading pretrained word embedding models
-(e.g. ‘GloVe’), applying them to words, aggregating to produce text
-embeddings, and reducing dimensionality.
+(e.g. [GloVe](https://nlp.stanford.edu/projects/glove/)), applying them
+to words, aggregating to produce text embeddings, and reducing
+dimensionality.
 
 ## Installation
 
@@ -37,7 +38,7 @@ from decontextualized models like
 [GloVe](https://nlp.stanford.edu/projects/glove/) and
 [word2vec](https://code.google.com/archive/p/word2vec/), or from
 contextualized models like BERT or others made available through the
-[text](https://r-text.org) package.
+‘[text](https://r-text.org)’ package.
 
 ### Loading Pretrained Embeddings
 
@@ -53,7 +54,7 @@ library(embeddingplyr)
 glove_twitter_25d <- load_embeddings("~/Documents/data/glove/glove.twitter.27B.25d.txt")
 ```
 
-The outcome is an “embeddings” object. An embeddings object is just a
+The outcome is an embeddings object. An embeddings object is just a
 numeric matrix with tokens as rownames. This means that it can be easily
 coerced to a dataframe or tibble, while also allowing special
 embeddings-specific methods and functions, such as
@@ -67,7 +68,7 @@ moral_embeddings
 #> good -0.54  0.6  -0.15 -0.02 -0.14  0.6   2.19  0.21 -0.52 -0.23  ...
 #> bad   0.41  0.02  0.06 -0.01  0.27  0.71  1.64 -0.11 -0.26  0.11  ...
 
-find_nearest(glove_twitter_25d, "dog", 5L)
+find_nearest(glove_twitter_25d, "dog", 5L, sim_func = cos_sim)
 #> # 25-dimensional embeddings with 5 rows
 #>        dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9 dim_10    
 #> dog    -1.24 -0.36  0.57  0.37  0.6  -0.19  1.27 -0.37  0.09  0.4   ...

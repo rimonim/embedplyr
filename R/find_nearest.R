@@ -18,18 +18,10 @@
 #' An embeddings object or list of embeddings objects.
 #'
 #' @examples
-#'    words <- c("happy", "sad")
+#' words <- c("happy", "sad")
 #'
-#'    fake_mod <- as.embeddings(
-#'     matrix(
-#'       sample(1:10, 20, replace = TRUE),
-#'       nrow = 2,
-#'       dimnames = list(c("happy", "sad"))
-#'       )
-#'     )
-#'
-#'    texts_embeddings <- predict(fake_mod, words)
-#'    texts_embeddings
+#' find_nearest(glove_twitter_25d, words)
+#' find_nearest(glove_twitter_25d, words, each = TRUE)
 
 #' @rdname find_nearest
 #' @export
@@ -48,14 +40,14 @@ find_nearest <- function(object, newdata,
     }else{
       target <- as.vector(embeddings[newdata,])
     }
-    sims <- apply(object, 1, cos_sim, target)
+    sims <- apply(object, 1, sim_func, target)
     embeddings <- embeddings[rev(order(sims)),]
     if (!include_self) {embeddings <- embeddings[!(rownames(embeddings) %in% newdata),]}
     as.embeddings(utils::head(embeddings, top_n))
   }else{
     target <- lapply(newdata, function(tok){as.vector(embeddings[tok,])})
     names(target) <- newdata
-    sims <- lapply(target, function(vec){apply(object, 1, cos_sim, vec)})
+    sims <- lapply(target, function(vec){apply(object, 1, sim_func, vec)})
     embeddings <- lapply(sims, function(sim){embeddings[rev(order(sim)),]})
     if (!include_self) {embeddings <- lapply(embeddings, function(x){x[!(rownames(x) %in% newdata),]})}
     lapply(embeddings, function(x){as.embeddings(utils::head(x, top_n))})

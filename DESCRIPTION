@@ -11,6 +11,7 @@ Imports:
     dplyr,
     methods,
     pillar,
+    pkgconfig,
     quanteda,
     rlang,
     stats,

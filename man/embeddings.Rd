@@ -33,6 +33,8 @@ random_mat <- matrix(
   nrow = 2,
   dimnames = list(c("happy", "sad"))
   )
-as.embeddings(random_mat)
-as.matrix(as.embeddings(random_mat))
+random_embeddings <- as.embeddings(random_mat)
+as.matrix(random_embeddings)
+
+tibble::as_tibble(random_embeddings, rownames = "token")
 }
