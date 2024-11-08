@@ -8,11 +8,11 @@
 
 ## About
 
-Common operations with word and text embeddings within a
-‘tidyverse’/‘quanteda’ workflow, as demonstrated in [Data Science for
-Psychology: Natural Language](http://ds4psych.com). Includes simple
-functions for calculating common similarity metrics, as well as higher
-level functions for loading pretrained word embedding models
+embeddingplyr enables common operations with word and text embeddings
+within a ‘tidyverse’/‘quanteda’ workflow, as demonstrated in [Data
+Science for Psychology: Natural Language](http://ds4psych.com). Includes
+simple functions for calculating common similarity metrics, as well as
+higher level functions for loading pretrained word embedding models
 (e.g. [GloVe](https://nlp.stanford.edu/projects/glove/)), applying them
 to words, aggregating to produce text embeddings, and reducing
 dimensionality.
@@ -79,6 +79,23 @@ find_nearest(glove_twitter_25d, "dog", 5L, sim_func = cos_sim)
 ```
 
 ### Similarity Metrics
+
+Functions for similarity and distance metrics are as simple as possible:
+
+``` r
+vec1 <- c(1, 5, 2)
+vec2 <- c(4, 2, 2)
+vec3 <- c(1, -2, -13)
+
+dot_prod(vec1, vec2)            # dot product
+#> [1] 18
+cos_sim(vec1, vec2)             # cosine similarity
+#> [1] 0.6708204
+euc_dist(vec1, vec2)            # Euclidean distance
+#> [1] 4.242641
+anchored_sim(vec1, vec2, vec3)  # projection to an anchored vector
+#> [1] 1.012
+```
 
 ### Tidy Workflow
 

@@ -22,7 +22,7 @@ embed_docs(data, text_col, model, id_col = NULL, ..., .keep_all = FALSE)
 
 \item{...}{additional parameters to pass to \code{quanteda::tokens()} or to the user-specified modeling function}
 
-\item{.keep_all}{description}
+\item{.keep_all}{logical. Keep all columns from input?}
 }
 \description{
 \code{textstat_embedding()} takes a 'quanteda' dfm. \code{embed_docs()} is a more

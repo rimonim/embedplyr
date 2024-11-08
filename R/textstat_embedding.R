@@ -10,7 +10,7 @@
 #' @param text_col string. a column of texts for which to compute embeddings
 #' @param id_col optional string. column of unique document ids
 #' @param ... additional parameters to pass to `quanteda::tokens()` or to the user-specified modeling function
-#' @param .keep_all description
+#' @param .keep_all logical. Keep all columns from input?
 #' @import quanteda
 #'
 #' @section Value:

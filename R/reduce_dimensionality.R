@@ -1,6 +1,6 @@
 #' Reduce the Dimensionality of Embeddings
 #'
-#' Includes methods for dataframes (in the style of `dplyr`) embeddings objects, and matrices.
+#' Includes methods for dataframes (in the style of `dplyr`), embeddings objects, and matrices.
 #'
 #' @param x a dataframe with one embedding per row
 #' @param ... additional parameters to be passed to class-specific methods

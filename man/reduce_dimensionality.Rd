@@ -26,7 +26,7 @@ reduce_dimensionality(x, ...)
 \item{scale}{logical. Should dimensions be scaled to have unit variance?}
 }
 \description{
-Includes methods for dataframes (in the style of \code{dplyr}) embeddings objects, and matrices.
+Includes methods for dataframes (in the style of \code{dplyr}), embeddings objects, and matrices.
 }
 \details{
 The file must have tokens in the first column and numbers in all other columns.

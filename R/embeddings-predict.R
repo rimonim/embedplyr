@@ -17,13 +17,13 @@
 #' @rdname predict.embeddings
 #' @export
 predict.embeddings <- function(object, newdata){
-    embeddings <- as.matrix(object)
-    embeddings <- rbind(embeddings, matrix(ncol = ncol(embeddings), dimnames = list("NOT_IN_DICT")))
-    newdata[!(newdata %in% rownames(embeddings))] <- "NOT_IN_DICT"
-    out <- embeddings[newdata,]
-    if(is.vector(out)){
-        out
-    }else{
-        as.embeddings(out)
-    }
+  embeddings <- as.matrix(object)
+  embeddings <- rbind(embeddings, matrix(ncol = ncol(embeddings), dimnames = list("NOT_IN_DICT")))
+  newdata[!(newdata %in% rownames(embeddings))] <- "NOT_IN_DICT"
+  out <- embeddings[newdata,]
+  if(is.vector(out)){
+    out
+  }else{
+    as.embeddings(out)
+  }
 }
