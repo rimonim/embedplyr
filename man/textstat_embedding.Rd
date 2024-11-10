@@ -7,12 +7,22 @@
 \usage{
 textstat_embedding(dfm, model)
 
-embed_docs(data, text_col, model, id_col = NULL, ..., .keep_all = FALSE)
+embed_docs(
+  data,
+  text_col,
+  model,
+  id_col = NULL,
+  ...,
+  .keep_all = FALSE,
+  tolower = TRUE
+)
 }
 \arguments{
 \item{dfm}{a quanteda dfm}
 
-\item{model}{an embeddings object made by \code{load_embeddings()} or \code{as.embeddings()}. For \code{embed_docs()}, \code{model} can alternatively be a function that takes a character vector and outputs a dataframe with a row for each element of the input}
+\item{model}{an \link[=as.embeddings]{embeddings} object. For \code{embed_docs()}, \code{model}
+can alternatively be a function that takes a character vector and outputs a
+dataframe with a row for each element of the input}
 
 \item{data}{a data frame or data frame extension (e.g. a tibble)}
 
@@ -20,9 +30,13 @@ embed_docs(data, text_col, model, id_col = NULL, ..., .keep_all = FALSE)
 
 \item{id_col}{optional string. column of unique document ids}
 
-\item{...}{additional parameters to pass to \code{quanteda::tokens()} or to the user-specified modeling function}
+\item{...}{additional parameters to pass to \code{quanteda::tokens()} or to the
+user-specified modeling function}
 
 \item{.keep_all}{logical. Keep all columns from input?}
+
+\item{tolower}{logical. Convert all text to lowercase? If \code{model} is an
+embeddings object, this value is passed to \code{\link[quanteda:dfm]{quanteda::dfm()}}.}
 }
 \description{
 \code{textstat_embedding()} takes a 'quanteda' dfm. \code{embed_docs()} is a more
@@ -31,7 +45,8 @@ on a column of texts.
 }
 \section{Value}{
 
-A tibble with columns \code{doc_id}, and \code{V1}, \code{V2}, etc. or similar. If \code{.keep_all = TRUE}, the new columns will appear after existing ones.
+A tibble with columns \code{doc_id}, and \code{V1}, \code{V2}, etc. or similar.
+If \code{.keep_all = TRUE}, the new columns will appear after existing ones.
 }
 
 \examples{

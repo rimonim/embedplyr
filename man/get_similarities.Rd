@@ -40,8 +40,8 @@ If \code{FALSE}, only similarity metrics will be included. If \code{"except.embe
 (the default), all columns except those used to compute the similarity will be retained.}
 }
 \description{
-\code{get_similarities(df, everything(), list(sim = vec2))} is essentially
-equivalent to \code{mutate(rowwise(df), sim = cos_sim(c_across(everything()), vec2))}.
+\code{get_similarities(df, col1:col2, list(sim = vec2))} is essentially
+equivalent to \code{mutate(rowwise(df), sim = cos_sim(c_across(col1:col2), vec2))}.
 Includes methods for dataframes (in the style of \code{dplyr}), embeddings
 objects, and matrices.
 }

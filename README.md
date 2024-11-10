@@ -114,9 +114,9 @@ valence_df <- tribble(
     "negative", "sad bad horrible angry"
     )
 
-valence_df <- valence_df |> 
+valence_embeddings_df <- valence_df |> 
     embed_docs("text", glove_twitter_25d, id_col = "id", .keep_all = TRUE)
-valence_df
+valence_embeddings_df
 #> # A tibble: 3 × 27
 #>   id       text       dim_1   dim_2    dim_3   dim_4   dim_5   dim_6 dim_7 dim_8
 #>   <chr>    <chr>      <dbl>   <dbl>    <dbl>   <dbl>   <dbl>   <dbl> <dbl> <dbl>
@@ -129,15 +129,36 @@ valence_df
 #> #   dim_23 <dbl>, dim_24 <dbl>, dim_25 <dbl>
 ```
 
-To quantify how good and how intense these texts are, we can compare
-them to the embeddings for “good” and “intense” using
-`get_similarities()`. Note that this step requires only a dataframe or
-tibble with numeric columns; the embeddings can come from any source.
+`embed_docs()` can also be used to generate other types of embeddings.
+For example, we can use the ‘[text](https://r-text.org)’ package to
+generate embeddings using any model available from Huggingface
+transformers.
+
+``` r
+sbert_embeddings <- function(texts) {
+    text::textEmbed(
+      texts,
+      model = "sentence-transformers/all-MiniLM-L12-v2", # model name
+      layers = -2,  # second to last layer (default)
+      tokens_select = "[CLS]", # use only [CLS] token
+      dim_name = FALSE,
+      keep_token_embeddings = FALSE
+  )$texts[[1]]
+}
+
+valence_sbert_df <- valence_df |> 
+    embed_docs("text", sbert_embeddings, id_col = "id", .keep_all = TRUE)
+```
+
+To quantify how good and how intense the texts are, we can compare them
+to the embeddings for “good” and “intense” using `get_similarities()`.
+Note that this step requires only a dataframe, tibble, or embeddings
+object with numeric columns; the embeddings can come from any source.
 
 ``` r
 good_vec <- predict(glove_twitter_25d, "good")
 intense_vec <- predict(glove_twitter_25d, "intense")
-valence_quantified <- valence_df |> 
+valence_quantified <- valence_embeddings_df |> 
     get_similarities(
         dim_1:dim_25, 
         list(
@@ -156,6 +177,45 @@ valence_quantified
 
 ### Example Quanteda Workflow
 
+``` r
+library(quanteda)
+#> Package version: 4.0.2
+#> Unicode version: 14.0
+#> ICU version: 71.1
+#> Parallel computing: disabled
+#> See https://quanteda.io for tutorials and examples.
+
+valence_corp <- corpus(valence_df, docid_field = "id")
+valence_corp
+#> Corpus consisting of 3 documents.
+#> positive :
+#> "happy awesome cool nice"
+#> 
+#> neutral :
+#> "ok fine sure whatever"
+#> 
+#> negative :
+#> "sad bad horrible angry"
+
+valence_dfm <- valence_corp |> 
+    tokens() |> 
+    dfm()
+
+valence_embeddings_df <- valence_dfm |> 
+    textstat_embedding(glove_twitter_25d)
+valence_embeddings_df
+#> # A tibble: 3 × 26
+#>   doc_id     dim_1   dim_2    dim_3   dim_4   dim_5   dim_6 dim_7 dim_8  dim_9
+#>   <chr>      <dbl>   <dbl>    <dbl>   <dbl>   <dbl>   <dbl> <dbl> <dbl>  <dbl>
+#> 1 positive -0.584  -0.0810 -0.00361 -0.381   0.0786  0.646   1.66 0.543 -0.830
+#> 2 neutral  -0.0293  0.169  -0.226   -0.175  -0.389  -0.0313  1.22 0.222 -0.394
+#> 3 negative  0.296  -0.244   0.150    0.0809  0.155   0.728   1.51 0.122 -0.588
+#> # ℹ 16 more variables: dim_10 <dbl>, dim_11 <dbl>, dim_12 <dbl>, dim_13 <dbl>,
+#> #   dim_14 <dbl>, dim_15 <dbl>, dim_16 <dbl>, dim_17 <dbl>, dim_18 <dbl>,
+#> #   dim_19 <dbl>, dim_20 <dbl>, dim_21 <dbl>, dim_22 <dbl>, dim_23 <dbl>,
+#> #   dim_24 <dbl>, dim_25 <dbl>
+```
+
 ### Other Functions
 
 #### Reduce Dimensionality
@@ -165,17 +225,58 @@ is done with `reduce_dimensionality()`, which by default performs PCA
 without column normalization.
 
 ``` r
-valence_df_2d <- valence_df |> 
+valence_df_2d <- valence_embeddings_df |> 
     reduce_dimensionality(dim_1:dim_25, 2)
 valence_df_2d
-#> # A tibble: 3 × 4
-#>   id       text                       PC1    PC2
-#> * <chr>    <chr>                    <dbl>  <dbl>
-#> 1 positive happy awesome cool nice -1.47   0.494
-#> 2 neutral  ok fine sure whatever    0.121 -1.13 
-#> 3 negative sad bad horrible angry   1.35   0.640
+#> # A tibble: 3 × 3
+#>   doc_id      PC1    PC2
+#> * <chr>     <dbl>  <dbl>
+#> 1 positive -1.47   0.494
+#> 2 neutral   0.121 -1.13 
+#> 3 negative  1.35   0.640
 ```
 
-#### Normalize or Center
+#### Normalize (Scale Embeddings to the Unit Hypersphere)
+
+``` r
+normalize(good_vec)
+#>        dim_1        dim_2        dim_3        dim_4        dim_5        dim_6 
+#> -0.090587846  0.100363800 -0.024215926 -0.003896062 -0.022930449  0.100135678 
+#>        dim_7        dim_8        dim_9       dim_10       dim_11       dim_12 
+#>  0.364995604  0.034641280 -0.085813930 -0.038466074 -0.133854478  0.094747331 
+#>       dim_13       dim_14       dim_15       dim_16       dim_17       dim_18 
+#> -0.836459360  0.044137493  0.079744546 -0.099664447  0.093466849 -0.181581983 
+#>       dim_19       dim_20       dim_21       dim_22       dim_23       dim_24 
+#> -0.087563977  0.020824065 -0.037671809  0.040843874 -0.076207818  0.154222299 
+#>       dim_25 
+#>  0.003684091
+
+normalize(moral_embeddings)
+#> # 25-dimensional embeddings with 2 rows
+#>      dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9 dim_10    
+#> good -0.09  0.1  -0.02  0    -0.02  0.1   0.36  0.03 -0.09 -0.04  ...
+#> bad   0.08  0     0.01  0     0.05  0.13  0.31 -0.02 -0.05  0.02  ...
+
+valence_embeddings_df |> normalize_rows(dim_1:dim_25)
+#> # A tibble: 3 × 26
+#>   doc_id    dim_1   dim_2    dim_3   dim_4   dim_5    dim_6 dim_7  dim_8   dim_9
+#>   <chr>     <dbl>   <dbl>    <dbl>   <dbl>   <dbl>    <dbl> <dbl>  <dbl>   <dbl>
+#> 1 posit… -0.118   -0.0163 -7.26e-4 -0.0767  0.0158  0.130   0.334 0.109  -0.167 
+#> 2 neutr… -0.00633  0.0365 -4.87e-2 -0.0377 -0.0839 -0.00675 0.262 0.0479 -0.0850
+#> 3 negat…  0.0666  -0.0549  3.38e-2  0.0182  0.0347  0.164   0.339 0.0274 -0.132 
+#> # ℹ 16 more variables: dim_10 <dbl>, dim_11 <dbl>, dim_12 <dbl>, dim_13 <dbl>,
+#> #   dim_14 <dbl>, dim_15 <dbl>, dim_16 <dbl>, dim_17 <dbl>, dim_18 <dbl>,
+#> #   dim_19 <dbl>, dim_20 <dbl>, dim_21 <dbl>, dim_22 <dbl>, dim_23 <dbl>,
+#> #   dim_24 <dbl>, dim_25 <dbl>
+```
 
 #### Magnitude
+
+``` r
+magnitude(good_vec)
+#> [1] 6.005552
+
+magnitude(moral_embeddings)
+#>     good      bad 
+#> 6.005552 5.355951
+```

@@ -1,7 +1,7 @@
 #' Row-wise Similarity and Distance Metrics
 #'
-#' `get_similarities(df, everything(), list(sim = vec2))` is essentially
-#' equivalent to `mutate(rowwise(df), sim = cos_sim(c_across(everything()), vec2))`.
+#' `get_similarities(df, col1:col2, list(sim = vec2))` is essentially
+#' equivalent to `mutate(rowwise(df), sim = cos_sim(c_across(col1:col2), vec2))`.
 #' Includes methods for dataframes (in the style of `dplyr`), embeddings
 #' objects, and matrices.
 #'
