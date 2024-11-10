@@ -135,6 +135,7 @@ generate embeddings using any model available from Huggingface
 transformers.
 
 ``` r
+# function that takes character vector and outputs data frame
 sbert_embeddings <- function(texts) {
     text::textEmbed(
       texts,
@@ -179,12 +180,8 @@ valence_quantified
 
 ``` r
 library(quanteda)
-#> Package version: 4.0.2
-#> Unicode version: 14.0
-#> ICU version: 71.1
-#> Parallel computing: disabled
-#> See https://quanteda.io for tutorials and examples.
 
+# corpus
 valence_corp <- corpus(valence_df, docid_field = "id")
 valence_corp
 #> Corpus consisting of 3 documents.
@@ -197,10 +194,12 @@ valence_corp
 #> negative :
 #> "sad bad horrible angry"
 
+# dfm
 valence_dfm <- valence_corp |> 
     tokens() |> 
     dfm()
 
+# compute embeddings
 valence_embeddings_df <- valence_dfm |> 
     textstat_embedding(glove_twitter_25d)
 valence_embeddings_df
@@ -238,6 +237,9 @@ valence_df_2d
 
 #### Normalize (Scale Embeddings to the Unit Hypersphere)
 
+`normalize()` and `normalize_rows()` scale embeddings such that their
+magnitude is 1, while their angle from the origin is unchanged.
+
 ``` r
 normalize(good_vec)
 #>        dim_1        dim_2        dim_3        dim_4        dim_5        dim_6 
@@ -271,6 +273,9 @@ valence_embeddings_df |> normalize_rows(dim_1:dim_25)
 ```
 
 #### Magnitude
+
+The magnitude, norm, or length of a vector is its Euclidean distance
+from the origin.
 
 ``` r
 magnitude(good_vec)
