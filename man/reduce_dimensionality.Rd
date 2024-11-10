@@ -13,13 +13,14 @@ reduce_dimensionality(x, ...)
 \method{reduce_dimensionality}{embeddings}(x, reduce_to, center = TRUE, scale = FALSE, ...)
 }
 \arguments{
-\item{x}{a dataframe with one embedding per row}
+\item{x}{a dataframe, embeddings object, or matrix with one embedding per row}
 
 \item{...}{additional parameters to be passed to class-specific methods}
 
 \item{cols}{tidyselect - columns that contain numeric embedding values}
 
-\item{reduce_to}{number of dimensions to keep}
+\item{reduce_to}{number of dimensions to keep.
+The value is passed to \code{\link[stats:prcomp]{stats::prcomp()}} as \code{rank.}.}
 
 \item{center}{logical. Should dimensions be shifted to be centered at zero?}
 
@@ -29,11 +30,16 @@ reduce_dimensionality(x, ...)
 Includes methods for dataframes (in the style of \code{dplyr}), embeddings objects, and matrices.
 }
 \details{
-The file must have tokens in the first column and numbers in all other columns.
+By default, \code{reduce_dimensionality()}, performs principle components analysis
+(PCA) without column normalization, and outputs the rotated data. If \code{center = FALSE}
+and \code{scale = FALSE}, this is equivalent to singular value decomposition (SVD),
+\eqn{X = U \Sigma V^{T}}, where the output columns are equal to the first
+\code{reduce_to} columns of \eqn{U \Sigma}.
 }
 \section{Value}{
 
-An embeddings object (a numeric matrix with tokens as rownames)
+An object of the same class as x, with the same number of rows but fewer columns.
+Reduced columns in the output will be named "PC1", "PC2", etc.
 }
 
 \examples{

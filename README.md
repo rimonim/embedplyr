@@ -10,12 +10,12 @@
 
 embeddingplyr enables common operations with word and text embeddings
 within a ‘tidyverse’/‘quanteda’ workflow, as demonstrated in [Data
-Science for Psychology: Natural Language](http://ds4psych.com). Includes
-simple functions for calculating common similarity metrics, as well as
-higher level functions for loading pretrained word embedding models
-(e.g. [GloVe](https://nlp.stanford.edu/projects/glove/)), applying them
-to words, aggregating to produce text embeddings, and reducing
-dimensionality.
+Science for Psychology: Natural Language](http://ds4psych.com). It
+includes simple functions for calculating common similarity metrics, as
+well as higher level functions for loading pretrained word embedding
+models (e.g. [GloVe](https://nlp.stanford.edu/projects/glove/)),
+applying them to words, aggregating to produce text embeddings, reducing
+dimensionality, and more.
 
 ## Installation
 
@@ -80,23 +80,110 @@ find_nearest(glove_twitter_25d, "dog", 5L, sim_func = cos_sim)
 
 ### Similarity Metrics
 
-Functions for similarity and distance metrics are as simple as possible:
+Functions for similarity and distance metrics are as simple as possible;
+each one takes in vectors and outputs a scalar.
 
 ``` r
 vec1 <- c(1, 5, 2)
 vec2 <- c(4, 2, 2)
-vec3 <- c(1, -2, -13)
+vec3 <- c(-1, -2, -13)
 
-dot_prod(vec1, vec2)            # dot product
+dot_prod(vec1, vec2)                                    # dot product
 #> [1] 18
-cos_sim(vec1, vec2)             # cosine similarity
+cos_sim(vec1, vec2)                                     # cosine similarity
 #> [1] 0.6708204
-euc_dist(vec1, vec2)            # Euclidean distance
+euc_dist(vec1, vec2)                                    # Euclidean distance
 #> [1] 4.242641
-anchored_sim(vec1, vec2, vec3)  # projection to an anchored vector
-#> [1] 1.012
+anchored_sim(vec1, pos = vec2, neg = vec3)  # projection to an anchored vector
+#> [1] 0.9887218
 ```
 
-### Tidy Workflow
+### Example Tidy Workflow
 
-### Quanteda Workflow
+Given a tidy dataframe of texts, `embed_docs()` will generate embeddings
+by averaging the embeddings of words in each text (for more information
+on why this works well, see [Data Science for Psychology, Chapter
+18](https://ds4psych.com/decontextualized-embeddings#sec-embedding-magnitude)).
+
+``` r
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+valence_df <- tribble(
+    ~id,        ~text,
+    "positive", "happy awesome cool nice",
+    "neutral",  "ok fine sure whatever",
+    "negative", "sad bad horrible angry"
+    )
+
+valence_df <- valence_df |> 
+    embed_docs("text", glove_twitter_25d, id_col = "id", .keep_all = TRUE)
+valence_df
+#> # A tibble: 3 × 27
+#>   id       text       dim_1   dim_2    dim_3   dim_4   dim_5   dim_6 dim_7 dim_8
+#>   <chr>    <chr>      <dbl>   <dbl>    <dbl>   <dbl>   <dbl>   <dbl> <dbl> <dbl>
+#> 1 positive happy a… -0.584  -0.0810 -0.00361 -0.381   0.0786  0.646   1.66 0.543
+#> 2 neutral  ok fine… -0.0293  0.169  -0.226   -0.175  -0.389  -0.0313  1.22 0.222
+#> 3 negative sad bad…  0.296  -0.244   0.150    0.0809  0.155   0.728   1.51 0.122
+#> # ℹ 17 more variables: dim_9 <dbl>, dim_10 <dbl>, dim_11 <dbl>, dim_12 <dbl>,
+#> #   dim_13 <dbl>, dim_14 <dbl>, dim_15 <dbl>, dim_16 <dbl>, dim_17 <dbl>,
+#> #   dim_18 <dbl>, dim_19 <dbl>, dim_20 <dbl>, dim_21 <dbl>, dim_22 <dbl>,
+#> #   dim_23 <dbl>, dim_24 <dbl>, dim_25 <dbl>
+```
+
+To quantify how good and how intense these texts are, we can compare
+them to the embeddings for “good” and “intense” using
+`get_similarities()`. Note that this step requires only a dataframe or
+tibble with numeric columns; the embeddings can come from any source.
+
+``` r
+good_vec <- predict(glove_twitter_25d, "good")
+intense_vec <- predict(glove_twitter_25d, "intense")
+valence_quantified <- valence_df |> 
+    get_similarities(
+        dim_1:dim_25, 
+        list(
+            good = good_vec, 
+            intense = intense_vec
+            )
+        )
+valence_quantified
+#> # A tibble: 3 × 4
+#>   id       text                     good intense
+#>   <chr>    <chr>                   <dbl>   <dbl>
+#> 1 positive happy awesome cool nice 0.958   0.585
+#> 2 neutral  ok fine sure whatever   0.909   0.535
+#> 3 negative sad bad horrible angry  0.848   0.747
+```
+
+### Example Quanteda Workflow
+
+### Other Functions
+
+#### Reduce Dimensionality
+
+It is sometimes useful to reduce the dimensionality of embeddings. This
+is done with `reduce_dimensionality()`, which by default performs PCA
+without column normalization.
+
+``` r
+valence_df_2d <- valence_df |> 
+    reduce_dimensionality(dim_1:dim_25, 2)
+valence_df_2d
+#> # A tibble: 3 × 4
+#>   id       text                       PC1    PC2
+#> * <chr>    <chr>                    <dbl>  <dbl>
+#> 1 positive happy awesome cool nice -1.47   0.494
+#> 2 neutral  ok fine sure whatever    0.121 -1.13 
+#> 3 negative sad bad horrible angry   1.35   0.640
+```
+
+#### Normalize or Center
+
+#### Magnitude

@@ -2,18 +2,24 @@
 #'
 #' Includes methods for dataframes (in the style of `dplyr`), embeddings objects, and matrices.
 #'
-#' @param x a dataframe with one embedding per row
+#' @param x a dataframe, embeddings object, or matrix with one embedding per row
 #' @param ... additional parameters to be passed to class-specific methods
 #' @param cols tidyselect - columns that contain numeric embedding values
-#' @param reduce_to number of dimensions to keep
+#' @param reduce_to number of dimensions to keep.
+#' The value is passed to [stats::prcomp()] as `rank.`.
 #' @param center logical. Should dimensions be shifted to be centered at zero?
 #' @param scale logical. Should dimensions be scaled to have unit variance?
 #'
 #' @details
-#' The file must have tokens in the first column and numbers in all other columns.
+#' By default, `reduce_dimensionality()`, performs principle components analysis
+#' (PCA) without column normalization, and outputs the rotated data. If `center = FALSE`
+#' and `scale = FALSE`, this is equivalent to singular value decomposition (SVD),
+#' \eqn{X = U \Sigma V^{T}}, where the output columns are equal to the first
+#' `reduce_to` columns of \eqn{U \Sigma}.
 #'
 #' @section Value:
-#' An embeddings object (a numeric matrix with tokens as rownames)
+#' An object of the same class as x, with the same number of rows but fewer columns.
+#' Reduced columns in the output will be named "PC1", "PC2", etc.
 #'
 #' @import tibble
 #' @examples

@@ -13,13 +13,16 @@
 #' each item of y should be a list with named vectors `pos` and `neg`.
 #' @param sim_func a function that takes two vectors and outputs a scalar
 #' similarity metric. Defaults to cosine similarity. For more options see
-#' <[`Similarity and Distance Metrics`][dot_prod]>
+#' [Similarity and Distance Metrics][sim_metrics]
 #' @param ... additional parameters to be passed to methods
-#' @param .keep_all logical. Keep all columns from input?
+#' @param .keep_all If `TRUE`, all columns from input are retained in output.
+#' If `FALSE`, only similarity metrics will be included. If `"except.embeddings"`
+#' (the default), all columns except those used to compute the similarity will be retained.
 #'
 #' @section Value:
 #' A tibble with columns `doc_id`, and similarity metrics.
-#' If `.keep_all = TRUE`, the new columns will appear after existing ones.
+#' If `.keep_all = TRUE` or `.keep_all = "except.embeddings"`, the new columns
+#' will appear after existing ones.
 #'
 #' @import tibble
 #' @examples
@@ -84,11 +87,13 @@ get_similarities.embeddings <- function(x, y, sim_func = cos_sim, ...) {
 #' @rdname get_similarities
 #' @method get_similarities data.frame
 #' @export
-get_similarities.data.frame <- function(x, cols, y, sim_func = cos_sim, ..., .keep_all = FALSE) {
+get_similarities.data.frame <- function(x, cols, y, sim_func = cos_sim, ..., .keep_all = "except.embeddings") {
   in_dat <- dplyr::select(x, {{ cols }})
   out_dat <- get_similarities.default(in_dat, y)
-  if (.keep_all) {
+  if (.keep_all == "except.embeddings") {
   	dplyr::bind_cols( dplyr::select(x, -{{ cols }}), out_dat )
+  }else if (.keep_all) {
+  	dplyr::bind_cols( x, out_dat )
   }else{
   	out_dat
   }

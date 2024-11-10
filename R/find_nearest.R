@@ -41,9 +41,13 @@ find_nearest <- function(object, newdata,
       target <- as.vector(embeddings[newdata,])
     }
     sims <- apply(object, 1, sim_func, target)
-    embeddings <- embeddings[rev(order(sims)),]
-    if (!include_self) {embeddings <- embeddings[!(rownames(embeddings) %in% newdata),]}
-    as.embeddings(utils::head(embeddings, top_n))
+    if (include_self) {
+      embeddings <- embeddings[order(sims, decreasing = TRUE)[1:top_n],]
+    }else{
+      embeddings <- embeddings[order(sims, decreasing = TRUE)[1:(top_n+length(newdata))],]
+      embeddings <- embeddings[!(rownames(embeddings) %in% newdata),]
+    }
+    as.embeddings(embeddings)
   }else{
     target <- lapply(newdata, function(tok){as.vector(embeddings[tok,])})
     names(target) <- newdata

@@ -2,6 +2,7 @@
 % Please edit documentation in R/sim_metrics.R
 \name{dot_prod}
 \alias{dot_prod}
+\alias{sim_metrics}
 \alias{cos_sim}
 \alias{euc_dist}
 \alias{anchored_sim}

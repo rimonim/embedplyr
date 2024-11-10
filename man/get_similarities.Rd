@@ -10,7 +10,14 @@ get_similarities(x, ...)
 
 \method{get_similarities}{embeddings}(x, y, sim_func = cos_sim, ...)
 
-\method{get_similarities}{data.frame}(x, cols, y, sim_func = cos_sim, ..., .keep_all = FALSE)
+\method{get_similarities}{data.frame}(
+  x,
+  cols,
+  y,
+  sim_func = cos_sim,
+  ...,
+  .keep_all = "except.embeddings"
+)
 }
 \arguments{
 \item{x}{an embeddings object, matrix, or dataframe with one embedding per row}
@@ -24,11 +31,13 @@ each item of y should be a list with named vectors \code{pos} and \code{neg}.}
 
 \item{sim_func}{a function that takes two vectors and outputs a scalar
 similarity metric. Defaults to cosine similarity. For more options see
-<\code{\link[=dot_prod]{Similarity and Distance Metrics}}>}
+\link[=sim_metrics]{Similarity and Distance Metrics}}
 
 \item{cols}{tidyselect - columns that contain numeric embedding values}
 
-\item{.keep_all}{logical. Keep all columns from input?}
+\item{.keep_all}{If \code{TRUE}, all columns from input are retained in output.
+If \code{FALSE}, only similarity metrics will be included. If \code{"except.embeddings"}
+(the default), all columns except those used to compute the similarity will be retained.}
 }
 \description{
 \code{get_similarities(df, everything(), list(sim = vec2))} is essentially
@@ -39,7 +48,8 @@ objects, and matrices.
 \section{Value}{
 
 A tibble with columns \code{doc_id}, and similarity metrics.
-If \code{.keep_all = TRUE}, the new columns will appear after existing ones.
+If \code{.keep_all = TRUE} or \code{.keep_all = "except.embeddings"}, the new columns
+will appear after existing ones.
 }
 
 \examples{
