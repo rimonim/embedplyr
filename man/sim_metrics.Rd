@@ -33,6 +33,8 @@ distance. \code{anchored_sim} gives the position of \code{x} on the spectrum bet
 anchor points, where vectors aligned with \code{pos} are given a score of 1 and those
 aligned with \code{neg} are given a score of 0. For more on anchored vectors, see
 \href{https://ds4psych.com/navigating-vectorspace#sec-dimension-projection}{Data Science for Psychology: Natural Language, Chapter 20}.
+Note that, for a given set of values of \code{x}, \code{anchored_sim(x, pos, neg)} will
+be perfectly correlated with \code{dot_prod(x, pos - neg)}.
 }
 \examples{
 vec1 <- c(1, 5, 2)

@@ -28,6 +28,9 @@ as.embeddings <- function(x, ...) {
 #' @export
 as.embeddings.default <- function(x, ...) {
   if(!embeddings_check(x)){stop(paste(class(x),collapse = "/"), " object cannot be coerced to embeddings.")}
+  if (is.null(rownames(x))){
+    rownames(x) <- paste0("doc_", 1:nrow(x))
+  }
   if (is.null(colnames(x))){
     colnames(x) <- paste0("dim_", 1:ncol(x))
   }
@@ -51,6 +54,15 @@ as.embeddings.Matrix <- function(x, ...){
   if (!is.numeric(x)) {
     stop("Input is not numeric")
   }
+  as.embeddings.default(x)
+}
+
+#' @noRd
+#' @method as.embeddings numeric
+#' @export
+as.embeddings.numeric <- function(x, ...){
+  if (!is.null(dim(x))) stop("array object cannot be coerced to embeddings.")
+  x <- matrix(x, nrow = 1)
   as.embeddings.default(x)
 }
 

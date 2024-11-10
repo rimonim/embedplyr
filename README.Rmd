@@ -65,9 +65,9 @@ vec1 <- c(1, 5, 2)
 vec2 <- c(4, 2, 2)
 vec3 <- c(-1, -2, -13)
 
-dot_prod(vec1, vec2)            						# dot product
-cos_sim(vec1, vec2)             						# cosine similarity
-euc_dist(vec1, vec2)            						# Euclidean distance
+dot_prod(vec1, vec2)            		    # dot product
+cos_sim(vec1, vec2)             		    # cosine similarity
+euc_dist(vec1, vec2)            		    # Euclidean distance
 anchored_sim(vec1, pos = vec2, neg = vec3)  # projection to an anchored vector
 ```
 
@@ -75,7 +75,7 @@ anchored_sim(vec1, pos = vec2, neg = vec3)  # projection to an anchored vector
 
 Given a tidy dataframe of texts, `embed_docs()` will generate embeddings by averaging the embeddings of words in each text (for more information on why this works well, see [Data Science for Psychology, Chapter 18](https://ds4psych.com/decontextualized-embeddings#sec-embedding-magnitude)). 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 library(dplyr)
 valence_df <- tribble(
 	~id,        ~text,

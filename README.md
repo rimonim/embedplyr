@@ -88,11 +88,11 @@ vec1 <- c(1, 5, 2)
 vec2 <- c(4, 2, 2)
 vec3 <- c(-1, -2, -13)
 
-dot_prod(vec1, vec2)                                    # dot product
+dot_prod(vec1, vec2)                        # dot product
 #> [1] 18
-cos_sim(vec1, vec2)                                     # cosine similarity
+cos_sim(vec1, vec2)                         # cosine similarity
 #> [1] 0.6708204
-euc_dist(vec1, vec2)                                    # Euclidean distance
+euc_dist(vec1, vec2)                        # Euclidean distance
 #> [1] 4.242641
 anchored_sim(vec1, pos = vec2, neg = vec3)  # projection to an anchored vector
 #> [1] 0.9887218
@@ -107,14 +107,6 @@ on why this works well, see [Data Science for Psychology, Chapter
 
 ``` r
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 valence_df <- tribble(
     ~id,        ~text,
     "positive", "happy awesome cool nice",

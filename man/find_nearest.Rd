@@ -16,13 +16,16 @@ find_nearest(
 \arguments{
 \item{object}{an embeddings object made by \code{load_embeddings()} or \code{as.embeddings()}}
 
-\item{newdata}{a character vector of tokens}
+\item{newdata}{a character vector of tokens indexed by \code{object},
+an embeddings object of the same dimensionality as \code{object},
+or a numeric vector of the same dimensionality as \code{object}.}
 
 \item{top_n}{integer. How many nearest neighbors should be output? If \code{each = TRUE},
 how many nearest neighbors should be output for each token?}
 
 \item{sim_func}{a function that takes two vectors and outputs a scalar
-similarity metric. Defaults to cosine similarity.}
+similarity metric. Defaults to cosine similarity. For more options see
+\link[=sim_metrics]{Similarity and Distance Metrics}.}
 
 \item{each}{logical. If \code{FALSE} (the default), the embeddings of newdata are
 averaged and the function will output an embeddings object with the \code{top_n}

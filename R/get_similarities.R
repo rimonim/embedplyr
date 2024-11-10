@@ -71,6 +71,7 @@ apply_func <- function(y_item, x, sim_func) {
 #' @export
 get_similarities.default <- function(x, y, sim_func = cos_sim, ...) {
 	if (!embeddings_check(x)) stop("x must be an embeddings object, matrix, or dataframe")
+	if (!is.list(y)) stop("y must be a named list")
 	out_cols <- lapply(y, apply_func, x = x, sim_func = sim_func)
 	tibble::as_tibble(out_cols)
 }

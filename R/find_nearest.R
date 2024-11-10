@@ -1,11 +1,14 @@
 #' Find Nearest Tokens in Embedding Space
 #'
 #' @param object an embeddings object made by `load_embeddings()` or `as.embeddings()`
-#' @param newdata a character vector of tokens
+#' @param newdata a character vector of tokens indexed by `object`,
+#' an embeddings object of the same dimensionality as `object`,
+#' or a numeric vector of the same dimensionality as `object`.
 #' @param top_n integer. How many nearest neighbors should be output? If `each = TRUE`,
 #' how many nearest neighbors should be output for each token?
 #' @param sim_func a function that takes two vectors and outputs a scalar
-#' similarity metric. Defaults to cosine similarity.
+#' similarity metric. Defaults to cosine similarity. For more options see
+#' [Similarity and Distance Metrics][sim_metrics].
 #' @param each logical. If `FALSE` (the default), the embeddings of newdata are
 #' averaged and the function will output an embeddings object with the `top_n`
 #' nearest tokens to the overall average embedding. If `TRUE`, the function will
@@ -31,29 +34,53 @@ find_nearest <- function(object, newdata,
                          each = FALSE,
                          include_self = TRUE){
   if (!("embeddings" %in% class(object))) {stop("`object` is not an embeddings object")}
-  newdata[!(newdata %in% rownames(object))] <- "NOT_IN_DICT"
-  if(all(newdata == "NOT_IN_DICT")){stop("None of the items in `newdata` are tokens in the embeddings object")}
-  embeddings <- rbind(object, matrix(ncol = ncol(object), dimnames = list("NOT_IN_DICT")))
-  if (!each) {
-    if(length(newdata) > 1){
-      target <- as.vector(apply(embeddings[newdata,], 2, mean, na.rm = TRUE))
+  if (is.character(newdata)) {
+    newdata_raw <- newdata
+    embedding_not_found <- !(newdata %in% rownames(object))
+    if (any(embedding_not_found)) {
+      warning(sum(embedding_not_found), " items in `newdata` are not tokens in the embeddings object.")
+      newdata[embedding_not_found] <- "EMBEDDING_NOT_FOUND"
+    }
+    if(all(newdata == "EMBEDDING_NOT_FOUND")){stop("None of the items in `newdata` are tokens in the embeddings object")}
+    object <- rbind(object, matrix(ncol = ncol(object), dimnames = list("EMBEDDING_NOT_FOUND")))
+    if (!each) {
+      target <- object[newdata,]
     }else{
-      target <- as.vector(embeddings[newdata,])
+      target <- lapply(newdata, function(tok){object[tok,]})
+      names(target) <- newdata
+    }
+  }else{
+    if (all(is.na(newdata))) stop("newdata is entirely NAs")
+    newdata_raw <- rownames(newdata)
+    if (!each) {
+      target <- newdata
+      newdata <- rownames(newdata)
+    }else{
+      target <- as.embeddings(newdata)
+      newdata <- rownames(target)
+      target <- lapply(newdata, function(tok){target[tok,]})
+      names(target) <- newdata
+    }
+  }
+  if (!each) {
+    if (length(newdata) > 1) {
+      target <- apply(target, 2, mean, na.rm = TRUE)
     }
     sims <- apply(object, 1, sim_func, target)
     if (include_self) {
-      embeddings <- embeddings[order(sims, decreasing = TRUE)[1:top_n],]
+      object <- object[order(sims, decreasing = TRUE)[1:top_n],]
     }else{
-      embeddings <- embeddings[order(sims, decreasing = TRUE)[1:(top_n+length(newdata))],]
-      embeddings <- embeddings[!(rownames(embeddings) %in% newdata),]
+      object <- object[order(sims, decreasing = TRUE)[1:(top_n+length(newdata))],]
+      object <- object[!(rownames(object) %in% newdata),]
     }
-    as.embeddings(embeddings)
+    as.embeddings(object)
   }else{
-    target <- lapply(newdata, function(tok){as.vector(embeddings[tok,])})
-    names(target) <- newdata
     sims <- lapply(target, function(vec){apply(object, 1, sim_func, vec)})
-    embeddings <- lapply(sims, function(sim){embeddings[rev(order(sim)),]})
-    if (!include_self) {embeddings <- lapply(embeddings, function(x){x[!(rownames(x) %in% newdata),]})}
-    lapply(embeddings, function(x){as.embeddings(utils::head(x, top_n))})
+    object <- lapply(sims, function(sim){object[order(sim, decreasing = TRUE),]})
+    if (!include_self) {object <- lapply(object, function(x){x[!(rownames(x) %in% newdata),]})}
+    object <- lapply(object, function(x){as.embeddings(utils::head(x, top_n))})
+    object[names(object) == "EMBEDDING_NOT_FOUND"] <- NA
+    names(object) <- newdata_raw
+    object
   }
 }

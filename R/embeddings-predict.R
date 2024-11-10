@@ -18,8 +18,8 @@
 #' @export
 predict.embeddings <- function(object, newdata){
   embeddings <- as.matrix(object)
-  embeddings <- rbind(embeddings, matrix(ncol = ncol(embeddings), dimnames = list("NOT_IN_DICT")))
-  newdata[!(newdata %in% rownames(embeddings))] <- "NOT_IN_DICT"
+  embeddings <- rbind(embeddings, matrix(ncol = ncol(embeddings), dimnames = list("EMBEDDING_NOT_FOUND")))
+  newdata[!(newdata %in% rownames(embeddings))] <- "EMBEDDING_NOT_FOUND"
   out <- embeddings[newdata,]
   if(is.vector(out)){
     out

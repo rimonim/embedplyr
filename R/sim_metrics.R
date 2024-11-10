@@ -13,6 +13,8 @@
 #' anchor points, where vectors aligned with `pos` are given a score of 1 and those
 #' aligned with `neg` are given a score of 0. For more on anchored vectors, see
 #' [Data Science for Psychology: Natural Language, Chapter 20](https://ds4psych.com/navigating-vectorspace#sec-dimension-projection).
+#' Note that, for a given set of values of `x`, `anchored_sim(x, pos, neg)` will
+#' be perfectly correlated with `dot_prod(x, pos - neg)`.
 #' @aliases sim_metrics
 #' @examples
 #' vec1 <- c(1, 5, 2)

@@ -25,7 +25,12 @@ format.embeddings <- function(x, ..., n = getOption("max.print"), round = 2) {
   }
   x_out <- x[1:n, 1:show_cols]
   x_out <- round(x_out, round)
-  x_out <- apply(x_out, 2, as.character)
+  if (is.null(dim(x_out))) {
+    x_out <- matrix(as.character(x_out), nrow = nrow(x))
+    colnames(x_out) <- colnames(x)[1:show_cols]
+  }else{
+    x_out <- apply(x_out, 2, as.character)
+  }
   x_out[is.na(x_out)] <- "NA"
   x_out[substr(x_out,1,1)!="-"] <- paste0(" ", x_out[substr(x_out,1,1)!="-"])
   if(show_cols < ncol(x)){
