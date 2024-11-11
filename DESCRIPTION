@@ -11,7 +11,6 @@ Imports:
     dplyr,
     methods,
     pillar,
-    pkgconfig,
     quanteda,
     rlang,
     stats,
@@ -20,6 +19,7 @@ Imports:
     utils
 Suggests:
     Matrix,
+    purrr,
     testthat (>= 3.0.0),
     text2vec
 Enhances:

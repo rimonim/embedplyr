@@ -4,14 +4,15 @@
 \alias{format.embeddings}
 \title{Formatting and Printing for Embeddings Objects}
 \usage{
-\method{format}{embeddings}(x, ..., n = getOption("max.print"), round = 2)
+\method{format}{embeddings}(x, ..., n = NULL, round = 2L)
 }
 \arguments{
 \item{x}{the embeddings object to be formatted}
 
 \item{...}{arguments to be passed to methods}
 
-\item{n}{integer. How many rows should be printed? Defaults to \code{getOption("max.print")}}
+\item{n}{integer. How many rows should be printed? Defaults to 10. This value
+can be permanently customized by setting \code{options(embeddings.print.n = n)}.}
 
 \item{round}{integer. the number of decimal places to be displayed}
 }
@@ -20,4 +21,8 @@ Since the numerical content of embeddings is generally not very informative
 to the naked eye, the default formatting of matrices is often cumbersome.
 As such, embeddings objects print in a format that allows quick visualization
 of dimensionality and row names.
+}
+\examples{
+print(glove_twitter_25d, n = 5)
+
 }

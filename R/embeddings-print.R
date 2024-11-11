@@ -7,51 +7,51 @@
 #'
 #' @param x the embeddings object to be formatted
 #' @param ... arguments to be passed to methods
-#' @param n integer. How many rows should be printed? Defaults to `getOption("max.print")`
+#' @param n integer. How many rows should be printed? Defaults to 10. This value
+#' can be permanently customized by setting `options(embeddings.print.n = n)`.
 #' @param round integer. the number of decimal places to be displayed
+#'
+#' @importFrom pillar style_subtle
+#' @examples
+#' print(glove_twitter_25d, n = 5)
 #'
 #' @method format embeddings
 #' @export
-format.embeddings <- function(x, ..., n = getOption("max.print"), round = 2) {
-  screen_width <- getOption("width")
-  n <- min(n, nrow(x))
+format.embeddings <- function(x, ..., n = NULL, round = 2L) {
+  # how many columns to show
+  screen_width <- getOption("width", 80)
+  colwidth <- round + 4L
+  n <- min(n %||% getOption("embeddings.print.n", 10), nrow(x))
   longest_rowname <- max(nchar(rownames(x)[1:n]), 3L) + 2L
-  show_cols <- floor((screen_width - longest_rowname)/6) - 2L
+  show_cols <- floor((screen_width - longest_rowname)/colwidth) - 2L
   show_cols <- min(show_cols, ncol(x))
-  longest_colname <- max(nchar(colnames(x)[1:show_cols]))
-  if(longest_colname > 6){
-    show_cols <- floor((screen_width - longest_rowname)/longest_colname) - 2L
-    show_cols <- min(show_cols, ncol(x))
-  }
+  # subset to be shown
   x_out <- x[1:n, 1:show_cols]
-  x_out <- round(x_out, round)
+  # character matrix
   if (is.null(dim(x_out))) {
-    x_out <- matrix(as.character(x_out), nrow = nrow(x))
+    x_out <- matrix(sprintf(paste0("%.",round,"f"), x_out), nrow = nrow(x))
     colnames(x_out) <- colnames(x)[1:show_cols]
   }else{
-    x_out <- apply(x_out, 2, as.character)
+    x_out <- matrix(sprintf(paste0("%.",round,"f"), x_out), nrow = nrow(x_out), ncol = ncol(x_out),
+                    dimnames = list(rownames(x_out), colnames(x_out)))
   }
-  x_out[is.na(x_out)] <- "NA"
-  x_out[substr(x_out,1,1)!="-"] <- paste0(" ", x_out[substr(x_out,1,1)!="-"])
+  # truncate long column names
+  colnames(x_out) <- ifelse(nchar(colnames(x_out)) > colwidth - 1L, paste0(substr(colnames(x_out), 1, colwidth-3L), ".."), colnames(x_out))
+  # add dots for unshown columns
   if(show_cols < ncol(x)){
-    x_out <- cbind(x_out, rep("...", n))
+    x_out <- cbind(x_out, rep(paste0(c("...", rep(" ", colwidth-4L)), collapse = ""), n))
   }
   rownames(x_out) <- rownames(x)[1:n]
-  x_out
+  format(x_out, justify = "right")
 }
 
 #' @noRd
 #' @method print embeddings
 #' @export
-print.embeddings <- function(x, ...) {
-  x <- as.embeddings(x)
+print.embeddings <- function(x, n = NULL, round = 2, ...) {
   args <- list(...)
-  if("n" %in% names(args)){
-    n <- args$n
-  }else{
-    n <- getOption("max.print")
-  }
-  cat(pillar::style_subtle(paste0("# ", ncol(x),"-dimensional embeddings with ",nrow(x)," rows\n")))
-  if (any(dim(x) == 0)) return()
-  print(format(x, n = n), quote = FALSE)
+  n <- n %||% getOption("embeddings.print.n", 10)
+  message(pillar::style_subtle(paste0("# ", ncol(x),"-dimensional embeddings with ",nrow(x)," rows")))
+  if (any(dim(x) == 0)) return(cat("<", paste(dim(x), collapse = " x "), " embeddings>", sep = ""))
+  print(format(x, n = n, round = round), quote = FALSE)
 }

@@ -5,8 +5,8 @@
 #' is an embeddings object.
 #'
 #' @param x a numeric matrix or dataframe in which the only non-numeric column is specified by `id_col`
-#' @param ... additional arguments to be passed to class-specific methods
-#' @import tibble
+#' @param ... additional arguments to be passed to or from class-specific methods
+#' @importFrom tibble column_to_rownames as_tibble
 #' @examples
 #' random_mat <- matrix(
 #'   sample(1:10, 20, replace = TRUE),
@@ -27,12 +27,14 @@ as.embeddings <- function(x, ...) {
 #' @noRd
 #' @export
 as.embeddings.default <- function(x, ...) {
-  if(!is_matrixlike(x)){stop(paste(class(x),collapse = "/"), " object cannot be coerced to embeddings.")}
-  if (is.null(rownames(x)) && nrow(x) > 0){
-    rownames(x) <- paste0("doc_", 1:nrow(x))
+  if(!is_matrixlike(x)){stop(sprintf("No method for coercing objects of class '%s' to embeddings.", class(x)))}
+  # default row and column names
+  if (is.null(rownames(x)) && nrow(x) > 0 || any(duplicated(rownames(x)))){
+    warning("unique row names not provided. Naming rows doc_1, doc_2, etc.")
+    rownames(x) <- paste0("doc_", seq_len(nrow(x)))
   }
-  if (is.null(colnames(x)) && ncol(x) > 0){
-    colnames(x) <- paste0("dim_", 1:ncol(x))
+  if (is.null(colnames(x)) && ncol(x) > 0 || any(duplicated(colnames(x)))){
+    colnames(x) <- paste0("dim_", seq_len(ncol(x)))
   }
   structure(x, class = c("embeddings", "matrix", "array"))
 }
@@ -62,7 +64,9 @@ as.embeddings.Matrix <- function(x, ...){
 #' @method as.embeddings numeric
 #' @export
 as.embeddings.numeric <- function(x, ...){
-  if (!is.null(dim(x))) stop("array object cannot be coerced to embeddings.")
+  if (is.array(x) && length(dim(x)) > 1) {
+    stop("High dimensional arrays cannot be coerced to embeddings.")
+  }
   x <- matrix(x, nrow = 1)
   as.embeddings.default(x)
 }
@@ -95,7 +99,8 @@ is.embeddings <- function(x, ...){
 #' @method as.matrix embeddings
 #' @export
 as.matrix.embeddings <- function(x, ...){
-  structure(x, class = c("matrix", "array"))
+  x <- structure(x, class = c("matrix", "array"))
+  as.matrix(x)
 }
 
 #' @noRd
@@ -130,17 +135,16 @@ as.matrix.embeddings <- function(x, ...){
 #' @param x an object to be checked
 #' @keywords internal
 is_matrixlike <- function(x) {
-  matrix_classes <- c("embeddings", "matrix", "dgeMatrix", "data.frame")
-  any(class(x) %in% matrix_classes) && is.numeric(as.matrix(x))
+  (is.matrix(x) || inherits(x, "Matrix") || is.data.frame(x)) && is.numeric(as.matrix(x))
 }
 
 #' @noRd
 #' @method as_tibble embeddings
 #' @export
-as_tibble.embeddings <- function(x, ...,
-                                 .rows = NULL,
-                                 .name_repair = c("check_unique", "unique", "universal", "minimal"),
-                                 rownames = pkgconfig::get_config("tibble::rownames", NULL)){
-  x <- unclass(x)
-  NextMethod("as_tibble")
+as_tibble.embeddings <- function(x, ..., rownames = NULL) {
+  x <- as.data.frame(x)
+  if (!is.null(rownames)) {
+    x <- tibble::rownames_to_column(x, var = rownames)
+  }
+  tibble::as_tibble(x, ...)
 }

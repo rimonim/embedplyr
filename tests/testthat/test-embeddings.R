@@ -18,7 +18,7 @@ test_that("as.embeddings error for non-numeric matrix", {
 
 test_that("as.embeddings works with numeric vector", {
   vec <- 1:5
-  emb <- as.embeddings(vec)
+  expect_warning(emb <- as.embeddings(vec), "unique row names not provided. Naming rows doc_1, doc_2, etc.")
 
   expect_s3_class(emb, "embeddings")
   expect_equal(dim(emb), c(1, length(vec)))
@@ -27,7 +27,7 @@ test_that("as.embeddings works with numeric vector", {
 
 test_that("as.embeddings.numeric error for array input", {
   arr <- array(1:8, dim = c(2, 2, 2))
-  expect_error(as.embeddings(arr), "array object cannot be coerced to embeddings.")
+  expect_error(as.embeddings(arr), "High dimensional arrays cannot be coerced to embeddings.")
 })
 
 test_that("as.embeddings works with data.frame", {
@@ -42,7 +42,7 @@ test_that("as.embeddings works with data.frame", {
   expect_equal(emb["happy", "dim1"], 1.0)
   expect_true(is.embeddings(emb))
 
-  emb <- as.embeddings(df[,2:3])
+  expect_warning(emb <- as.embeddings(df[,2:3]), "unique row names not provided. Naming rows doc_1, doc_2, etc.")
   expect_s3_class(emb, "embeddings")
   expect_equal(colnames(emb), c("dim1", "dim2"))
   expect_true(is.embeddings(emb))
@@ -66,7 +66,7 @@ test_that("is.embeddings returns FALSE for non-embeddings objects", {
 })
 
 test_that("as.matrix.embeddings removes 'embeddings' class", {
-  emb <- as.embeddings(matrix(1:6, nrow = 2))
+  expect_warning(emb <- as.embeddings(matrix(1:6, nrow = 2)), "unique row names not provided. Naming rows doc_1, doc_2, etc.")
   mat2 <- as.matrix(emb)
 
   expect_false(inherits(mat2, "embeddings"))
@@ -75,7 +75,7 @@ test_that("as.matrix.embeddings removes 'embeddings' class", {
 
 test_that("Subsetting embeddings retains embeddings class when multiple rows remain", {
   mat <- matrix(1:9, nrow = 3)
-  emb <- as.embeddings(mat)
+  expect_warning(emb <- as.embeddings(mat), "unique row names not provided. Naming rows doc_1, doc_2, etc.")
   emb_sub <- emb[1:2, ]
 
   expect_s3_class(emb_sub, "embeddings")
@@ -84,7 +84,7 @@ test_that("Subsetting embeddings retains embeddings class when multiple rows rem
 
 test_that("Subsetting embeddings returns numeric vector when appropriate", {
   mat <- matrix(1:9, nrow = 3)
-  emb <- as.embeddings(mat)
+  expect_warning(emb <- as.embeddings(mat), "unique row names not provided. Naming rows doc_1, doc_2, etc.")
   emb_sub <- emb[1, 1]
 
   expect_false(is.embeddings(emb_sub))
@@ -93,7 +93,7 @@ test_that("Subsetting embeddings returns numeric vector when appropriate", {
 
 test_that("Setting rownames and colnames on embeddings", {
   mat <- matrix(1:6, nrow = 2)
-  emb <- as.embeddings(mat)
+  expect_warning(emb <- as.embeddings(mat), "unique row names not provided. Naming rows doc_1, doc_2, etc.")
   rownames(emb) <- c("token1", "token2")
   colnames(emb) <- c("dim1", "dim2", "dim3")
 
@@ -133,9 +133,17 @@ test_that("is_matrixlike works correctly", {
   expect_false(is_matrixlike(l))
 })
 
-test_that("as.embeddings assigns default rownames and colnames if missing", {
+test_that("as.embeddings assigns default rownames and colnames if missing or non-unique", {
   mat <- matrix(1:6, nrow = 2)
-  emb <- as.embeddings(mat)
+  expect_warning(emb <- as.embeddings(mat), "unique row names not provided. Naming rows doc_1, doc_2, etc.")
+
+  expect_equal(rownames(emb), c("doc_1", "doc_2"))
+  expect_equal(colnames(emb), paste0("dim_", 1:3))
+
+  mat <- matrix(1:6, nrow = 2)
+  rownames(mat) <- c("same", "same")
+  colnames(mat) <- c("same", "same", "same")
+  expect_warning(emb <- as.embeddings(mat), "unique row names not provided. Naming rows doc_1, doc_2, etc.")
 
   expect_equal(rownames(emb), c("doc_1", "doc_2"))
   expect_equal(colnames(emb), paste0("dim_", 1:3))
@@ -144,7 +152,7 @@ test_that("as.embeddings assigns default rownames and colnames if missing", {
 test_that("as.embeddings works with Matrix objects", {
   skip_if_not_installed("Matrix")
   mat <- Matrix::Matrix(1:6, nrow = 2)
-  emb <- as.embeddings(mat)
+  expect_warning(emb <- as.embeddings(mat), "unique row names not provided. Naming rows doc_1, doc_2, etc.")
 
   expect_s3_class(emb, "embeddings")
   expect_true(is.matrix(emb))
@@ -152,7 +160,7 @@ test_that("as.embeddings works with Matrix objects", {
 
 test_that("as.embeddings errors with unacceptable input class", {
   x <- "not acceptable"
-  expect_error(as.embeddings(x), "character object cannot be coerced to embeddings.")
+  expect_error(as.embeddings(x), "No method for coercing objects of class 'character' to embeddings.")
 })
 
 test_that("Subsetting embeddings to single row/column with drop = FALSE retains embeddings class", {
