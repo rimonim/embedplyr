@@ -27,11 +27,11 @@ as.embeddings <- function(x, ...) {
 #' @noRd
 #' @export
 as.embeddings.default <- function(x, ...) {
-  if(!embeddings_check(x)){stop(paste(class(x),collapse = "/"), " object cannot be coerced to embeddings.")}
-  if (is.null(rownames(x))){
+  if(!is_matrixlike(x)){stop(paste(class(x),collapse = "/"), " object cannot be coerced to embeddings.")}
+  if (is.null(rownames(x)) && nrow(x) > 0){
     rownames(x) <- paste0("doc_", 1:nrow(x))
   }
-  if (is.null(colnames(x))){
+  if (is.null(colnames(x)) && ncol(x) > 0){
     colnames(x) <- paste0("dim_", 1:ncol(x))
   }
   structure(x, class = c("embeddings", "matrix", "array"))
@@ -51,6 +51,7 @@ as.embeddings.matrix <- function(x, ...){
 #' @method as.embeddings Matrix
 #' @export
 as.embeddings.Matrix <- function(x, ...){
+  x <- as.matrix(x)
   if (!is.numeric(x)) {
     stop("Input is not numeric")
   }
@@ -68,17 +69,19 @@ as.embeddings.numeric <- function(x, ...){
 
 #' @rdname embeddings
 #' @usage
-#' \method{as.embeddings}{data.frame}(x, id_col = "token", ...)
+#' \method{as.embeddings}{data.frame}(x, id_col = NULL, ...)
 #' @param x A data frame to be converted into embeddings.
-#' @param id_col Column to take row names from. Defaults to `"token"`.
+#' @param id_col Optional column to take row names from.
 #' @param ... Additional arguments passed to or from other methods.
 #' @export
-as.embeddings.data.frame <- function(x, id_col = "token", ...){
-  x <- tibble::column_to_rownames(x, id_col)
+as.embeddings.data.frame <- function(x, id_col = NULL, ...){
+  if (!is.null(id_col)) {
+    x <- tibble::column_to_rownames(x, id_col)
+  }
   if (!all(sapply(x, is.numeric))) {
     stop("Input contains non-numeric columns other than id_col")
   }
-  x <- as.matrix(x, dimnames = list(rownames(x), colnames(x)))
+  x <- data.matrix(x)
   as.embeddings.default(x)
 }
 
@@ -100,7 +103,7 @@ as.matrix.embeddings <- function(x, ...){
 #' @export
 '[.embeddings' <- function(x, ..., drop = FALSE) {
   out <- NextMethod('[')
-  if (embeddings_check(out)) {
+  if (is_matrixlike(out)) {
     as.embeddings(out)
   }else{
     out
@@ -123,11 +126,12 @@ as.matrix.embeddings <- function(x, ...){
   x <- as.embeddings(x)
 }
 
-#' Check if and object can be coerced to embeddings
-#' @param x an object to be checked for coercability to embeddings
+#' Check if an object is matrix-like and numeric
+#' @param x an object to be checked
 #' @keywords internal
-embeddings_check <- function(x) {
-  any(class(x) %in% c("embeddings", "matrix", "Matrix", "data.frame")) && is.numeric(as.matrix(x))
+is_matrixlike <- function(x) {
+  matrix_classes <- c("embeddings", "matrix", "dgeMatrix", "data.frame")
+  any(class(x) %in% matrix_classes) && is.numeric(as.matrix(x))
 }
 
 #' @noRd

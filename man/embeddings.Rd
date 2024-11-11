@@ -9,7 +9,7 @@
 \usage{
 as.embeddings(x, ...)
 
-\method{as.embeddings}{data.frame}(x, id_col = "token", ...)
+\method{as.embeddings}{data.frame}(x, id_col = NULL, ...)
 
 is.embeddings(x, ...)
 
@@ -20,7 +20,7 @@ is.embeddings(x, ...)
 
 \item{...}{Additional arguments passed to or from other methods.}
 
-\item{id_col}{Column to take row names from. Defaults to \code{"token"}.}
+\item{id_col}{Optional column to take row names from.}
 }
 \description{
 An embeddings object is a numeric matrix with rownames (generally tokens). Convert an

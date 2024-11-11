@@ -19,6 +19,7 @@ Imports:
     tidyselect,
     utils
 Suggests:
+    Matrix,
     testthat (>= 3.0.0),
     text2vec
 Enhances:

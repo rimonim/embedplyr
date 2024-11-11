@@ -92,7 +92,7 @@ valence_embeddings_df
 `embed_docs()` can also be used to generate other types of embeddings. For example, we can use the '[text](https://r-text.org)' package to generate embeddings using any model available from Huggingface transformers.
 
 ```{r, eval=FALSE}
-# function that takes character vector and outputs data frame
+# function that takes character vector and outputs a data frame
 sbert_embeddings <- function(texts) {
 	text::textEmbed(
 	  texts,

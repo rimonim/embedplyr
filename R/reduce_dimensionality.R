@@ -38,7 +38,7 @@ reduce_dimensionality <- function(x, ...) {
 
 #' @export
 reduce_dimensionality.default <- function(x, reduce_to, center = TRUE, scale = FALSE, ...) {
-  if (!embeddings_check(x)) stop(paste(class(x),collapse = "/"), " object cannot be reduced.")
+  if (!is_matrixlike(x)) stop(paste(class(x),collapse = "/"), " object cannot be reduced.")
   if (any(is.na(x))) {
     warning("Input data contains missing values. Rows dropped in output.")
   }

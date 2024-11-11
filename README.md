@@ -135,7 +135,7 @@ generate embeddings using any model available from Huggingface
 transformers.
 
 ``` r
-# function that takes character vector and outputs data frame
+# function that takes character vector and outputs a data frame
 sbert_embeddings <- function(texts) {
     text::textEmbed(
       texts,

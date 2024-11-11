@@ -15,7 +15,7 @@
 format.embeddings <- function(x, ..., n = getOption("max.print"), round = 2) {
   screen_width <- getOption("width")
   n <- min(n, nrow(x))
-  longest_rowname <- max(max(nchar(rownames(x)[1:n])), 3L) + 2L
+  longest_rowname <- max(nchar(rownames(x)[1:n]), 3L) + 2L
   show_cols <- floor((screen_width - longest_rowname)/6) - 2L
   show_cols <- min(show_cols, ncol(x))
   longest_colname <- max(nchar(colnames(x)[1:show_cols]))
@@ -52,5 +52,6 @@ print.embeddings <- function(x, ...) {
     n <- getOption("max.print")
   }
   cat(pillar::style_subtle(paste0("# ", ncol(x),"-dimensional embeddings with ",nrow(x)," rows\n")))
+  if (any(dim(x) == 0)) return()
   print(format(x, n = n), quote = FALSE)
 }
