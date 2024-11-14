@@ -6,9 +6,10 @@
 #' or a numeric vector of the same dimensionality as `object`.
 #' @param top_n integer. How many nearest neighbors should be output? If `each = TRUE`,
 #' how many nearest neighbors should be output for each token?
-#' @param sim_func a function that takes two vectors and outputs a scalar
-#' similarity metric. Defaults to cosine similarity. For more options see
-#' [Similarity and Distance Metrics][sim_metrics].
+#' @param method either the name of a method to compute similarity or distance,
+#' or a function that takes two vectors and outputs a scalar, like those listed
+#' in [Similarity and Distance Metrics][sim_metrics]. The value is passed to [get_similarities()].
+#' @param ... additional parameters to be passed to method function by way of [get_similarities()]
 #' @param each logical. If `FALSE` (the default), the embeddings of newdata are
 #' averaged and the function will output an embeddings object with the `top_n`
 #' nearest tokens to the overall average embedding. If `TRUE`, the function will
@@ -30,57 +31,62 @@
 #' @export
 find_nearest <- function(object, newdata,
                          top_n = 10L,
-                         sim_func = cos_sim,
+                         method = c("cosine", "euclidean", "minkowski", "dot_prod", "anchored"),
+                         ...,
                          each = FALSE,
                          include_self = TRUE){
-  if (!("embeddings" %in% class(object))) {stop("`object` is not an embeddings object")}
+  if (!inherits(object, "embeddings")) {stop("`object` is not an embeddings object")}
+  if (!(is.character(newdata) || is.numeric(newdata) || inherits(newdata, "embeddings"))) {
+    stop("`newdata` must be a character vector, a numeric vector, or an embeddings object.")
+  }
   if (is.character(newdata)) {
-    newdata_raw <- newdata
+    all_tokens <- newdata
     embedding_not_found <- !(newdata %in% rownames(object))
     if (any(embedding_not_found)) {
-      warning(sum(embedding_not_found), " items in `newdata` are not tokens in the embeddings object.")
-      newdata[embedding_not_found] <- "EMBEDDING_NOT_FOUND"
+      if(all(embedding_not_found)){stop("None of the items in `newdata` are tokens in the embeddings object")}
+      warning(sprintf("%d items in `newdata` are not present in the embeddings object.", sum(embedding_not_found)))
     }
-    if(all(newdata == "EMBEDDING_NOT_FOUND")){stop("None of the items in `newdata` are tokens in the embeddings object")}
-    object <- rbind(object, matrix(ncol = ncol(object), dimnames = list("EMBEDDING_NOT_FOUND")))
+    missing_tokens <- newdata[embedding_not_found]
+    available_tokens <- newdata[!embedding_not_found]
     if (!each) {
-      target <- object[newdata,]
+      target <- object[available_tokens,]
     }else{
-      target <- lapply(newdata, function(tok){object[tok,]})
-      names(target) <- newdata
+      target <- lapply(available_tokens, function(tok){object[tok,]})
+      names(target) <- available_tokens
     }
   }else{
     if (all(is.na(newdata))) stop("newdata is entirely NAs")
-    newdata_raw <- rownames(newdata)
+    all_tokens <- rownames(newdata)
+    missing_tokens <- NULL
     if (!each) {
       target <- newdata
-      newdata <- rownames(newdata)
+      available_tokens <- rownames(newdata)
     }else{
       target <- as.embeddings(newdata)
-      newdata <- rownames(target)
-      target <- lapply(newdata, function(tok){target[tok,]})
-      names(target) <- newdata
+      available_tokens <- rownames(target)
+      target <- lapply(available_tokens, function(tok){target[tok,]})
+      names(target) <- available_tokens
     }
   }
   if (!each) {
-    if (length(newdata) > 1) {
-      target <- apply(target, 2, mean, na.rm = TRUE)
+    if (length(available_tokens) > 1) {
+      target <- colMeans(target, na.rm = TRUE)
     }
-    sims <- apply(object, 1, sim_func, target)
+    sims <- get_similarities(object, list(sim = target), method, ...)$sim
     if (include_self) {
       object <- object[order(sims, decreasing = TRUE)[1:top_n],]
     }else{
-      object <- object[order(sims, decreasing = TRUE)[1:(top_n+length(newdata))],]
-      object <- object[!(rownames(object) %in% newdata),]
+      object <- object[order(sims, decreasing = TRUE)[1:(top_n+length(available_tokens))],]
+      object <- object[!(rownames(object) %in% available_tokens),]
     }
     as.embeddings(object)
   }else{
-    sims <- lapply(target, function(vec){apply(object, 1, sim_func, vec)})
+    sims <- lapply(target, function(vec){get_similarities(object, list(sim = vec), method, ...)$sim})
     object <- lapply(sims, function(sim){object[order(sim, decreasing = TRUE),]})
-    if (!include_self) {object <- lapply(object, function(x){x[!(rownames(x) %in% newdata),]})}
+    if (!include_self) {object <- lapply(object, function(x){x[!(rownames(x) %in% available_tokens),]})}
     object <- lapply(object, function(x){as.embeddings(utils::head(x, top_n))})
-    object[names(object) == "EMBEDDING_NOT_FOUND"] <- NA
-    names(object) <- newdata_raw
+    object[all_tokens %in% missing_tokens] <- NA
+    names(object) <- all_tokens
     object
   }
 }

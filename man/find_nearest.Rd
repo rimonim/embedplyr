@@ -8,7 +8,8 @@ find_nearest(
   object,
   newdata,
   top_n = 10L,
-  sim_func = cos_sim,
+  method = c("cosine", "euclidean", "minkowski", "dot_prod", "anchored"),
+  ...,
   each = FALSE,
   include_self = TRUE
 )
@@ -23,9 +24,11 @@ or a numeric vector of the same dimensionality as \code{object}.}
 \item{top_n}{integer. How many nearest neighbors should be output? If \code{each = TRUE},
 how many nearest neighbors should be output for each token?}
 
-\item{sim_func}{a function that takes two vectors and outputs a scalar
-similarity metric. Defaults to cosine similarity. For more options see
-\link[=sim_metrics]{Similarity and Distance Metrics}.}
+\item{method}{either the name of a method to compute similarity or distance,
+or a function that takes two vectors and outputs a scalar, like those listed
+in \link[=sim_metrics]{Similarity and Distance Metrics}. The value is passed to \code{\link[=get_similarities]{get_similarities()}}.}
+
+\item{...}{additional parameters to be passed to method function by way of \code{\link[=get_similarities]{get_similarities()}}}
 
 \item{each}{logical. If \code{FALSE} (the default), the embeddings of newdata are
 averaged and the function will output an embeddings object with the \code{top_n}

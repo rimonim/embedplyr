@@ -5,6 +5,7 @@
 \alias{sim_metrics}
 \alias{cos_sim}
 \alias{euc_dist}
+\alias{minkowski_dist}
 \alias{anchored_sim}
 \title{Similarity and Distance Metrics}
 \usage{
@@ -14,12 +15,16 @@ cos_sim(x, y)
 
 euc_dist(x, y)
 
+minkowski_dist(x, y, p = 1)
+
 anchored_sim(x, pos, neg)
 }
 \arguments{
 \item{x}{a numeric vector}
 
 \item{y}{a numeric vector the same length as x}
+
+\item{p}{\href{https://en.wikipedia.org/wiki/Lp_space#The_p-norm_in_finite_dimensions}{p-norm} used to compute the Minkowski distance}
 
 \item{pos, neg}{a pair of numeric vectors the same length as x; the positive and negative ends of the anchored vector}
 }

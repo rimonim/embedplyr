@@ -9,15 +9,34 @@
 #' @param cols tidyselect - columns that contain numeric embedding values
 #' @param y a named list of vectors with the same dimensionality as embeddings in x.
 #' Each item will result in a column in the output, showing the similarity of each
-#' embedding in x to the vector specified in y. When `sim_func = anchored_sim`,
+#' embedding in x to the vector specified in y. When `method = "anchored"`,
 #' each item of y should be a list with named vectors `pos` and `neg`.
-#' @param sim_func a function that takes two vectors and outputs a scalar
-#' similarity metric. Defaults to cosine similarity. For more options see
-#' [Similarity and Distance Metrics][sim_metrics]
-#' @param ... additional parameters to be passed to methods
+#' @param method either the name of a method to compute similarity or distance,
+#' or a function that takes two vectors and outputs a scalar, like those listed
+#' in [Similarity and Distance Metrics][sim_metrics]
+#' @param ... additional parameters to be passed to method function
 #' @param .keep_all If `TRUE`, all columns from input are retained in output.
 #' If `FALSE`, only similarity metrics will be included. If `"except.embeddings"`
 #' (the default), all columns except those used to compute the similarity will be retained.
+#'
+#' @details ## Available Methods
+#' When `method` is the name of one of the following supported methods,
+#' computations are done with matrix operations and are therefore blazing fast.
+#' \itemize{
+#'   \item `cosine`: cosine similarity
+#'   \item `cosine_squished`: cosine similarity, rescaled to range from 0 to 1
+#'   \item `euclidean`: Euclidean distance
+#'   \item `minkowski`: Minkowski distance; requires parameter `p`. When `p = 1`
+#'   (the default), this is the Manhattan distance. When `p = 2`, it is the
+#'   Euclidean distance. When `p = Inf`, it is the Chebyshev distance.
+#'   \item `dot_prod`: Dot product
+#'   \item `anchored`: `x` is projected onto the range between two anchor points,
+#'   such that vectors aligned with `pos` are given a score of 1 and those aligned
+#'   with `neg` are given a score of 0. For more on anchored vectors, see
+#'   [Data Science for Psychology: Natural Language, Chapter 20](https://ds4psych.com/navigating-vectorspace#sec-dimension-projection).
+#' }
+#' When `method` is a custom function, operations are performed for each row and
+#' may be slow for large inputs.
 #'
 #' @section Value:
 #' A tibble with columns `doc_id`, and similarity metrics.
@@ -51,45 +70,66 @@ get_similarities <- function(x, ...) {
 }
 
 #' @noRd
-call_with_list <- function(x, what, args){
-	arg_list <- c(list(x = x), args)
+#' @include sim_metrics.R
+sim_matrix_list <- list(
+	"cosine" = cos_sim_matrix, "cosine_squished" = cos_sim_squished_matrix,
+	"euclidean" = euc_dist_matrix, "minkowski" = minkowski_dist_matrix,
+	"dot_prod" = dot_prod_matrix, "anchored" = anchored_sim_matrix
+)
+
+#' @noRd
+call_with_list <- function(x, what, args, ...){
+	arg_list <- c(list(x = x), args, list(...))
 	do.call(what, arg_list)
 }
 
 #' @noRd
-apply_func <- function(y_item, x, sim_func) {
-	if (!is.list(y_item)){
-		apply(x, 1, sim_func, y = y_item)
-	}else if (all(names(y_item) %in% names(as.list(args(sim_func))))) {
-		apply(x, 1, call_with_list, what = sim_func, args = y_item)
+apply_func <- function(y_item, x, method, ...) {
+	if (is.character(method)) {
+		method <- sim_matrix_list[[method[1]]]
+		if (!is.list(y_item)){
+			method(x, y_item, ...)
+		}else if (all(names(y_item) %in% names(as.list(args(method))))) {
+			call_with_list(x, what = method, args = y_item, ...)
+		}else{
+			stop("y must provide appropriate arguments for method\nRequired arguments: ",
+					 paste(setdiff(names(as.list(args(method))), c("x", "")),collapse = ", "))
+		}
 	}else{
-		stop("y must provide appropriate arguments for sim_func\nRequired arguments: ",
-				 paste(setdiff(names(as.list(args(sim_func))), c("x", "")),collapse = ", "))
+		if (!is.list(y_item)){
+			apply(x, 1, method, y = y_item)
+		}else if (all(names(y_item) %in% names(as.list(args(method))))) {
+			apply(x, 1, call_with_list, what = method, args = y_item)
+		}else{
+			stop("y must provide appropriate arguments for method\nRequired arguments: ",
+					 paste(setdiff(names(as.list(args(method))), c("x", "")),collapse = ", "))
+		}
 	}
 }
 
 #' @export
-get_similarities.default <- function(x, y, sim_func = cos_sim, ...) {
-	if (!is_matrixlike(x)) stop("x must be an embeddings object, matrix, or dataframe")
+get_similarities.default <- function(x, y, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ...) {
+	if (!inherits(x, "matrix")) stop("x must be an embeddings object or numeric matrix")
 	if (!is.list(y)) stop("y must be a named list")
-	out_cols <- lapply(y, apply_func, x = x, sim_func = sim_func)
+	out_cols <- lapply(y, apply_func, x = x, method = method, ...)
 	tibble::as_tibble(out_cols)
 }
 
 #' @rdname get_similarities
 #' @method get_similarities embeddings
 #' @export
-get_similarities.embeddings <- function(x, y, sim_func = cos_sim, ...) {
+get_similarities.embeddings <- function(x, y, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ...) {
 	x <- as.embeddings(x)
-	out <- get_similarities.default(x, y, sim_func, ...)
+	out <- get_similarities.default(x, y, method, ...)
 	dplyr::bind_cols(tibble::tibble(doc_id = rownames(x)), out)
 }
 
 #' @rdname get_similarities
 #' @method get_similarities data.frame
 #' @export
-get_similarities.data.frame <- function(x, cols, y, sim_func = cos_sim, ..., .keep_all = "except.embeddings") {
-  in_dat <- dplyr::select(x, {{ cols }})
+get_similarities.data.frame <- function(x, cols, y, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ..., .keep_all = "except.embeddings") {
+  in_dat <- as.matrix(dplyr::select(x, {{ cols }}))
+  if (!is.numeric(in_dat)) stop("Selected columns must be numeric.")
   out_dat <- get_similarities.default(in_dat, y)
   if (.keep_all == "except.embeddings") {
   	dplyr::bind_cols( dplyr::select(x, -{{ cols }}), out_dat )

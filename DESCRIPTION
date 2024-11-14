@@ -30,3 +30,18 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Config/testthat/edition: 3
+Collate: 
+    'data.R'
+    'embeddingplyr-package.R'
+    'embeddings-predict.R'
+    'embeddings-print.R'
+    'embeddings.R'
+    'find_nearest.R'
+    'sim_metrics.R'
+    'get_similarities.R'
+    'load_embeddings.R'
+    'magnitude.R'
+    'normalize.R'
+    'reduce_dimensionality.R'
+    'textstat_embedding.R'
+    'vector_utilities.R'
