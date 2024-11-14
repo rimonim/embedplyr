@@ -16,6 +16,10 @@
 #' output a named list with one embeddings object for each token in newdata.
 #' @param include_self logical. Should the token(s) in `newdata` be included in
 #' the output?
+#' @param decreasing logical. If `TRUE` (the default for `"cosine"`, `"dot_prod"`,
+#' and `"anchored"` methods), the embeddings with the highest similarity scores are
+#' output. If `FALSE` (the default for `"euclidean"` and `"minkowski"` methods),
+#' the embeddings with the lowest distance scores are output.
 #' @import quanteda
 #'
 #' @section Value:
@@ -34,10 +38,17 @@ find_nearest <- function(object, newdata,
                          method = c("cosine", "euclidean", "minkowski", "dot_prod", "anchored"),
                          ...,
                          each = FALSE,
-                         include_self = TRUE){
+                         include_self = TRUE,
+                         decreasing = NULL){
   if (!inherits(object, "embeddings")) {stop("`object` is not an embeddings object")}
   if (!(is.character(newdata) || is.numeric(newdata) || inherits(newdata, "embeddings"))) {
     stop("`newdata` must be a character vector, a numeric vector, or an embeddings object.")
+  }
+  method <- method[1]
+  if (method %in% c("euclidean", "minkowski")){
+    decreasing <- decreasing %||% FALSE
+  }else if (method %in% c("cosine", "minkowski")){
+    decreasing <- decreasing %||% TRUE
   }
   if (is.character(newdata)) {
     all_tokens <- newdata
@@ -74,15 +85,15 @@ find_nearest <- function(object, newdata,
     }
     sims <- get_similarities(object, list(sim = target), method, ...)$sim
     if (include_self) {
-      object <- object[order(sims, decreasing = TRUE)[1:top_n],]
+      object <- object[order(sims, decreasing = decreasing)[1:top_n],]
     }else{
-      object <- object[order(sims, decreasing = TRUE)[1:(top_n+length(available_tokens))],]
+      object <- object[order(sims, decreasing = decreasing)[1:(top_n+length(available_tokens))],]
       object <- object[!(rownames(object) %in% available_tokens),]
     }
     as.embeddings(object)
   }else{
     sims <- lapply(target, function(vec){get_similarities(object, list(sim = vec), method, ...)$sim})
-    object <- lapply(sims, function(sim){object[order(sim, decreasing = TRUE),]})
+    object <- lapply(sims, function(sim){object[order(sim, decreasing = decreasing),]})
     if (!include_self) {object <- lapply(object, function(x){x[!(rownames(x) %in% available_tokens),]})}
     object <- lapply(object, function(x){as.embeddings(utils::head(x, top_n))})
     object[all_tokens %in% missing_tokens] <- NA

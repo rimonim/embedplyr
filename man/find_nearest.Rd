@@ -11,7 +11,8 @@ find_nearest(
   method = c("cosine", "euclidean", "minkowski", "dot_prod", "anchored"),
   ...,
   each = FALSE,
-  include_self = TRUE
+  include_self = TRUE,
+  decreasing = NULL
 )
 }
 \arguments{
@@ -37,6 +38,11 @@ output a named list with one embeddings object for each token in newdata.}
 
 \item{include_self}{logical. Should the token(s) in \code{newdata} be included in
 the output?}
+
+\item{decreasing}{logical. If \code{TRUE} (the default for \code{"cosine"}, \code{"dot_prod"},
+and \code{"anchored"} methods), the embeddings with the highest similarity scores are
+output. If \code{FALSE} (the default for \code{"euclidean"} and \code{"minkowski"} methods),
+the embeddings with the lowest distance scores are output.}
 }
 \description{
 Find Nearest Tokens in Embedding Space
