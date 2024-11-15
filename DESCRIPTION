@@ -18,6 +18,7 @@ Imports:
     tidyselect,
     utils
 Suggests:
+    Gmedian,
     Matrix,
     purrr,
     testthat (>= 3.0.0),

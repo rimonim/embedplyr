@@ -7,7 +7,11 @@
 #' (125,000 English word frequencies from [Peter Norvig's compilation](https://norvig.com/ngrams/count_1w.txt),
 #' derived from the Google Web Trillion Word Corpus), or smooth inverse frequencies
 #' (SIF) calculated using the same list.
-#' @param na.rm logical. Should missing values (including NaN) be omitted from the calculations?
+#' @param method method to use for averaging. `"mean"` (the default) is the standard
+#' arithmetic mean. `"median"` is the geometric median (also called spatial median or
+#' L1-median), computed using [Gmedian::Gmedian()] or, if weights are provided,
+#' [Gmedian::Weiszfeld()].
+#' @param ... additional arguments to be passed to the averaging function
 #'
 #' @details
 #' For `weights = "trillion_word"`, tokens that do not appear in the word frequency
@@ -22,7 +26,7 @@
 #' happy_dict_vec_weighted <- average_embedding(happy_dict_embeddings, weights = "trillion_word")
 
 #' @export
-average_embedding <- function(x, weights = NULL, na.rm = FALSE){
+average_embedding <- function(x, weights = NULL, method = "mean", ...){
 	if(!is.null(weights)){
 		if(weights[1] == "trillion_word"){
 			weights <- trillion_word[rownames(x)]
@@ -35,8 +39,18 @@ average_embedding <- function(x, weights = NULL, na.rm = FALSE){
 		}else{
 			stopifnot("length(weights) must equal nrow(x)" = length(weights) == nrow(x))
 		}
-		return( apply(x, 2, weighted.mean, w = weights, na.rm = na.rm) )
+		if (method == "mean") return( apply(x, 2, weighted.mean, w = weights, ...) )
 	}else{
-		return( colMeans(x, na.rm = na.rm) )
+		if (method == "mean") return( colMeans(x, ...) )
+	}
+	if (method == "median") {
+		stopifnot("package 'Gmedian' is required" = requireNamespace("Gmedian", quietly = TRUE))
+		if (is.null(weights)) {
+			out <- as.numeric( Gmedian::Gmedian(x, ...) )
+		}else{
+			out <- as.numeric( Gmedian::Weiszfeld(x, weights = weights, ...)$median )
+		}
+		names(out) <- colnames(x)
+		out
 	}
 }
