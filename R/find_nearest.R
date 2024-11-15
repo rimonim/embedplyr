@@ -47,7 +47,7 @@ find_nearest <- function(object, newdata,
   method <- method[1]
   if (method %in% c("euclidean", "minkowski")){
     decreasing <- decreasing %||% FALSE
-  }else if (method %in% c("cosine", "minkowski")){
+  }else{
     decreasing <- decreasing %||% TRUE
   }
   if (is.character(newdata)) {
