@@ -10,7 +10,7 @@
 #' @param method method to use for averaging. `"mean"` (the default) is the standard
 #' arithmetic mean. `"median"` is the geometric median (also called spatial median or
 #' L1-median), computed using [Gmedian::Gmedian()] or, if weights are provided,
-#' [Gmedian::Weiszfeld()].
+#' [Gmedian::Weiszfeld()]. `"sum"` is the (weighted) sum.
 #' @param ... additional arguments to be passed to the averaging function
 #'
 #' @details
@@ -35,13 +35,20 @@ average_embedding <- function(x, weights = NULL, method = "mean", ...){
 			alpha <- 0.005 # reasonable parameter for SIF
 			not_a_trillion <- 1024908267229 # total number of words processed by Google
 			alpha <- 0.005*1024908267229
-			weights <- alpha/(alpha + trillion_word[rownames(x)])
+			weights <- trillion_word[rownames(x)]
+			weights[is.na(weights)] <- min(trillion_word)
+			weights <- alpha/(alpha + weights)
 		}else{
 			stopifnot("length(weights) must equal nrow(x)" = length(weights) == nrow(x))
 		}
 		if (method == "mean") return( apply(x, 2, weighted.mean, w = weights, ...) )
+		if (method == "sum"){
+			x <- t(t(x)*weights)
+			return( colSums(x, ...) )
+		}
 	}else{
 		if (method == "mean") return( colMeans(x, ...) )
+		if (method == "sum") return( colSums(x, ...) )
 	}
 	if (method == "median") {
 		stopifnot("package 'Gmedian' is required" = requireNamespace("Gmedian", quietly = TRUE))
@@ -52,5 +59,7 @@ average_embedding <- function(x, weights = NULL, method = "mean", ...){
 		}
 		names(out) <- colnames(x)
 		out
+	}else{
+		stop("'", method, "' is not a recognized averaging method")
 	}
 }

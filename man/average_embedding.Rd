@@ -17,7 +17,7 @@ derived from the Google Web Trillion Word Corpus), or smooth inverse frequencies
 \item{method}{method to use for averaging. \code{"mean"} (the default) is the standard
 arithmetic mean. \code{"median"} is the geometric median (also called spatial median or
 L1-median), computed using \code{\link[Gmedian:Gmedian]{Gmedian::Gmedian()}} or, if weights are provided,
-\code{\link[Gmedian:Weiszfeld]{Gmedian::Weiszfeld()}}.}
+\code{\link[Gmedian:Weiszfeld]{Gmedian::Weiszfeld()}}. \code{"sum"} is the (weighted) sum.}
 
 \item{...}{additional arguments to be passed to the averaging function}
 }
