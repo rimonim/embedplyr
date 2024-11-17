@@ -64,18 +64,18 @@ embeddings-specific methods and functions, such as
 moral_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
 moral_embeddings
 #> # 25-dimensional embeddings with 2 rows
-#>      dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9 dim_10    
-#> good -0.54  0.6  -0.15 -0.02 -0.14  0.6   2.19  0.21 -0.52 -0.23  ...
-#> bad   0.41  0.02  0.06 -0.01  0.27  0.71  1.64 -0.11 -0.26  0.11  ...
+#>      dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9 dim..      
+#> good -0.54  0.60 -0.15 -0.02 -0.14  0.60  2.19  0.21 -0.52 -0.23 ...  
+#> bad   0.41  0.02  0.06 -0.01  0.27  0.71  1.64 -0.11 -0.26  0.11 ...
 
-find_nearest(glove_twitter_25d, "dog", 5L, sim_func = cos_sim)
+find_nearest(glove_twitter_25d, "dog", 5L, method = "cosine")
 #> # 25-dimensional embeddings with 5 rows
-#>        dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9 dim_10    
-#> dog    -1.24 -0.36  0.57  0.37  0.6  -0.19  1.27 -0.37  0.09  0.4   ...
-#> cat    -0.96 -0.61  0.67  0.35  0.41 -0.21  1.38  0.13  0.32  0.66  ...
-#> dogs   -0.63 -0.11  0.22  0.27  0.28  0.13  1.44 -1.18 -0.26  0.6   ...
-#> horse  -0.76 -0.63  0.43  0.04  0.25 -0.18  1.08 -0.94  0.3   0.07  ...
-#> monkey -0.96 -0.38  0.49  0.66  0.21 -0.09  1.28 -0.11  0.27  0.42  ...
+#>        dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9 dim..      
+#> dog    -1.24 -0.36  0.57  0.37  0.60 -0.19  1.27 -0.37  0.09  0.40 ...  
+#> cat    -0.96 -0.61  0.67  0.35  0.41 -0.21  1.38  0.13  0.32  0.66 ...  
+#> dogs   -0.63 -0.11  0.22  0.27  0.28  0.13  1.44 -1.18 -0.26  0.60 ...  
+#> horse  -0.76 -0.63  0.43  0.04  0.25 -0.18  1.08 -0.94  0.30  0.07 ...  
+#> monkey -0.96 -0.38  0.49  0.66  0.21 -0.09  1.28 -0.11  0.27  0.42 ...
 ```
 
 ### Similarity Metrics
@@ -235,6 +235,26 @@ valence_df_2d
 #> 3 negative  1.35   0.640
 ```
 
+`reduce_dimensionality()` can also be used to apply the same rotation
+other embeddings not used to find the principle components.
+
+``` r
+new_embeddings <- predict(glove_twitter_25d, c("new", "strange"))
+
+# get rotation with `output_rotation = TRUE`
+valence_rotation_2d <- valence_embeddings_df |> 
+    reduce_dimensionality(dim_1:dim_25, 2, output_rotation = TRUE)
+
+# apply the same rotation to new embeddings
+new_with_valence_rotation <- new_embeddings |> 
+    reduce_dimensionality(custom_rotation = valence_rotation_2d)
+new_with_valence_rotation
+#> # 2-dimensional embeddings with 2 rows
+#>         PC1   PC2  
+#> new     -2.38  0.24
+#> strange  0.09  1.18
+```
+
 #### Normalize (Scale Embeddings to the Unit Hypersphere)
 
 `normalize()` and `normalize_rows()` scale embeddings such that their
@@ -255,11 +275,13 @@ normalize(good_vec)
 
 normalize(moral_embeddings)
 #> # 25-dimensional embeddings with 2 rows
-#>      dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9 dim_10    
-#> good -0.09  0.1  -0.02  0    -0.02  0.1   0.36  0.03 -0.09 -0.04  ...
-#> bad   0.08  0     0.01  0     0.05  0.13  0.31 -0.02 -0.05  0.02  ...
+#>      dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9 dim..      
+#> good -0.09  0.10 -0.02 -0.00 -0.02  0.10  0.36  0.03 -0.09 -0.04 ...  
+#> bad   0.08  0.00  0.01 -0.00  0.05  0.13  0.31 -0.02 -0.05  0.02 ...
 
 valence_embeddings_df |> normalize_rows(dim_1:dim_25)
+#> Warning in as.embeddings.default(x): unique row names not provided. Naming rows
+#> doc_1, doc_2, etc.
 #> # A tibble: 3 × 26
 #>   doc_id    dim_1   dim_2    dim_3   dim_4   dim_5    dim_6 dim_7  dim_8   dim_9
 #>   <chr>     <dbl>   <dbl>    <dbl>   <dbl>   <dbl>    <dbl> <dbl>  <dbl>   <dbl>

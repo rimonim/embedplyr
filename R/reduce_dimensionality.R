@@ -9,6 +9,10 @@
 #' The value is passed to [stats::prcomp()] as `rank.`.
 #' @param center logical. Should dimensions be shifted to be centered at zero?
 #' @param scale logical. Should dimensions be scaled to have unit variance?
+#' @param tol a value indicating a magnitude below which dimensions should be
+#' omitted. (Components are omitted if their standard deviations are less than
+#' or equal to tol times the standard deviation of the first component.) Value
+#' passed to [stats::prcomp()].
 #' @param custom_rotation optional rotation specification obtained by calling the
 #' function with `output_rotation = TRUE`. This will override `reduce_to`,
 #' `center`, and `scale`, and instead simply apply the custom rotation.
@@ -20,7 +24,7 @@
 #' (PCA) without column normalization, and outputs the rotated data. If `center = FALSE`
 #' and `scale = FALSE`, this is equivalent to singular value decomposition (SVD),
 #' \eqn{X = U \Sigma V^{T}}, where the output columns are equal to the first
-#' `reduce_to` columns of \eqn{U \Sigma}.
+#' `reduce_to` columns of \eqn{U \Sigma} that meet the criterion set by `tol`.
 #'
 #' @section Value:
 #' If `output_rotation = FALSE`, an object of the same class as x, with the same
@@ -36,6 +40,7 @@
 #'   \item `scale`: a vector with the standard deviation of each column of `x`
 #' }
 #'
+#' @importFrom stats sd
 #' @import tibble
 #' @examples
 #' glove_2d <- reduce_dimensionality(glove_twitter_25d, 2)
@@ -52,17 +57,17 @@ reduce_dimensionality <- function(x, ...) {
 }
 
 #' @export
-reduce_dimensionality.default <- function(x, reduce_to, center = TRUE, scale = FALSE, ..., custom_rotation = NULL, output_rotation = FALSE) {
+reduce_dimensionality.default <- function(x, reduce_to = NULL, center = TRUE, scale = FALSE, tol = NULL, ..., custom_rotation = NULL, output_rotation = FALSE) {
   if (!is_matrixlike(x)) stop(paste(class(x),collapse = "/"), " object cannot be reduced.")
   if (any(is.na(x))) {
     warning("Input data contains missing values. Rows dropped in output.")
   }
   if (is.null(custom_rotation)) {
-    pca <- stats::prcomp(~., data = x, center = center, scale. = scale, rank. = reduce_to)
+    pca <- stats::prcomp(~., data = x, center = center, scale. = scale, tol = tol, rank. = reduce_to)
     if (output_rotation){
       rotation <- pca$rotation
       if (center) center <- colMeans(x, na.rm = TRUE) else center <- 0
-      if (scale) scale <- apply(x, 2, sd, na.rm = TRUE) else scale <- 1
+      if (scale) scale <- apply(x, 2, stats::sd, na.rm = TRUE) else scale <- 1
       return(list(rotation = rotation, center = center, scale = scale))
     }else{
       out <- pca$x
@@ -81,9 +86,9 @@ reduce_dimensionality.default <- function(x, reduce_to, center = TRUE, scale = F
 #' @rdname reduce_dimensionality
 #' @method reduce_dimensionality data.frame
 #' @export
-reduce_dimensionality.data.frame <- function(x, cols, reduce_to, center = TRUE, scale = FALSE, ..., custom_rotation = NULL, output_rotation = FALSE){
+reduce_dimensionality.data.frame <- function(x, cols, reduce_to = NULL, center = TRUE, scale = FALSE, tol = NULL, ..., custom_rotation = NULL, output_rotation = FALSE){
   in_dat <- dplyr::select(x, {{ cols }})
-  out_dat <- reduce_dimensionality.default(in_dat, reduce_to, center, scale, custom_rotation = custom_rotation, output_rotation = output_rotation)
+  out_dat <- reduce_dimensionality.default(in_dat, reduce_to, center, scale, tol, custom_rotation = custom_rotation, output_rotation = output_rotation)
   if (output_rotation) return(out_dat)
   out_dat <- as.data.frame(out_dat)
   dplyr::bind_cols( dplyr::select(x, -{{ cols }}), out_dat )
@@ -92,8 +97,8 @@ reduce_dimensionality.data.frame <- function(x, cols, reduce_to, center = TRUE, 
 #' @rdname reduce_dimensionality
 #' @method reduce_dimensionality embeddings
 #' @export
-reduce_dimensionality.embeddings <- function(x, reduce_to, center = TRUE, scale = FALSE, ..., custom_rotation = NULL, output_rotation = FALSE){
-  out_dat <- reduce_dimensionality.default(x, reduce_to, center, scale, custom_rotation = custom_rotation, output_rotation = output_rotation)
+reduce_dimensionality.embeddings <- function(x, reduce_to = NULL, center = TRUE, scale = FALSE, tol = NULL, ..., custom_rotation = NULL, output_rotation = FALSE){
+  out_dat <- reduce_dimensionality.default(x, reduce_to, center, scale, tol, custom_rotation = custom_rotation, output_rotation = output_rotation)
   if (output_rotation) return(out_dat)
   as.embeddings(out_dat)
 }

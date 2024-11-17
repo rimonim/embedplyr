@@ -53,7 +53,7 @@ The outcome is an embeddings object. An embeddings object is just a numeric matr
 moral_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
 moral_embeddings
 
-find_nearest(glove_twitter_25d, "dog", 5L, sim_func = cos_sim)
+find_nearest(glove_twitter_25d, "dog", 5L, method = "cosine")
 ```
 
 ### Similarity Metrics
@@ -154,6 +154,21 @@ valence_df_2d <- valence_embeddings_df |>
 	reduce_dimensionality(dim_1:dim_25, 2)
 valence_df_2d
 ```
+`reduce_dimensionality()` can also be used to apply the same rotation other embeddings not used to find the principle components. 
+
+```{r}
+new_embeddings <- predict(glove_twitter_25d, c("new", "strange"))
+
+# get rotation with `output_rotation = TRUE`
+valence_rotation_2d <- valence_embeddings_df |> 
+	reduce_dimensionality(dim_1:dim_25, 2, output_rotation = TRUE)
+
+# apply the same rotation to new embeddings
+new_with_valence_rotation <- new_embeddings |> 
+	reduce_dimensionality(custom_rotation = valence_rotation_2d)
+new_with_valence_rotation
+```
+
 #### Normalize (Scale Embeddings to the Unit Hypersphere)
 
 `normalize()` and `normalize_rows()` scale embeddings such that their magnitude is 1, while their angle from the origin is unchanged.

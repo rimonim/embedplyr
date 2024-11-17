@@ -4,7 +4,7 @@
 \alias{average_embedding}
 \title{Average Embeddings}
 \usage{
-average_embedding(x, weights = NULL, na.rm = FALSE)
+average_embedding(x, weights = NULL, method = "mean", ...)
 }
 \arguments{
 \item{x}{an embeddings object}
@@ -14,7 +14,12 @@ average_embedding(x, weights = NULL, na.rm = FALSE)
 derived from the Google Web Trillion Word Corpus), or smooth inverse frequencies
 (SIF) calculated using the same list.}
 
-\item{na.rm}{logical. Should missing values (including NaN) be omitted from the calculations?}
+\item{method}{method to use for averaging. \code{"mean"} (the default) is the standard
+arithmetic mean. \code{"median"} is the geometric median (also called spatial median or
+L1-median), computed using \code{\link[Gmedian:Gmedian]{Gmedian::Gmedian()}} or, if weights are provided,
+\code{\link[Gmedian:Weiszfeld]{Gmedian::Weiszfeld()}}.}
+
+\item{...}{additional arguments to be passed to the averaging function}
 }
 \description{
 Calculate the (weighted) average of multiple embeddings.
