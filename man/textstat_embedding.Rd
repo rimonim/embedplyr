@@ -5,13 +5,15 @@
 \alias{embed_docs}
 \title{Get Text Embeddings by Averaging Word Embeddings}
 \usage{
-textstat_embedding(dfm, model)
+textstat_embedding(dfm, model, w = NULL, method = "mean")
 
 embed_docs(
   data,
   text_col,
   model,
   id_col = NULL,
+  w = NULL,
+  method = "mean",
   ...,
   .keep_all = FALSE,
   tolower = TRUE
@@ -22,7 +24,14 @@ embed_docs(
 
 \item{model}{an \link[=as.embeddings]{embeddings} object. For \code{embed_docs()}, \code{model}
 can alternatively be a function that takes a character vector and outputs a
-dataframe with a row for each element of the input}
+dataframe with a row for each element of the input.}
+
+\item{w}{optional weighting for embeddings in \code{model} if \code{model} is an
+embeddings object. See \code{\link[=average_embedding]{average_embedding()}}.}
+
+\item{method}{method to use for averaging. See \code{\link[=average_embedding]{average_embedding()}}. Note that
+\code{method = "median"} does not use matrix operations and may therefore be slow
+for datasets with many documents.}
 
 \item{data}{a data frame or data frame extension (e.g. a tibble)}
 

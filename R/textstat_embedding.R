@@ -7,7 +7,12 @@
 #' @param dfm a quanteda dfm
 #' @param model an [embeddings][as.embeddings] object. For `embed_docs()`, `model`
 #' can alternatively be a function that takes a character vector and outputs a
-#' dataframe with a row for each element of the input
+#' dataframe with a row for each element of the input.
+#' @param w optional weighting for embeddings in `model` if `model` is an
+#' embeddings object. See [average_embedding()].
+#' @param method method to use for averaging. See [average_embedding()]. Note that
+#' `method = "median"` does not use matrix operations and may therefore be slow
+#' for datasets with many documents.
 #' @param data 	a data frame or data frame extension (e.g. a tibble)
 #' @param text_col string. a column of texts for which to compute embeddings
 #' @param id_col optional string. column of unique document ids
@@ -38,21 +43,48 @@
 #' texts_embeddings
 
 #' @export
-textstat_embedding <- function(dfm, model){
-  if(!inherits(model, "embeddings")){stop("`model` must be an embeddings object")}
+textstat_embedding <- function(dfm, model, w = NULL, method = "mean"){
+  if(!inherits(model, "embeddings")) stop("`model` must be an embeddings object")
+  if (!(method %in% c("mean", "median", "sum"))) stop("'", method, "' is not a recognized averaging method")
   feats <- quanteda::featnames(dfm)
+  # weights
+  if (!is.null(w)) {
+    w <- make_embedding_weights(rownames(model), w)
+    dfm <- suppressWarnings( quanteda::dfm_weight(dfm, weights = w) )
+  }
   # find word embeddings
   feat_embeddings <- predict.embeddings(model, feats)
-  feat_embeddings[is.na(feat_embeddings)] <- 0
-  # average word embeddings of each document
-  out_mat <- (dfm %*% feat_embeddings)/quanteda::ntoken(dfm)
-  tibble::as_tibble(as.matrix(out_mat), rownames = "doc_id")
+
+  if (method == "median") {
+    out_list <- lapply(seq_len(nrow(dfm)), function(r){
+      w <- as.numeric(dfm[r,])
+      names(w) <- feats
+      w
+      })
+    out_list <- lapply(out_list, function(w){
+      stopifnot("package 'Gmedian' is required" = requireNamespace("Gmedian", quietly = TRUE))
+      out <- Gmedian::Weiszfeld(model[feats,], w = w)$median
+      colnames(out) <- colnames(model)
+      out
+      })
+    out_mat <- do.call(rbind, out_list)
+    rownames(out_mat) <- rownames(dfm)
+  }else{
+    # ignore tokens with no embedding
+    feat_embeddings[is.na(feat_embeddings)] <- 0
+    # average word embeddings of each document
+    out_mat <- (dfm %*% feat_embeddings)
+    if (method == "mean") out_mat <- out_mat/rowSums(dfm)
+    out_mat <- as.matrix(out_mat)
+  }
+  tibble::as_tibble(out_mat, rownames = "doc_id")
 }
 
 #' @importFrom rlang :=
 #' @rdname textstat_embedding
 #' @export
-embed_docs <- function(data, text_col, model, id_col = NULL, ...,
+embed_docs <- function(data, text_col, model, id_col = NULL,
+                       w = NULL, method = "mean", ...,
                        .keep_all = FALSE, tolower = TRUE){
   if(is.null(id_col)){
     id_col <- "doc_id"
@@ -60,7 +92,7 @@ embed_docs <- function(data, text_col, model, id_col = NULL, ...,
   }
   if(inherits(model, "embeddings")){
     data_dfm <- quanteda::dfm(quanteda::tokens(quanteda::corpus(data, docid_field = id_col, text_field = text_col), ...))
-    new_cols <- textstat_embedding(data_dfm, model)
+    new_cols <- textstat_embedding(data_dfm, model, w, method)
     names(new_cols)[1] <- id_col
     new_cols <- dplyr::mutate(new_cols, !!id_col := methods::as(!!rlang::sym(id_col), class(dplyr::pull(data, id_col))[1]))
   }else if(inherits(model, "function")){

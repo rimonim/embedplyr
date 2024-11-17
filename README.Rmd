@@ -73,7 +73,7 @@ anchored_sim(vec1, pos = vec2, neg = vec3)  # projection to an anchored vector
 
 ### Example Tidy Workflow
 
-Given a tidy dataframe of texts, `embed_docs()` will generate embeddings by averaging the embeddings of words in each text (for more information on why this works well, see [Data Science for Psychology, Chapter 18](https://ds4psych.com/decontextualized-embeddings#sec-embedding-magnitude)). 
+Given a tidy dataframe of texts, `embed_docs()` will generate embeddings by averaging the embeddings of words in each text (for more information on why this works well, see [Data Science for Psychology, Chapter 18](https://ds4psych.com/decontextualized-embeddings#sec-embedding-magnitude)). By default, `embed_docs()` uses a simple unweighted mean, but other averaging methods are available.
 
 ```{r, warning=FALSE, message=FALSE}
 library(dplyr)

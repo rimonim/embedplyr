@@ -4,15 +4,17 @@
 \alias{average_embedding}
 \title{Average Embeddings}
 \usage{
-average_embedding(x, weights = NULL, method = "mean", ...)
+average_embedding(x, w = NULL, method = "mean", ...)
 }
 \arguments{
 \item{x}{an embeddings object}
 
-\item{weights}{a numeric vector of weights for each row in x, \code{"trillion_word"}
-(125,000 English word frequencies from \href{https://norvig.com/ngrams/count_1w.txt}{Peter Norvig's compilation},
-derived from the Google Web Trillion Word Corpus), or smooth inverse frequencies
-(SIF) calculated using the same list.}
+\item{w}{optional weighting for rows in x. This can be an unnamed
+numeric vector with one item per row of x, a named numeric vector of any
+length with names that match the row names of x, \code{"trillion_word"} (125,000
+English word frequencies from \href{https://norvig.com/ngrams/count_1w.txt}{Peter Norvig's compilation},
+derived from the Google Web Trillion Word Corpus), or \code{"trillion_word_sif"}
+for smooth inverse frequencies (SIF) calculated using the same list.}
 
 \item{method}{method to use for averaging. \code{"mean"} (the default) is the standard
 arithmetic mean. \code{"median"} is the geometric median (also called spatial median or
@@ -25,13 +27,16 @@ L1-median), computed using \code{\link[Gmedian:Gmedian]{Gmedian::Gmedian()}} or,
 Calculate the (weighted) average of multiple embeddings.
 }
 \details{
-For \code{weights = "trillion_word"}, tokens that do not appear in the word frequency
-list are treated as if they appeared as often as the least frequent word in the list.
+For \code{w = "trillion_word"} or \code{w = "trillion_word_sif"}, tokens
+that do not appear in the word frequency list are treated as if they appeared
+as often as the least frequent word in the list. If \code{w} is a named vector,
+rows that do not match any items in the vector will be assigned the minimum
+value of that vector.
 }
 \examples{
 happy_dict <- c("happy", "joy", "smile", "enjoy")
 happy_dict_embeddings <- predict(glove_twitter_25d, happy_dict)
 
 happy_dict_vec <- average_embedding(happy_dict_embeddings)
-happy_dict_vec_weighted <- average_embedding(happy_dict_embeddings, weights = "trillion_word")
+happy_dict_vec_weighted <- average_embedding(happy_dict_embeddings, w = "trillion_word")
 }

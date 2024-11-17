@@ -57,7 +57,7 @@ normalize_rows <- function(x, ...) {
 normalize_rows.default <- function(x, ...) {
 	if (!(any(class(x) %in% c("data.frame", "matrix")))) stop("x must be a dataframe or matrix")
 	out <- apply(x, 1, function(x){x / sqrt(sum(x^2))}, simplify = FALSE)
-	out <- as.embeddings(do.call(rbind, out))
+	out <- do.call(rbind, out)
 	colnames(out) <- colnames(x)
 	out
 }

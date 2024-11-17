@@ -104,6 +104,8 @@ Given a tidy dataframe of texts, `embed_docs()` will generate embeddings
 by averaging the embeddings of words in each text (for more information
 on why this works well, see [Data Science for Psychology, Chapter
 18](https://ds4psych.com/decontextualized-embeddings#sec-embedding-magnitude)).
+By default, `embed_docs()` uses a simple unweighted mean, but other
+averaging methods are available.
 
 ``` r
 library(dplyr)
@@ -280,8 +282,6 @@ normalize(moral_embeddings)
 #> bad   0.08  0.00  0.01 -0.00  0.05  0.13  0.31 -0.02 -0.05  0.02 ...
 
 valence_embeddings_df |> normalize_rows(dim_1:dim_25)
-#> Warning in as.embeddings.default(x): unique row names not provided. Naming rows
-#> doc_1, doc_2, etc.
 #> # A tibble: 3 × 26
 #>   doc_id    dim_1   dim_2    dim_3   dim_4   dim_5    dim_6 dim_7  dim_8   dim_9
 #>   <chr>     <dbl>   <dbl>    <dbl>   <dbl>   <dbl>    <dbl> <dbl>  <dbl>   <dbl>
