@@ -43,15 +43,15 @@ contextualized models like BERT or others made available through the
 ### Loading Pretrained Embeddings
 
 embeddingplyr won’t help you train new embedding models, but it can load
-embeddings from a file. This is especially useful for pretrained word
-embedding models like GloVe and word2vec. These models can be downloaded
-(generally in txt or bin format, respectively) and loaded with
-`load_embeddings()`.
+embeddings from a file or download them from online. This is especially
+useful for pretrained word embedding models like GloVe, word2vec, and
+fastText. Dozens of these models can be conveniently downloaded from
+online sources with `load_embeddings()`.
 
 ``` r
 library(embeddingplyr)
 
-glove_twitter_25d <- load_embeddings("~/Documents/data/glove/glove.twitter.27B.25d.txt")
+glove_twitter_25d <- load_embeddings("glove.twitter.27B.25d")
 ```
 
 The outcome is an embeddings object. An embeddings object is just a

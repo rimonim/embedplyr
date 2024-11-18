@@ -31,8 +31,7 @@
 #' number of rows but fewer columns. Reduced columns in the output will be named
 #' "PC1", "PC2", etc.
 #'
-#' If `output_rotation = TRUE`, a list with the following
-#' components:
+#' If `output_rotation = TRUE`, a list with the following components:
 #' \itemize{
 #'   \item `rotation`: a rotation matrix
 #'   \item `center`: a vector describing how much to offset each dimension to

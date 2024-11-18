@@ -12,6 +12,7 @@ Imports:
     methods,
     pillar,
     quanteda,
+    readr,
     rlang,
     stats,
     tibble,

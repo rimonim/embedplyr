@@ -73,8 +73,7 @@ If \code{output_rotation = FALSE}, an object of the same class as x, with the sa
 number of rows but fewer columns. Reduced columns in the output will be named
 "PC1", "PC2", etc.
 
-If \code{output_rotation = TRUE}, a list with the following
-components:
+If \code{output_rotation = TRUE}, a list with the following components:
 \itemize{
 \item \code{rotation}: a rotation matrix
 \item \code{center}: a vector describing how much to offset each dimension to
