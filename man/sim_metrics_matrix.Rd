@@ -25,6 +25,8 @@ anchored_sim_matrix(x, pos, neg)
 \item{x}{a numeric matrix or embeddings object}
 
 \item{y}{a numeric vector of length \code{ncol(x)}}
+
+\item{p}{\href{https://en.wikipedia.org/wiki/Lp_space#The_p-norm_in_finite_dimensions}{p-norm} used to compute the Minkowski distance}
 }
 \description{
 Faster Similarity and Distance Metrics With Matrix Operations

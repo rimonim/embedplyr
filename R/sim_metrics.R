@@ -41,6 +41,10 @@ cos_sim <- function(x, y){
   dot <- x %*% y
   normx <- sqrt(sum(x^2))
   normy <- sqrt(sum(y^2))
+  if (!any(is.na(dot)) && (normx == 0 || normy == 0)) {
+    warning("One of the vectors has zero length; returning NA")
+    return(NA_real_)
+  }
   as.numeric( dot / (normx*normy) )
 }
 
@@ -61,7 +65,7 @@ minkowski_dist <- function(x, y, p = 1){
     "p must be scalar" = length(p) == 1,
     "x and y must have the same number of dimensions" = length(x) == length(y)
     )
-  if (is.infinite(Inf)) return(max(abs(x - y)))
+  if (is.infinite(p)) return(max(abs(x - y)))
   sum(abs(x - y)^p)^(1/p)
 }
 
@@ -71,7 +75,12 @@ anchored_sim <- function(x, pos, neg){
   stopifnot("x, pos, and neg must have the same number of dimensions" = length(x) == length(pos) && length(pos) == length(neg))
   anchored_vec <- pos - neg
   proj <- (x - neg) %*% anchored_vec
-  as.numeric(proj) / sum(anchored_vec^2)
+  anchored_norm <- sum(anchored_vec^2)
+  if (!is.na(anchored_norm) && anchored_norm == 0) {
+    warning("Anchored vector has zero length; returning NA")
+    return(NA_real_)
+  }
+  as.numeric(proj) / anchored_norm
 }
 
 #' Faster Similarity and Distance Metrics With Matrix Operations
@@ -90,7 +99,12 @@ dot_prod_matrix <- function(x, y) {
 #' @keywords internal
 cos_sim_matrix <- function(x, y) {
   stopifnot("x and y must have the same number of dimensions" = ncol(x) == length(y))
-  as.numeric( x %*% y / (sqrt(rowSums(x^2)) * sqrt(sum(y^2))) )
+  normx <- sqrt(rowSums(x^2))
+  normy <- sqrt(sum(y^2))
+  norm_prod <- normx * normy
+  sims <- (x %*% y) / norm_prod
+  sims[norm_prod == 0] <- NA_real_
+  as.numeric(sims)
 }
 
 #' @rdname sim_metrics_matrix
@@ -110,6 +124,7 @@ euc_dist_matrix <- function(x, y) {
 }
 
 #' @rdname sim_metrics_matrix
+#' @param p [p-norm](https://en.wikipedia.org/wiki/Lp_space#The_p-norm_in_finite_dimensions) used to compute the Minkowski distance
 #' @keywords internal
 minkowski_dist_matrix <- function(x, y, p = 1) {
   stopifnot(
@@ -118,7 +133,7 @@ minkowski_dist_matrix <- function(x, y, p = 1) {
     "x and y must have the same number of dimensions" = ncol(x) == length(y)
     )
   diff <- t(t(x) - y)
-  if (is.infinite(Inf)) return(apply(abs(diff), 1, max))
+  if (is.infinite(p)) return(apply(abs(diff), 1, max))
   rowSums(abs(diff)^p)^(1/p)
 }
 
