@@ -416,7 +416,7 @@ load_embeddings <- function(model, dir = NULL, words = NULL, save = TRUE, format
     if (model == "numberbatch.19.08") download_format <- "txt.gz"
     if (substring(model, 1L, 2L) == "cc") download_format <- "vec.gz"
     model_path <- file.path(dir, paste0(model, ".", download_format))
-    if (format == "original" && is.character(words)) warning("Saving only a subset of words is not supported for original format. Saving full model file.")
+    if (save && format == "original" && is.character(words)) warning("Saving only a subset of words is not supported for original format. Saving full model file.")
     utils::download.file(download_link, model_path, mode = "wb")
   }
   message("Reading model from file...")

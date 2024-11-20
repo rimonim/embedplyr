@@ -37,8 +37,8 @@ embedding in x to the vector specified in y. When \code{method = "anchored"},
 each item of y should be a list with named vectors \code{pos} and \code{neg}.}
 
 \item{method}{either the name of a method to compute similarity or distance,
-or a function that takes two vectors and outputs a scalar, like those listed
-in \link[=sim_metrics]{Similarity and Distance Metrics}}
+or a function that takes two vectors, \code{x} and \code{y}, and outputs a scalar,
+similar to those listed in \link[=sim_metrics]{Similarity and Distance Metrics}}
 
 \item{cols}{tidyselect - columns that contain numeric embedding values}
 
@@ -92,6 +92,11 @@ valence_embeddings |>
   get_similarities(
     list(happy = list(pos = happy_vec, neg = sad_vec)),
     anchored_sim
+    )
+valence_embeddings |>
+  get_similarities(
+    list(happy = happy_vec),
+    method = function(x, y) sum(abs(x - y))
     )
 
 valence_df <- tibble::as_tibble(valence_embeddings, rownames = "token")
