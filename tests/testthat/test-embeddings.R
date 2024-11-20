@@ -18,7 +18,7 @@ test_that("as.embeddings error for non-numeric matrix", {
 
 test_that("as.embeddings works with numeric vector", {
   vec <- 1:5
-  expect_warning(emb <- as.embeddings(vec), "unique row names not provided. Naming rows doc_1, doc_2, etc.")
+  emb <- as.embeddings(vec)
 
   expect_s3_class(emb, "embeddings")
   expect_equal(dim(emb), c(1, length(vec)))
@@ -52,12 +52,26 @@ test_that("as.embeddings error for non-numeric columns in data.frame", {
   df <- data.frame(token = c("happy", "sad"),
                    dim1 = c(1.0, 0.5),
                    dim2 = c("a", "b"))
-  expect_error(as.embeddings(df), "Input contains non-numeric columns other than id_col")
+  expect_error(as.embeddings(df, id_col = "token"), "Input contains non-numeric columns other than id_col")
 })
 
 test_that("as.embeddings error for id_col not in data.frame", {
   df <- data.frame(dim1 = c(1.0, 0.5), dim2 = c(0.5, 1.0))
-  expect_error(as.embeddings(df, id_col = "token"), "Can't find column `token` in `.data`.")
+  expect_error(as.embeddings(df, id_col = "token"), "undefined columns selected")
+})
+
+test_that("as.embeddings keeps duplicates when .rowname_repair = TRUE", {
+  mat <- matrix(1:6, nrow = 3, dimnames = list(c("this", "that", "this")))
+  emb <- as.embeddings(mat, .rowname_repair = FALSE)
+  expect_equal(rownames(emb), rownames(mat))
+})
+
+test_that("as.embeddings.data.frame keeps duplicates when .rowname_repair = TRUE", {
+  df <- data.frame(token = c("happy", "sad", "happy"),
+                   dim1 = c(1.0, 0.5, 1.0),
+                   dim2 = c(0.5, 1.0, 0.5))
+  emb <- as.embeddings(df, id_col = "token", .rowname_repair = FALSE)
+  expect_equal(rownames(emb), df$token)
 })
 
 test_that("is.embeddings returns FALSE for non-embeddings objects", {

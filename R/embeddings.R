@@ -6,6 +6,8 @@
 #'
 #' @param x a numeric matrix or dataframe in which the only non-numeric column is specified by `id_col`
 #' @param ... additional arguments to be passed to or from class-specific methods
+#' @param .rowname_repair logical. If `TRUE` (the default), check that unique
+#' rownames are provided, and name rows "doc_1", "doc_2", etc. if not.
 #' @importFrom tibble column_to_rownames as_tibble
 #' @examples
 #' random_mat <- matrix(
@@ -26,10 +28,10 @@ as.embeddings <- function(x, ...) {
 
 #' @noRd
 #' @export
-as.embeddings.default <- function(x, ...) {
+as.embeddings.default <- function(x, ..., .rowname_repair = TRUE) {
   if(!is_matrixlike(x)){stop(sprintf("No method for coercing objects of class '%s' to embeddings.", class(x)))}
   # default row and column names
-  if (is.null(rownames(x)) && nrow(x) > 0 || any(duplicated(rownames(x)))){
+  if (.rowname_repair && (is.null(rownames(x)) && nrow(x) > 0 || any(duplicated(rownames(x))))){
     warning("unique row names not provided. Naming rows doc_1, doc_2, etc.")
     rownames(x) <- paste0("doc_", seq_len(nrow(x)))
   }
@@ -42,22 +44,22 @@ as.embeddings.default <- function(x, ...) {
 #' @noRd
 #' @method as.embeddings matrix
 #' @export
-as.embeddings.matrix <- function(x, ...){
+as.embeddings.matrix <- function(x, ..., .rowname_repair = TRUE){
   if (!is.numeric(x)) {
     stop("Input is not numeric")
   }
-  as.embeddings.default(x)
+  as.embeddings.default(x, .rowname_repair = .rowname_repair)
 }
 
 #' @noRd
 #' @method as.embeddings Matrix
 #' @export
-as.embeddings.Matrix <- function(x, ...){
+as.embeddings.Matrix <- function(x, ..., .rowname_repair = TRUE){
   x <- as.matrix(x)
   if (!is.numeric(x)) {
     stop("Input is not numeric")
   }
-  as.embeddings.default(x)
+  as.embeddings.default(x, .rowname_repair = .rowname_repair)
 }
 
 #' @noRd
@@ -67,26 +69,32 @@ as.embeddings.numeric <- function(x, ...){
   if (is.array(x) && length(dim(x)) > 1) {
     stop("High dimensional arrays cannot be coerced to embeddings.")
   }
-  x <- matrix(x, nrow = 1)
+  x <- matrix(x, nrow = 1, dimnames = list("doc_1"))
   as.embeddings.default(x)
 }
 
 #' @rdname embeddings
 #' @usage
-#' \method{as.embeddings}{data.frame}(x, id_col = NULL, ...)
+#' \method{as.embeddings}{data.frame}(x, id_col = NULL, ..., .rowname_repair = TRUE)
 #' @param x A data frame to be converted into embeddings.
-#' @param id_col Optional column to take row names from.
+#' @param id_col Optional name of a column to take row names from.
 #' @param ... Additional arguments passed to or from other methods.
+#' @param .rowname_repair logical. If `TRUE` (the default), check that unique
+#' rownames are provided, and name rows "doc_1", "doc_2", etc. if not.
 #' @export
-as.embeddings.data.frame <- function(x, id_col = NULL, ...){
+as.embeddings.data.frame <- function(x, id_col = NULL, ..., .rowname_repair = TRUE){
   if (!is.null(id_col)) {
-    x <- tibble::column_to_rownames(x, id_col)
+    id <- x[,id_col]
+    x <- x[,names(x) != id_col]
+  }else{
+    id <- NULL
   }
   if (!all(sapply(x, is.numeric))) {
     stop("Input contains non-numeric columns other than id_col")
   }
   x <- data.matrix(x)
-  as.embeddings.default(x)
+  rownames(x) <- id
+  as.embeddings.default(x, .rowname_repair = .rowname_repair)
 }
 
 #' @rdname embeddings
@@ -106,7 +114,7 @@ as.matrix.embeddings <- function(x, ...){
 #' @noRd
 #' @method '[' embeddings
 #' @export
-'[.embeddings' <- function(x, ..., drop = FALSE) {
+'[.embeddings' <- function(x, ..., drop = TRUE) {
   out <- NextMethod('[')
   if (is_matrixlike(out)) {
     as.embeddings(out)

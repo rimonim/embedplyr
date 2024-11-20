@@ -9,7 +9,7 @@
 \usage{
 as.embeddings(x, ...)
 
-\method{as.embeddings}{data.frame}(x, id_col = NULL, ...)
+\method{as.embeddings}{data.frame}(x, id_col = NULL, ..., .rowname_repair = TRUE)
 
 is.embeddings(x, ...)
 
@@ -20,7 +20,10 @@ is.embeddings(x, ...)
 
 \item{...}{Additional arguments passed to or from other methods.}
 
-\item{id_col}{Optional column to take row names from.}
+\item{id_col}{Optional name of a column to take row names from.}
+
+\item{.rowname_repair}{logical. If \code{TRUE} (the default), check that unique
+rownames are provided, and name rows "doc_1", "doc_2", etc. if not.}
 }
 \description{
 An embeddings object is a numeric matrix with rownames (generally tokens). Convert an
