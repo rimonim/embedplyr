@@ -33,6 +33,6 @@ predict.embeddings <- function(object, newdata, .keep_missing = FALSE){
   if(is.vector(out)){
     out
   }else{
-    as.embeddings(out)
+    as.embeddings(out, .rowname_repair = FALSE)
   }
 }
