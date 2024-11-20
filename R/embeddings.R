@@ -117,7 +117,7 @@ as.matrix.embeddings <- function(x, ...){
 '[.embeddings' <- function(x, ..., drop = TRUE) {
   out <- NextMethod('[')
   if (is_matrixlike(out)) {
-    as.embeddings(out)
+    as.embeddings(out, .rowname_repair = FALSE)
   }else{
     out
   }
@@ -128,7 +128,7 @@ as.matrix.embeddings <- function(x, ...){
 #' @export
 'rownames<-.embeddings' <- function(x, value) {
   attr(x, "dimnames")[[1]] <- value
-  x <- as.embeddings(x)
+  x <- as.embeddings(x, .rowname_repair = FALSE)
 }
 
 #' @noRd
@@ -136,7 +136,7 @@ as.matrix.embeddings <- function(x, ...){
 #' @export
 'colnames<-.embeddings' <- function(x, value) {
   attr(x, "dimnames")[[2]] <- value
-  x <- as.embeddings(x)
+  x <- as.embeddings(x, .rowname_repair = FALSE)
 }
 
 #' Check if an object is matrix-like and numeric
