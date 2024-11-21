@@ -12,7 +12,8 @@ find_nearest(
   ...,
   each = FALSE,
   include_self = TRUE,
-  decreasing = NULL
+  decreasing = NULL,
+  get_similarities = FALSE
 )
 }
 \arguments{
@@ -39,22 +40,36 @@ output a named list with one embeddings object for each token in newdata.}
 \item{include_self}{logical. Should the token(s) in \code{newdata} be included in
 the output?}
 
-\item{decreasing}{logical. If \code{TRUE} (the default for \code{"cosine"}, \code{"dot_prod"},
-and \code{"anchored"} methods), the embeddings with the highest similarity scores are
-output. If \code{FALSE} (the default for \code{"euclidean"} and \code{"minkowski"} methods),
-the embeddings with the lowest distance scores are output.}
+\item{decreasing}{logical. Determines the order of sorting the similarity scores.
+If \code{TRUE} (the default for \code{"cosine"}, \code{"dot_prod"}, and \code{"anchored"} methods),
+the embeddings with the highest similarity scores are output. If \code{FALSE}
+(the default for \code{"euclidean"} and \code{"minkowski"} methods), the embeddings with
+the lowest distance scores are output.}
+
+\item{get_similarities}{logical. If \code{FALSE} (the default), output an embeddings
+object or list of embeddings objects. If \code{TRUE}, output a tibble with similarity
+or distance scores for each document.}
 }
 \description{
 Find Nearest Tokens in Embedding Space
 }
 \section{Value}{
 
-An embeddings object or list of embeddings objects.
+If \code{get_similarities = FALSE} (the default), an embeddings object or list of
+embeddings objects.  If \code{get_similarities = TRUE}, a tibble or list of tibbles
+with similarity or distance scores for each document, with columns \code{doc_id}
+and the name of the requested \code{method}.
 }
 
 \examples{
 words <- c("happy", "sad")
+words_embeddings <- predict(glove_twitter_25d, words)
 
 find_nearest(glove_twitter_25d, words)
+find_nearest(glove_twitter_25d, words_embeddings) # equivalent to previous
 find_nearest(glove_twitter_25d, words, each = TRUE)
+find_nearest(glove_twitter_25d, words_embeddings, each = TRUE) # equivalent to previous
+
+rand_vec <- rnorm(25)
+find_nearest(glove_twitter_25d, rand_vec)
 }
