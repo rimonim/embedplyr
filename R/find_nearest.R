@@ -90,7 +90,7 @@ find_nearest <- function(object, newdata,
       target <- newdata
       available_tokens <- rownames(newdata)
     }else{
-      target <- as.embeddings(newdata, .rowname_repair = FALSE)
+      target <- as.embeddings(newdata, rowname_repair = FALSE)
       available_tokens <- rownames(target)
       target <- lapply(available_tokens, function(tok){target[tok,]})
       names(target) <- available_tokens
@@ -117,7 +117,7 @@ find_nearest <- function(object, newdata,
     if (get_similarities) {
       tibble::tibble(doc_id = rownames(object), {{method}} := sims[sims_order])
     }else{
-      as.embeddings(object, .rowname_repair = FALSE)
+      as.embeddings(object, rowname_repair = FALSE)
     }
   }else{
     sims <- lapply(target, function(vec) get_similarities(object, y = list(sim = vec), method = method, ...) )

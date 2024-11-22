@@ -139,7 +139,6 @@ get_similarities.default <- function(x, y, method = c("cosine", "cosine_squished
 #' @method get_similarities embeddings
 #' @export
 get_similarities.embeddings <- function(x, y, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ...) {
-	x <- as.embeddings(x, .rowname_repair = FALSE)
 	out <- get_similarities.default(x, y, method, ...)
 	dplyr::bind_cols(tibble::tibble(doc_id = rownames(x)), out)
 }

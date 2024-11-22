@@ -18,6 +18,11 @@ will be ignored. If \code{TRUE}, they will be returned as \code{NA}.}
 \description{
 Retrieve Token Embeddings
 }
+\details{
+Duplicated items in \code{newdata} will result in duplicated rows in the output.
+If an item in \code{newdata} matches multiple rows in \code{object}, the last one will
+be returned.
+}
 \section{Value}{
 
 Either an embeddings object with a row for each item in \code{newdata}, or, when

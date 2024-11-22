@@ -55,9 +55,9 @@ glove_twitter_25d <- load_embeddings("glove.twitter.27B.25d")
 ```
 
 The outcome is an embeddings object. An embeddings object is just a
-numeric matrix with tokens as rownames. This means that it can be easily
-coerced to a dataframe or tibble, while also allowing special
-embeddings-specific methods and functions, such as
+numeric matrix with fast hash table indexing by tokens. This means that
+it can be easily coerced to a dataframe or tibble, while also allowing
+special embeddings-specific methods and functions, such as
 `predict.embeddings()` and `find_nearest()`:
 
 ``` r
