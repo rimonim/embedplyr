@@ -2,6 +2,8 @@
 #'
 #' @param object an embeddings object made by `load_embeddings()` or `as.embeddings()`
 #' @param newdata a character vector of tokens
+#' @param drop logical. If `TRUE` (the default) and the result is one-dimensional
+#' (e.g. a single row), the output will be a (named) vector.
 #' @param .keep_missing logical. What should be done about items in `newdata`
 #' that are not present in the embeddings object? If `FALSE` (the default), they
 #' will be ignored. If `TRUE`, they will be returned as `NA`.
@@ -24,7 +26,7 @@
 
 #' @rdname predict.embeddings
 #' @export
-predict.embeddings <- function(object, newdata, .keep_missing = FALSE){
+predict.embeddings <- function(object, newdata, drop = TRUE, .keep_missing = FALSE){
   embedding_not_found <- !sapply(newdata, exists, envir = attr(object, "token_index"))
   if (any(embedding_not_found)) {
     warning(sprintf("%d items in `newdata` are not present in the embeddings object.", sum(embedding_not_found)))
@@ -33,8 +35,10 @@ predict.embeddings <- function(object, newdata, .keep_missing = FALSE){
     out <- matrix(nrow = length(newdata), ncol = ncol(object), dimnames = list(newdata, colnames(object)))
     out[!embedding_not_found,] <- object[newdata[!embedding_not_found],]
     out <- as.embeddings(out, rowname_repair = FALSE)
+    if (drop && nrow(out) == 1L) return(out[1,])
   }else{
-    out <- object[newdata[!embedding_not_found],]
+    out <- object[newdata[!embedding_not_found],,drop = drop]
+    if (drop && length(out) == 0L) return(numeric())
   }
   out
 }
