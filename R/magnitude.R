@@ -26,7 +26,7 @@ magnitude <- function(x, ...) {
 
 #' @export
 magnitude.default <- function(x, ...) {
-	if (is.list(x)) return(lapply(x, magnitude))
+	if (inherits(x, "list")) return(lapply(x, magnitude))
 	if (!(any(class(x) %in% c("numeric", "embeddings")))) stop("x must be a numeric vector or an embeddings object")
 	out <- apply(x, 1, function(x){sqrt(sum(x^2))})
 	names(out) <- rownames(x)

@@ -31,7 +31,7 @@ normalize <- function(x, ...) {
 
 #' @export
 normalize.default <- function(x, ...) {
-	if (is.list(x)) return(lapply(x, normalize))
+	if (inherits(x, "list")) return(lapply(x, normalize))
 	if (!(any(class(x) %in% c("numeric", "embeddings")))){
 		stop("x must be a numeric vector or an embeddings object",
 				 ifelse(any(class(x) == "data.frame"), "\nFor data frames and matrices, use normalize_rows().", ""))

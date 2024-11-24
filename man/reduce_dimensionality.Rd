@@ -32,7 +32,8 @@ reduce_dimensionality(x, ...)
 )
 }
 \arguments{
-\item{x}{a dataframe, embeddings object, or matrix with one embedding per row}
+\item{x}{a dataframe, embeddings object, or matrix with one embedding per row,
+or a list of such objects}
 
 \item{...}{additional parameters to be passed to class-specific methods}
 
@@ -80,11 +81,18 @@ If \code{output_rotation = TRUE}, a list with the following components:
 match the centering of \code{x}
 \item \code{scale}: a vector with the standard deviation of each column of \code{x}
 }
+
+If \code{x} is a list, the function will be called recursively and output a list
+of the same length.
 }
 
 \examples{
 glove_2d <- reduce_dimensionality(glove_twitter_25d, 2)
 glove_2d
+
+embeddings_list <- find_nearest(glove_twitter_25d, c("good", "bad"), each = TRUE)
+embeddings_list_2d <- reduce_dimensionality(embeddings_list, 2)
+embeddings_list_2d
 
 library(tibble)
 glove_tbl <- as_tibble(glove_twitter_25d, rownames = "token")

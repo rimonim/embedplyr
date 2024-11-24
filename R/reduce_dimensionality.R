@@ -2,7 +2,8 @@
 #'
 #' Includes methods for dataframes (in the style of `dplyr`), embeddings objects, and matrices.
 #'
-#' @param x a dataframe, embeddings object, or matrix with one embedding per row
+#' @param x a dataframe, embeddings object, or matrix with one embedding per row,
+#' or a list of such objects
 #' @param ... additional parameters to be passed to class-specific methods
 #' @param cols tidyselect - columns that contain numeric embedding values
 #' @param reduce_to number of dimensions to keep.
@@ -39,11 +40,18 @@
 #'   \item `scale`: a vector with the standard deviation of each column of `x`
 #' }
 #'
+#' If `x` is a list, the function will be called recursively and output a list
+#' of the same length.
+#'
 #' @importFrom stats sd
 #' @import tibble
 #' @examples
 #' glove_2d <- reduce_dimensionality(glove_twitter_25d, 2)
 #' glove_2d
+#'
+#' embeddings_list <- find_nearest(glove_twitter_25d, c("good", "bad"), each = TRUE)
+#' embeddings_list_2d <- reduce_dimensionality(embeddings_list, 2)
+#' embeddings_list_2d
 #'
 #' library(tibble)
 #' glove_tbl <- as_tibble(glove_twitter_25d, rownames = "token")
@@ -57,6 +65,7 @@ reduce_dimensionality <- function(x, ...) {
 
 #' @export
 reduce_dimensionality.default <- function(x, reduce_to = NULL, center = TRUE, scale = FALSE, tol = NULL, ..., custom_rotation = NULL, output_rotation = FALSE) {
+  if (inherits(x, "list")) return(lapply(x, reduce_dimensionality, reduce_to = reduce_to, center = center, scale = scale, tol = tol, ..., custom_rotation = custom_rotation, output_rotation = output_rotation))
   if (!is_matrixlike(x)) stop(paste(class(x),collapse = "/"), " object cannot be reduced.")
   if (any(is.na(x))) {
     warning("Input data contains missing values. Rows dropped in output.")
