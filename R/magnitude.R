@@ -15,6 +15,9 @@
 #'
 #' valence_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
 #' magnitude(valence_embeddings)
+#'
+#' embeddings_list <- find_nearest(glove_twitter_25d, c("good", "bad"), each = TRUE)
+#' magnitude(embeddings_list)
 
 #' @export
 magnitude <- function(x, ...) {

@@ -19,7 +19,7 @@ normalize_rows(x, ...)
 \method{normalize_rows}{data.frame}(x, cols, ...)
 }
 \arguments{
-\item{x}{for \code{normalize()}, a numeric vector or embeddings object.
+\item{x}{for \code{normalize()}, a numeric vector, embeddings object, or list of numeric or embeddings objects.
 For \code{normalize_rows()}, a matrix or dataframe with one embedding per row.}
 
 \item{...}{additional parameters to be passed to methods}
@@ -40,6 +40,9 @@ normalize(vec)
 
 valence_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
 normalize(valence_embeddings)
+
+embeddings_list <- find_nearest(glove_twitter_25d, c("good", "bad"), each = TRUE)
+normalize(embeddings_list)
 
 valence_df <- tibble::as_tibble(valence_embeddings, rownames = "token")
 valence_df |> normalize_rows(dim_1:dim_25)

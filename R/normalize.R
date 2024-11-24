@@ -18,6 +18,9 @@
 #' valence_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
 #' normalize(valence_embeddings)
 #'
+#' embeddings_list <- find_nearest(glove_twitter_25d, c("good", "bad"), each = TRUE)
+#' normalize(embeddings_list)
+#'
 #' valence_df <- tibble::as_tibble(valence_embeddings, rownames = "token")
 #' valence_df |> normalize_rows(dim_1:dim_25)
 

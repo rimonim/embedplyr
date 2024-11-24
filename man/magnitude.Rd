@@ -10,7 +10,7 @@ magnitude(x, ...)
 \method{magnitude}{numeric}(x, ...)
 }
 \arguments{
-\item{x}{a numeric vector or embeddings object}
+\item{x}{a numeric vector, embeddings object, or list of numeric or embeddings objects}
 
 \item{...}{additional parameters to be passed to methods}
 }
@@ -19,7 +19,8 @@ The magnitude, norm, or length of a vector is its Euclidean distance from the or
 }
 \section{Value}{
 
-a numeric vector with one item per embedding in \code{x}
+a numeric vector with one item per embedding in \code{x}. If \code{x} is a list, the
+function will be called recursively and return a list.
 }
 
 \examples{
@@ -28,4 +29,7 @@ magnitude(vec)
 
 valence_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
 magnitude(valence_embeddings)
+
+embeddings_list <- find_nearest(glove_twitter_25d, c("good", "bad"), each = TRUE)
+magnitude(embeddings_list)
 }
