@@ -7,7 +7,7 @@
 average_embedding(x, w = NULL, method = "mean", ...)
 }
 \arguments{
-\item{x}{an embeddings object}
+\item{x}{an embeddings object or list of embeddings objects}
 
 \item{w}{optional weighting for rows in x. This can be an unnamed
 numeric vector with one item per row of x, a named numeric vector of any
@@ -33,10 +33,19 @@ as often as the least frequent word in the list. If \code{w} is a named vector,
 rows that do not match any items in the vector will be assigned the minimum
 value of that vector.
 }
+\section{Value}{
+
+A named numeric vector. If \code{x} is a list, the function will be called
+recursively and output a list of the same length.
+}
+
 \examples{
 happy_dict <- c("happy", "joy", "smile", "enjoy")
 happy_dict_embeddings <- predict(glove_twitter_25d, happy_dict)
 
 happy_dict_vec <- average_embedding(happy_dict_embeddings)
 happy_dict_vec_weighted <- average_embedding(happy_dict_embeddings, w = "trillion_word")
+
+happy_dict_list <- find_nearest(glove_twitter_25d, happy_dict, each = TRUE)
+happy_dict_vec_list <- average_embedding(happy_dict_list)
 }

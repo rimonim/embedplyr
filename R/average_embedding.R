@@ -29,7 +29,7 @@ make_embedding_weights <- function(x_names, w){
 #'
 #' Calculate the (weighted) average of multiple embeddings.
 #'
-#' @param x an embeddings object
+#' @param x an embeddings object or list of embeddings objects
 #' @param w optional weighting for rows in x. This can be an unnamed
 #' numeric vector with one item per row of x, a named numeric vector of any
 #' length with names that match the row names of x, `"trillion_word"` (125,000
@@ -49,6 +49,10 @@ make_embedding_weights <- function(x_names, w){
 #' rows that do not match any items in the vector will be assigned the minimum
 #' value of that vector.
 #'
+#' @section Value:
+#' A named numeric vector. If `x` is a list, the function will be called
+#' recursively and output a list of the same length.
+#'
 #' @importFrom stats weighted.mean
 #' @examples
 #' happy_dict <- c("happy", "joy", "smile", "enjoy")
@@ -56,9 +60,13 @@ make_embedding_weights <- function(x_names, w){
 #'
 #' happy_dict_vec <- average_embedding(happy_dict_embeddings)
 #' happy_dict_vec_weighted <- average_embedding(happy_dict_embeddings, w = "trillion_word")
+#'
+#' happy_dict_list <- find_nearest(glove_twitter_25d, happy_dict, each = TRUE)
+#' happy_dict_vec_list <- average_embedding(happy_dict_list)
 
 #' @export
 average_embedding <- function(x, w = NULL, method = "mean", ...){
+	if (inherits(x, "list")) return(lapply(x, average_embedding, w = w, method = method))
 	if(!is.null(w)){
 		w <- make_embedding_weights(rownames(x), w)
 		if (method == "mean") return( apply(x, 2, weighted.mean, w = w, ...) )
