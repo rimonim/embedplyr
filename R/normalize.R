@@ -2,7 +2,7 @@
 #'
 #' Normalize embeddings such that their magnitude is 1, while their angle from the origin is unchanged.
 #'
-#' @param x for `normalize()`, a numeric vector or embeddings object.
+#' @param x for `normalize()`, a numeric vector, embeddings object, or list of numeric or embeddings objects.
 #' For `normalize_rows()`, a matrix or dataframe with one embedding per row.
 #' @param cols tidyselect - columns that contain numeric embedding values
 #' @param ... additional parameters to be passed to methods
@@ -28,6 +28,7 @@ normalize <- function(x, ...) {
 
 #' @export
 normalize.default <- function(x, ...) {
+	if (is.list(x)) return(lapply(x, normalize))
 	if (!(any(class(x) %in% c("numeric", "embeddings")))){
 		stop("x must be a numeric vector or an embeddings object",
 				 ifelse(any(class(x) == "data.frame"), "\nFor data frames and matrices, use normalize_rows().", ""))

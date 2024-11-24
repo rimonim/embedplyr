@@ -2,11 +2,12 @@
 #'
 #' The magnitude, norm, or length of a vector is its Euclidean distance from the origin.
 #'
-#' @param x a numeric vector or embeddings object
+#' @param x a numeric vector, embeddings object, or list of numeric or embeddings objects
 #' @param ... additional parameters to be passed to methods
 #'
 #' @section Value:
-#' a numeric vector with one item per embedding in `x`
+#' a numeric vector with one item per embedding in `x`. If `x` is a list, the
+#' function will be called recursively and return a list.
 #'
 #' @examples
 #' vec <- c(1, 4, 2)
@@ -22,6 +23,7 @@ magnitude <- function(x, ...) {
 
 #' @export
 magnitude.default <- function(x, ...) {
+	if (is.list(x)) return(lapply(x, magnitude))
 	if (!(any(class(x) %in% c("numeric", "embeddings")))) stop("x must be a numeric vector or an embeddings object")
 	out <- apply(x, 1, function(x){sqrt(sum(x^2))})
 	names(out) <- rownames(x)
