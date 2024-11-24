@@ -79,7 +79,7 @@ test_that("as.embeddings error for non-numeric columns in data.frame", {
 
 test_that("as.embeddings error for id_col not in data.frame", {
   df <- data.frame(dim1 = c(1.0, 0.5), dim2 = c(0.5, 1.0))
-  expect_error(as.embeddings(df, id_col = "token"), "undefined columns selected")
+  expect_error(as.embeddings(df, id_col = "token"), "Can't extract columns that don't exist.")
 })
 
 test_that("as.embeddings keeps duplicates when rowname_repair = TRUE", {

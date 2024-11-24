@@ -120,7 +120,7 @@ as.embeddings.numeric <- function(x, ...){
 #' @export
 as.embeddings.data.frame <- function(x, id_col = NULL, ..., rowname_repair = TRUE){
   if (!is.null(id_col)) {
-    id <- x[,id_col]
+    id <- dplyr::pull(x, id_col)
     x <- x[,names(x) != id_col]
   }else{
     id <- NULL

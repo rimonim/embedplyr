@@ -5,7 +5,7 @@
 \alias{embed_docs}
 \title{Get Text Embeddings by Averaging Word Embeddings}
 \usage{
-textstat_embedding(dfm, model, w = NULL, method = "mean")
+textstat_embedding(dfm, model, w = NULL, method = "mean", output = "tibble")
 
 embed_docs(
   data,
@@ -16,13 +16,14 @@ embed_docs(
   method = "mean",
   ...,
   .keep_all = FALSE,
-  tolower = TRUE
+  tolower = TRUE,
+  output = "tibble"
 )
 }
 \arguments{
 \item{dfm}{a quanteda dfm}
 
-\item{model}{an \link[=as.embeddings]{embeddings} object. For \code{embed_docs()}, \code{model}
+\item{model}{an \link{embeddings} object. For \code{embed_docs()}, \code{model}
 can alternatively be a function that takes a character vector and outputs a
 dataframe with a row for each element of the input.}
 
@@ -33,6 +34,9 @@ embeddings object. See \code{\link[=average_embedding]{average_embedding()}}.}
 \code{method = "median"} does not use matrix operations and may therefore be slow
 for datasets with many documents.}
 
+\item{output}{\code{"tibble"} (the default) returns a tibble. \code{"embeddings"}
+returns an embeddings object. See 'Value' for details.}
+
 \item{data}{a data frame or data frame extension (e.g. a tibble)}
 
 \item{text_col}{string. a column of texts for which to compute embeddings}
@@ -42,7 +46,7 @@ for datasets with many documents.}
 \item{...}{additional parameters to pass to \code{quanteda::tokens()} or to the
 user-specified modeling function}
 
-\item{.keep_all}{logical. Keep all columns from input?}
+\item{.keep_all}{logical. Keep all columns from input? Ignored if \code{output = "tibble"}.}
 
 \item{tolower}{logical. Convert all text to lowercase? If \code{model} is an
 embeddings object, this value is passed to \code{\link[quanteda:dfm]{quanteda::dfm()}}.}
@@ -54,8 +58,10 @@ on a column of texts.
 }
 \section{Value}{
 
-A tibble with columns \code{doc_id}, and \code{V1}, \code{V2}, etc. or similar.
-If \code{.keep_all = TRUE}, the new columns will appear after existing ones.
+If \code{output = "tibble"}, a tibble with columns \code{doc_id}, and \code{dim_1}, \code{dim_2},
+etc. or similar. If \code{.keep_all = TRUE}, the new columns will appear after
+existing ones.
+If \code{output = "embeddings"}, an embeddings object with document ids as rownames.
 }
 
 \examples{
