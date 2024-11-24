@@ -4,12 +4,15 @@
 \alias{predict.embeddings}
 \title{Retrieve Token Embeddings}
 \usage{
-\method{predict}{embeddings}(object, newdata, .keep_missing = FALSE)
+\method{predict}{embeddings}(object, newdata, drop = TRUE, .keep_missing = FALSE)
 }
 \arguments{
 \item{object}{an embeddings object made by \code{load_embeddings()} or \code{as.embeddings()}}
 
 \item{newdata}{a character vector of tokens}
+
+\item{drop}{logical. If \code{TRUE} (the default) and the result is one-dimensional
+(e.g. a single row), the output will be a (named) vector.}
 
 \item{.keep_missing}{logical. What should be done about items in \code{newdata}
 that are not present in the embeddings object? If \code{FALSE} (the default), they

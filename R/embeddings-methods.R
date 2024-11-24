@@ -86,14 +86,16 @@ as.matrix.embeddings <- function(x, ...){
 	as.matrix(x)
 }
 
-
+#' @importFrom rlang :=
 #' @rdname embeddings-methods
 #' @method as_tibble embeddings
 #' @export
 as_tibble.embeddings <- function(x, ..., rownames = NULL) {
+	rn <- rownames(x) %||% NA
 	x <- as.data.frame(x)
 	if (!is.null(rownames)) {
-		x <- tibble::rownames_to_column(x, var = rownames)
+		x <- dplyr::mutate(x, !!rownames := rn)
+		x <- dplyr::relocate(x, tidyselect::all_of(rownames))
 	}
 	tibble::as_tibble(x, ...)
 }

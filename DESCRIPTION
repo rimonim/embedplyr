@@ -9,7 +9,6 @@ Encoding: UTF-8
 Imports:
     data.table,
     dplyr,
-    methods,
     pillar,
     quanteda,
     readr,
@@ -35,6 +34,7 @@ Config/testthat/edition: 3
 Collate: 
     'average_embedding.R'
     'data.R'
+    'embed_tokens.R'
     'embeddingplyr-package.R'
     'embeddings-methods.R'
     'embeddings-predict.R'

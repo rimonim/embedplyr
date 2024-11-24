@@ -3,12 +3,32 @@
 \name{textstat_embedding}
 \alias{textstat_embedding}
 \alias{embed_docs}
+\alias{embed_docs.default}
+\alias{embed_docs.data.frame}
 \title{Get Text Embeddings by Averaging Word Embeddings}
 \usage{
-textstat_embedding(dfm, model, w = NULL, method = "mean", output = "tibble")
+textstat_embedding(
+  dfm,
+  model,
+  w = NULL,
+  method = "mean",
+  output_embeddings = FALSE
+)
 
-embed_docs(
-  data,
+embed_docs(x, ...)
+
+\method{embed_docs}{default}(
+  x,
+  model,
+  w = NULL,
+  method = "mean",
+  ...,
+  tolower = TRUE,
+  output_embeddings = FALSE
+)
+
+\method{embed_docs}{data.frame}(
+  x,
   text_col,
   model,
   id_col = NULL,
@@ -17,7 +37,7 @@ embed_docs(
   ...,
   .keep_all = FALSE,
   tolower = TRUE,
-  output = "tibble"
+  output_embeddings = FALSE
 )
 }
 \arguments{
@@ -34,40 +54,43 @@ embeddings object. See \code{\link[=average_embedding]{average_embedding()}}.}
 \code{method = "median"} does not use matrix operations and may therefore be slow
 for datasets with many documents.}
 
-\item{output}{\code{"tibble"} (the default) returns a tibble. \code{"embeddings"}
-returns an embeddings object. See 'Value' for details.}
+\item{output_embeddings}{\code{FALSE} (the default) returns a tibble.
+\code{TRUE} returns an embeddings object. See 'Value' for details.}
 
-\item{data}{a data frame or data frame extension (e.g. a tibble)}
+\item{x}{a character vector, a data frame, or data frame extension (e.g. a tibble)}
+
+\item{...}{additional parameters to pass to \code{quanteda::tokens()} or to the
+user-specified modeling function}
+
+\item{tolower}{logical. Convert all text to lowercase? If \code{model} is an
+embeddings object, this value is passed to \code{\link[quanteda:dfm]{quanteda::dfm()}}.}
 
 \item{text_col}{string. a column of texts for which to compute embeddings}
 
 \item{id_col}{optional string. column of unique document ids}
 
-\item{...}{additional parameters to pass to \code{quanteda::tokens()} or to the
-user-specified modeling function}
-
-\item{.keep_all}{logical. Keep all columns from input? Ignored if \code{output = "tibble"}.}
-
-\item{tolower}{logical. Convert all text to lowercase? If \code{model} is an
-embeddings object, this value is passed to \code{\link[quanteda:dfm]{quanteda::dfm()}}.}
+\item{.keep_all}{logical. Keep all columns from input? Ignored if \code{output_embeddings = TRUE}.}
 }
 \description{
 \code{textstat_embedding()} takes a 'quanteda' dfm. \code{embed_docs()} is a more
-versatile function for use in a purely dplyr-style workflow, which acts directly
-on a column of texts.
+versatile function for which acts directly on either a character vector or
+a column of texts in a dataframe.
 }
 \section{Value}{
 
-If \code{output = "tibble"}, a tibble with columns \code{doc_id}, and \code{dim_1}, \code{dim_2},
+If \code{output_embeddings = FALSE}, a tibble with columns \code{doc_id}, and \code{dim_1}, \code{dim_2},
 etc. or similar. If \code{.keep_all = TRUE}, the new columns will appear after
 existing ones.
-If \code{output = "embeddings"}, an embeddings object with document ids as rownames.
+If \code{output_embeddings = TRUE}, an embeddings object with document ids as rownames.
 }
 
 \examples{
+texts <- c("this says one thing", "and this says another")
+texts_embeddings <- embed_docs(texts, glove_twitter_25d)
+texts_embeddings
+
 # quanteda workflow
 library(quanteda)
-texts <- c("this says one thing", "and this says another")
 texts_dfm <- dfm(tokens(texts))
 
 texts_embeddings <- textstat_embedding(texts_dfm, glove_twitter_25d)
@@ -77,4 +100,7 @@ texts_embeddings
 texts_df <- data.frame(text = texts)
 texts_embeddings <- texts_df |> embed_docs("text", glove_twitter_25d)
 texts_embeddings
+}
+\seealso{
+\code{\link[=embed_tokens]{embed_tokens()}}
 }

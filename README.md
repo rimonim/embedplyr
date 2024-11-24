@@ -55,10 +55,10 @@ glove_twitter_25d <- load_embeddings("glove.twitter.27B.25d")
 ```
 
 The outcome is an embeddings object. An embeddings object is just a
-numeric matrix with fast hash table indexing by tokens. This means that
-it can be easily coerced to a dataframe or tibble, while also allowing
-special embeddings-specific methods and functions, such as
-`predict.embeddings()` and `find_nearest()`:
+numeric matrix with fast hash table indexing by rownames (generally
+tokens). This means that it can be easily coerced to a dataframe or
+tibble, while also allowing special embeddings-specific methods and
+functions, such as `predict.embeddings()` and `find_nearest()`:
 
 ``` r
 moral_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
@@ -306,4 +306,48 @@ magnitude(good_vec)
 magnitude(moral_embeddings)
 #>     good      bad 
 #> 6.005552 5.355951
+```
+
+#### Recursive Behavior for Lists
+
+When supplied with a list of embeddings objects,
+`reduce_dimensionality()`, `normalize()`, and `magnitude()` will be
+called recursively and return a similar list. To give an example of when
+this may be useful, let’s say we want to know the average magnitudes of
+the token embeddings in each of three sentences. This can be
+accomplished with the following code:
+
+``` r
+texts <- c("will this text have a higher average magnitude?", 
+                     "or perhaps this one will?")
+texts_tokens_list <- embed_tokens(texts, glove_twitter_25d, output_embeddings = TRUE)
+texts_tokens_list
+#> $text1
+#> # 25-dimensional embeddings with 9 rows
+#>           dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9      
+#> will       0.06  0.18 -0.63 -0.86 -0.98 -0.50  1.35 -0.58 -0.09 ...  
+#> this      -0.18  0.38  0.07 -0.32 -0.09 -0.41  2.10 -0.11 -0.59 ...  
+#> text       0.04  0.82  0.73 -0.04  0.16 -0.47  1.41  0.40 -0.34 ...  
+#> have      -0.06  0.80 -0.06 -0.58 -0.56 -0.07  1.86 -0.42 -0.56 ...  
+#> a          0.21  0.31  0.18  0.87  0.07  0.59 -0.10  1.59 -0.43 ...  
+#> higher     0.45  0.29 -0.63  0.19  0.62  0.66  0.33 -1.39  0.53 ...  
+#> average    0.44  0.37 -0.14 -0.32  1.21  0.82  0.82 -1.20 -0.15 ...  
+#> magnitude  0.11 -0.46  0.00 -0.23 -1.36  0.04  0.40 -0.90  1.47 ...  
+#> ?          1.10 -0.35  0.09 -0.26 -0.02  0.51  0.75  1.79  0.17 ...  
+#> 
+#> $text2
+#> # 25-dimensional embeddings with 6 rows
+#>         dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9      
+#> or       0.07 -0.01 -0.17 -0.03 -0.21  0.02  1.38 -0.38  0.48 ...  
+#> perhaps -0.04 -0.12 -0.49 -0.06 -0.56 -0.07  1.19 -1.32 -0.33 ...  
+#> this    -0.18  0.38  0.07 -0.32 -0.09 -0.41  2.10 -0.11 -0.59 ...  
+#> one      0.40  0.16  0.51 -0.04 -0.12 -0.01  1.77  0.34 -0.85 ...  
+#> will     0.06  0.18 -0.63 -0.86 -0.98 -0.50  1.35 -0.58 -0.09 ...  
+#> ?        1.10 -0.35  0.09 -0.26 -0.02  0.51  0.75  1.79  0.17 ...
+
+texts_tokens_list |> 
+    magnitude() |> 
+    sapply(mean)
+#>    text1    text2 
+#> 5.672317 5.594303
 ```

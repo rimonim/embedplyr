@@ -48,7 +48,7 @@ library(embeddingplyr)
 glove_twitter_25d <- load_embeddings("glove.twitter.27B.25d")
 ```
 
-The outcome is an embeddings object. An embeddings object is just a numeric matrix with fast hash table indexing by tokens. This means that it can be easily coerced to a dataframe or tibble, while also allowing special embeddings-specific methods and functions, such as `predict.embeddings()` and `find_nearest()`:
+The outcome is an embeddings object. An embeddings object is just a numeric matrix with fast hash table indexing by rownames (generally tokens). This means that it can be easily coerced to a dataframe or tibble, while also allowing special embeddings-specific methods and functions, such as `predict.embeddings()` and `find_nearest()`:
 
 ```{r}
 moral_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
@@ -191,3 +191,19 @@ magnitude(good_vec)
 
 magnitude(moral_embeddings)
 ```
+
+#### Recursive Behavior for Lists
+
+When supplied with a list of embeddings objects, `reduce_dimensionality()`, `normalize()`, and `magnitude()` will be called recursively and return a similar list. To give an example of when this may be useful, let's say we want to know the average magnitudes of the token embeddings in each of three sentences. This can be accomplished with the following code:
+
+```{r}
+texts <- c("will this text have a higher average magnitude?", 
+					 "or perhaps this one will?")
+texts_tokens_list <- embed_tokens(texts, glove_twitter_25d, output_embeddings = TRUE)
+texts_tokens_list
+
+texts_tokens_list |> 
+	magnitude() |> 
+	sapply(mean)
+```
+
