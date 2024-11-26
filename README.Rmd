@@ -57,6 +57,8 @@ moral_embeddings
 find_nearest(glove_twitter_25d, "dog", 5L, method = "cosine")
 ```
 
+Whereas indexing a regular matrix by rownames gets slower as the number of rows increases, embedingplyr's hash table indexing means that token embeddings can be retrieved in milliseconds even from models with millions of rows.
+
 ### Similarity Metrics
 
 Functions for similarity and distance metrics are as simple as possible; each one takes in vectors and outputs a scalar.
@@ -191,19 +193,3 @@ magnitude(good_vec)
 
 magnitude(moral_embeddings)
 ```
-
-#### Recursive Behavior for Lists
-
-When supplied with a list of embeddings objects, `reduce_dimensionality()`, `normalize()`, and `magnitude()` will be called recursively and return a similar list. To give an example of when this may be useful, let's say we want to know the average magnitudes of the token embeddings in each of three sentences. This can be accomplished with the following code:
-
-```{r}
-texts <- c("will this text have a higher average magnitude?", 
-					 "or perhaps this one will?")
-texts_tokens_list <- embed_tokens(texts, glove_twitter_25d, output_embeddings = TRUE)
-texts_tokens_list
-
-texts_tokens_list |> 
-	magnitude() |> 
-	sapply(mean)
-```
-
