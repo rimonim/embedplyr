@@ -7,7 +7,7 @@
 read_embeddings(path, words = NULL)
 }
 \arguments{
-\item{path}{a file path}
+\item{path}{a file path or url}
 
 \item{words}{optional list of words for which to retrieve embeddings.}
 }

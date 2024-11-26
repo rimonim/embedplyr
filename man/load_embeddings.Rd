@@ -35,11 +35,16 @@ is retrieved from online sources and, by default, saved.
 }
 \details{
 The following are supported models for download. Note that some models are very large.
+If you know in advance which word embeddings you will need (e.g. the set of unique
+tokens in your corpus), consider specifying this with the \code{words} parameter to save
+memory and processing time.
 \subsection{GloVe}{
 
 \itemize{
-\item \code{glove.42B.300d}: Common Crawl (42B tokens, 1.9M vocab, uncased, 300d). Downloaded from https://huggingface.co/stanfordnlp/glove
-\item \code{glove.840B.300d}: Common Crawl (840B tokens, 2.2M vocab, cased, 300d). Downloaded from https://huggingface.co/stanfordnlp/glove
+\item \code{glove.42B.300d}: Common Crawl (42B tokens, 1.9M vocab, uncased, 300d). Downloaded from https://huggingface.co/stanfordnlp/glove.
+This file is a zip archive and must temporarily be downloaded in its entirety even when \code{words} is specified.
+\item \code{glove.840B.300d}: Common Crawl (840B tokens, 2.2M vocab, cased, 300d). Downloaded from https://huggingface.co/stanfordnlp/glove.
+This file is a zip archive and must temporarily be downloaded in its entirety even when \code{words} is specified.
 \item \code{glove.6B.50d}: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 50d). Downloaded from https://github.com/piskvorky/gensim-data
 \item \code{glove.6B.100d}: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 100d). Downloaded from https://github.com/piskvorky/gensim-data
 \item \code{glove.6B.200d}: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 200d). Downloaded from https://github.com/piskvorky/gensim-data
@@ -61,7 +66,7 @@ The following are supported models for download. Note that some models are very 
 Multilingual word embeddings trained using an ensemble that combines data from
 word2vec, GloVe, OpenSubtitles, and the ConceptNet common sense knowledge database.
 Tokens are prefixed with language codes. For example, the English word "token" is
-labeled "c/en/token".
+labeled "/c/en/token".
 Downloaded from https://github.com/commonsense/conceptnet-numberbatch
 \itemize{
 \item \code{numberbatch.19.08}: Multilingual (9.2M vocab, uncased, 300d)

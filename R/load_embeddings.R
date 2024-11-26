@@ -191,10 +191,15 @@ supported_models <- c(
 #'
 #' @details
 #' The following are supported models for download. Note that some models are very large.
+#' If you know in advance which word embeddings you will need (e.g. the set of unique
+#' tokens in your corpus), consider specifying this with the `words` parameter to save
+#' memory and processing time.
 #' ## GloVe
 #' \itemize{
-#'   \item `glove.42B.300d`: Common Crawl (42B tokens, 1.9M vocab, uncased, 300d). Downloaded from https://huggingface.co/stanfordnlp/glove
-#'   \item `glove.840B.300d`: Common Crawl (840B tokens, 2.2M vocab, cased, 300d). Downloaded from https://huggingface.co/stanfordnlp/glove
+#'   \item `glove.42B.300d`: Common Crawl (42B tokens, 1.9M vocab, uncased, 300d). Downloaded from https://huggingface.co/stanfordnlp/glove.
+#'   This file is a zip archive and must temporarily be downloaded in its entirety even when `words` is specified.
+#'   \item `glove.840B.300d`: Common Crawl (840B tokens, 2.2M vocab, cased, 300d). Downloaded from https://huggingface.co/stanfordnlp/glove.
+#'   This file is a zip archive and must temporarily be downloaded in its entirety even when `words` is specified.
 #'   \item `glove.6B.50d`: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 50d). Downloaded from https://github.com/piskvorky/gensim-data
 #'   \item `glove.6B.100d`: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 100d). Downloaded from https://github.com/piskvorky/gensim-data
 #'   \item `glove.6B.200d`: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 200d). Downloaded from https://github.com/piskvorky/gensim-data
@@ -212,7 +217,7 @@ supported_models <- c(
 #' Multilingual word embeddings trained using an ensemble that combines data from
 #' word2vec, GloVe, OpenSubtitles, and the ConceptNet common sense knowledge database.
 #' Tokens are prefixed with language codes. For example, the English word "token" is
-#' labeled "c/en/token".
+#' labeled "/c/en/token".
 #' Downloaded from https://github.com/commonsense/conceptnet-numberbatch
 #' \itemize{
 #'   \item `numberbatch.19.08`: Multilingual (9.2M vocab, uncased, 300d)
@@ -406,37 +411,46 @@ load_embeddings <- function(model, dir = NULL, words = NULL, save = TRUE, format
             call. = FALSE)
     model_path <- model_path[1]
   }
+  # Relevant parameters for later
   saved_format <- substring(model_path, regexpr("\\.([[:alnum:]]+)$", model_path) + 1L)
+  save_last <- save && (format != "original") && (new_download || !new_download & format != saved_format)
   # Download if needed
   if (new_download) {
-    message("Downloading from the Internet...")
     download_link <- supported_models[[model]]
-    download_format <- substring(download_link, regexpr("\\.([[:alnum:]]+)$", download_link) + 1L)
-    if (model == "GoogleNews.vectors.negative300") download_format <- "bin.gz"
-    if (model == "numberbatch.19.08") download_format <- "txt.gz"
-    if (substring(model, 1L, 2L) == "cc") download_format <- "vec.gz"
-    model_path <- file.path(dir, paste0(model, ".", download_format))
-    if (save && format == "original" && is.character(words)) warning("Saving only a subset of words is not supported for original format. Saving full model file.")
-    utils::download.file(download_link, model_path, mode = "wb")
+    if (save_last || !save) {
+      message("Reading file from the Internet...")
+      out <- read_embeddings(download_link, words = words)
+    }else{
+      message("Downloading from the Internet...")
+      download_format <- substring(download_link, regexpr("\\.([[:alnum:]]+)$", download_link) + 1L)
+      if (model == "GoogleNews.vectors.negative300") download_format <- "bin.gz"
+      if (model == "numberbatch.19.08") download_format <- "txt.gz"
+      if (substring(model, 1L, 2L) == "cc") download_format <- "vec.gz"
+      model_path <- file.path(dir, paste0(model, ".", download_format))
+      if (save && format == "original" && is.character(words)) warning("Saving only a subset of words is not supported for original format. Saving full model file.")
+      utils::download.file(download_link, model_path, mode = "wb")
+    }
   }
-  message("Reading model from file...")
-  if (!new_download && saved_format == "rds") {
-    out <- readRDS(model_path)
-    if (is.character(words)) out <- predict.embeddings(out, words)
-  }else{
-    out <- read_embeddings(model_path, words)
+  # Read from file if downloaded
+  if (!new_download || !(save_last || !save)) {
+    message("Reading model from file...")
+    if (!new_download && saved_format == "rds") {
+      out <- readRDS(model_path)
+      if (is.character(words)) out <- predict.embeddings(out, words)
+    }else{
+      out <- read_embeddings(model_path, words)
+    }
+  }
+  # Delete downloaded file if save not requested
+  if (new_download && !save) {
+    file.remove(model_path)
   }
   # Write processed file if requested
-  if (save) {
-    if (new_download && format != "original") {
-      message("Writing ", format, " file...")
-      file.remove(model_path)
-      model_path <- file.path(dir, paste0(model, ".", format))
-      if (format == "csv") readr::write_csv(as_tibble(out, rownames = "token"), model_path)
-      if (format == "rds") saveRDS(out, model_path)
-    }
-  }else{
-    file.remove(model_path)
+  if (save_last) {
+    message("Writing ", format, " file...")
+    model_path <- file.path(dir, paste0(model, ".", format))
+    if (format == "csv") readr::write_csv(as_tibble(out, rownames = "token"), model_path)
+    if (format == "rds") saveRDS(out, model_path)
   }
   out
 }
@@ -446,7 +460,7 @@ load_embeddings <- function(model, dir = NULL, words = NULL, save = TRUE, format
 #' Reads GloVe text format, fastText text format, word2vec binary format,
 #' and most tabular formats (csv, tsv, etc.)
 #'
-#' @param path a file path
+#' @param path a file path or url
 #' @param words optional list of words for which to retrieve embeddings.
 #'
 #' @details
@@ -458,45 +472,43 @@ load_embeddings <- function(model, dir = NULL, words = NULL, save = TRUE, format
 #' @export
 read_embeddings <- function(path, words = NULL) {
   path_format <- substring(path, regexpr("\\.([[:alnum:]]+)$", path) + 1L)
-  if (path_format == "gz" && grepl("\\.bin\\.", path)) path_format <- "bin"
   # word2vec binary format
-  if (path_format == "bin") {
-    return(read_word2vec(path, words = words))
+  if (path_format == "bin" || grepl("\\.bin\\.", path) || grepl("word2vec", path)) {
+    out <- tryCatch(
+      read_word2vec(path, words = words),
+      error = function(e) stop(
+        conditionMessage(e),
+        "\nThis file was assumed based on its name to be written in word2vec bin format. ",
+        "This assumption may have been mistaken. "
+        )
+      )
   }else{
-    # read table with token embeddings
-    x <- suppressWarnings( data.table::fread(path, quote = "", showProgress = TRUE) )
-    id <- as.vector(x[,1])
-    # select words
-    if (is.character(words)) {
-      x <- x[match(words, id),]
-      id <- words
-    }
-    # remove duplicates
-    duplicates <- duplicated(id)
-    if (any(duplicates)) {
-      warning("Tokens are not unique. Removing duplicates.")
-      x <- x[!duplicates,]
-      id <- as.vector(x[,1])
-    }
-    # coerce to numeric matrix
-    x <- x[,-1]
-    if (!all(sapply(x, is.numeric))) {
-      stop("Input is not numeric")
-    }
-    x <- as.matrix(x)
-    # set row and column names
-    rownames(x) <- id
-    if (all(colnames(x)[-1] == paste0("V",3:(ncol(x)+1L)))) colnames(x) <- NULL
-    # update class
-    return(as.embeddings(x))
+    if (grepl("numberbatch", path)) use_sys <- FALSE else use_sys <- TRUE
+    out <- read_table_embeddings(path, words = words, use_sys = use_sys)
+  }
+  out
+}
+
+# check if a file is gzipped
+#' @noRd
+is_gzipped <- function(file) {
+  if (is_url(file)) {
+    # For URLs, check if the URL ends with .gz or .gzip
+    return(grepl("\\.gz(ip)?$", file, ignore.case = TRUE))
+  } else {
+    # For local files, check the file signature for gzip magic numbers
+    con <- file(file, "rb")
+    magic <- readBin(con, "raw", n = 2)
+    close(con)
+    return(identical(magic, as.raw(c(0x1f, 0x8b))))
   }
 }
 
 #' @noRd
 read_word2vec_word <- function(f, max_len = 50) {
   number_str <- ""
-  for (i in 1:max_len) {
-    ch <- readChar(f, nchars = 1, useBytes = TRUE)
+  for (i in seq_len(max_len)) {
+    ch <- suppressWarnings( readChar(f, nchars = 1, useBytes = TRUE) )
     if (ch %in% c(" ", "\n", "\t")) break
     number_str <- paste0(number_str, ch)
   }
@@ -505,44 +517,227 @@ read_word2vec_word <- function(f, max_len = 50) {
 
 #' @noRd
 read_word2vec <- function(path, words = NULL){
-  is_gz <- substring(path, nchar(path)-2L, nchar(path)) == ".gz"
+  # handle for HTTP requests
+  h <- curl::new_handle()
+  curl::handle_setopt(h, timeout = 10000);
+  curl::handle_setheaders(h, "User-Agent" = "embeddingplyr (https://github.com/rimonim/embeddingplyr)")
   # open binary file in read mode
-  f <- file(path, "rb")
-  if (is_gz) f <- gzcon(f)
-  if (!isOpen(f)) stop("Input file not found")
+  is_gz <- is_gzipped(path)
+  if (is_url(path)) {
+    conn <- curl::curl(path, "rb")
+    if (is_gz) {
+      conn <- gzcon(conn)
+    }
+  } else {
+    conn <- tryCatch({
+      if (is_gz) {
+        gzfile(path, "rb")
+      } else {
+        file(path, "rb")
+      }
+    }, error = function(e) {
+      stop("Error opening file: ", conditionMessage(e))
+    })
+  }
+  if (!isOpen(conn)) stop("Input file not found")
+  on.exit(close(conn))
   # read header
-  vocab_size <- as.numeric(read_word2vec_word(f))
-  dimensions <- as.numeric(read_word2vec_word(f))
+  vocab_size <- as.numeric(read_word2vec_word(conn))
+  dimensions <- as.numeric(read_word2vec_word(conn))
   # read word embeddings
   pb <- utils::txtProgressBar(0, vocab_size, style = 3)
   if (is.null(words)) {
     vocab <- character(vocab_size)
     mat <- matrix(0, nrow = vocab_size, ncol = dimensions)
-    for (r in 1:vocab_size) {
+    for (r in seq_len(vocab_size)) {
       utils::setTxtProgressBar(pb, r)
-      vocab[r] <- read_word2vec_word(f)
-      mat[r,1:dimensions] <- readBin(f, what = "numeric", size = 4, n = dimensions, endian = "little")
+      vocab[r] <- read_word2vec_word(conn)
+      mat[r,seq_len(dimensions)] <- readBin(conn, what = "numeric", size = 4, n = dimensions, endian = "little")
     }
   }else{
     vocab <- character(length(words))
     mat <- matrix(NA, nrow = length(words), ncol = dimensions)
     i <- 1L
-    for (r in 1:vocab_size) {
+    for (r in seq_len(vocab_size)) {
       utils::setTxtProgressBar(pb, r)
-      new_word <- read_word2vec_word(f)
-      new_vec <- readBin(f, what = "numeric", size = 4, n = dimensions, endian = "little")
+      new_word <- read_word2vec_word(conn)
+      new_vec <- readBin(conn, what = "numeric", size = 4, n = dimensions, endian = "little")
       if (new_word %in% words) {
         vocab[i] <- new_word
-        mat[i,1:dimensions] <- new_vec
+        mat[i,seq_len(dimensions)] <- new_vec
         i <- i + 1L
       }
     }
   }
-  close(f)
   close(pb)
   # output embeddings object
   dup <- duplicated(vocab)
   mat <- mat[!dup,]
   rownames(mat) <- vocab[!dup]
   mat <- as.embeddings(mat)
+}
+
+#' @noRd
+read_table_embeddings <- function(path, words = NULL, use_sys = TRUE, timeout = 1000){
+  # read table with token embeddings
+  if (is.character(words)) {
+    if (grepl("\\.zip$", path, ignore.case = TRUE)) {
+      warning("Line by line file reading is not supported for zip files. Loading full file before filtering words.")
+      x <- suppressWarnings( data.table::fread(path, quote = "", showProgress = TRUE) )
+      x <- x[x[[1]] %in% words,]
+    }else{
+      x <- fread_filtered(path, words = words, use_sys = use_sys, quote = "", showProgress = TRUE)
+    }
+  }else{
+    x <- suppressWarnings( data.table::fread(path, quote = "", showProgress = TRUE) )
+  }
+  id <- x[[1]]
+
+  # remove duplicates
+  duplicates <- duplicated(id)
+  if (any(duplicates)) {
+    warning("Tokens are not unique. Removing duplicates.")
+    x <- x[!duplicates,]
+    id <- x[[1]]
+  }
+  # coerce to numeric matrix
+  x <- x[,-1]
+  if (!all(sapply(x, is.numeric))) {
+    stop("Input is not numeric")
+  }
+  x <- as.matrix(x)
+  # set row and column names
+  rownames(x) <- id
+  if (all(colnames(x)[-1] == paste0("V",3:(ncol(x)+1L)))) colnames(x) <- NULL
+  # update class
+  return(as.embeddings(x))
+}
+
+# check if a string is a URL
+#' @noRd
+is_url <- function(x) {
+  grepl("^(http|https|ftp)://", x)
+}
+
+# read tabular from file or url, ignoring lines that don't start with a word in `words`
+#' @noRd
+fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
+  # check for the required system commands
+  sys_commands_available <- all(nzchar(Sys.which(c("curl", "gunzip", "awk"))))
+  # is file gzipped?
+  is_gz <- is_gzipped(file)
+  # expand file path
+  file <- path.expand(file)
+  if (use_sys && sys_commands_available) {
+    awk_script <- "NR==FNR{words[$1]=1;next} words[$1]"
+    # write words to temporary file
+    wordfile <- tempfile()
+    writeLines(words, wordfile)
+    # write shell command
+    if (is_url(file)) {
+      if (is_gz) {
+        cmd <- paste(
+          "curl -L -s", shQuote(file), "|",
+          "gunzip -c |",
+          "awk", shQuote(awk_script),
+          shQuote(wordfile), "-"
+        )
+      } else {
+        cmd <- paste(
+          "curl -L -s", shQuote(file), "|",
+          "awk", shQuote(awk_script),
+          shQuote(wordfile), "-"
+        )
+      }
+    } else {
+      # Local file
+      if (is_gz) {
+        cmd <- paste(
+          "gunzip -c", shQuote(file), "|",
+          "awk", shQuote(awk_script),
+          shQuote(wordfile), "-"
+        )
+      } else {
+        cmd <- paste(
+          "awk", shQuote(awk_script),
+          shQuote(wordfile), shQuote(file)
+        )
+      }
+    }
+
+    # Read data and finish up
+    data <- data.table::fread(cmd = cmd, ...)
+    unlink(wordfile)
+    return(data)
+  } else {
+    # R-only version
+    # handle for HTTP requests
+    h <- curl::new_handle()
+    curl::handle_setopt(h, timeout = 10000);
+    curl::handle_setheaders(h, "User-Agent" = "embeddingplyr (https://github.com/rimonim/embeddingplyr)")
+    # open connection
+    if (is_url(file)) {
+      conn <- tryCatch({
+        if (is_gz) {
+          gzcon(curl::curl(file, "rb", handle = h))
+        } else {
+          curl::curl(file, "rt", handle = h)
+        }
+      }, error = function(e) {
+        stop("Error opening URL: ", conditionMessage(e))
+      })
+    } else {
+      conn <- tryCatch({
+        if (is_gz) {
+          gzfile(file, "rt")
+        } else {
+          file(file, "rt")
+        }
+      }, error = function(e) {
+        stop("Error opening file: ", conditionMessage(e))
+      })
+    }
+    on.exit(close(conn))
+
+    # regex for matching words
+    pattern <- paste0("^(", paste(words, collapse = "|"), ")\\b")
+
+    # process lines one at a time
+    filtered_lines <- vector("list")
+    i <- 1
+    message("Processing file...")
+    line <- readLines(conn, n = 1, warn = FALSE)
+    if (!is.na(numlines <- suppressWarnings(as.numeric(strsplit(line, " ")[[1]]))[1])) {
+      # number of rows is known from header
+      pb <- utils::txtProgressBar(0, numlines, style = 3)
+      on.exit(close(pb), add = TRUE)
+      for (i in seq_len(numlines)) {
+        line <- readLines(conn, n = 1, warn = FALSE)
+        if (grepl(pattern, line)) {
+          filtered_lines[[i]] <- line
+          i <- i + 1
+        }
+        utils::setTxtProgressBar(pb, i)
+      }
+    }else{
+      if (grepl(pattern, line)) filtered_lines[[1]] <- line
+      while (length(line <- readLines(conn, n = 1, warn = FALSE)) > 0) {
+        if (grepl(pattern, line)) {
+          filtered_lines[[i]] <- line
+          i <- i + 1
+        }
+      }
+    }
+
+    # check if any lines were matched
+    if (length(filtered_lines) == 0) {
+      warning("No embeddings found for items in `words`")
+      return(data.table::data.table())
+    }
+
+    # convert filtered lines to a data.table
+    data <- data.table::fread(paste(unlist(filtered_lines), collapse = "\n"), header = FALSE, ...)
+
+    return(data)
+  }
 }

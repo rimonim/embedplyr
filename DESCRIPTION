@@ -7,6 +7,7 @@ Description: Common operations with word and text embeddings within a 'tidyverse
 License: GPL (>= 3)
 Encoding: UTF-8
 Imports:
+    curl,
     data.table,
     dplyr,
     pillar,
