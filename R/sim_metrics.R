@@ -83,21 +83,25 @@ anchored_sim <- function(x, pos, neg){
   as.numeric(proj) / anchored_norm
 }
 
-#' Faster Similarity and Distance Metrics With Matrix Operations
-#' @rdname sim_metrics_matrix
+#' Similarity and Distance Between A Matrix and a Vector
+#'
+#' These functions are equivalent to calling [vector similarity metrics][sim_metrics]
+#' on each row of a matrix, but use matrix operations and are therefore much faster.
+#'
+#' @rdname sim_metrics_mat_vec
 #' @param x a numeric matrix or embeddings object
 #' @param y a numeric vector of length `ncol(x)`
 #' @section Value:
 #' A named numeric vector of length `nrow(x)`
 #' @keywords internal
-dot_prod_matrix <- function(x, y) {
+dot_prod_mat_vec <- function(x, y) {
   stopifnot("x and y must have the same number of dimensions" = ncol(x) == length(y))
   x %*% y
 }
 
-#' @rdname sim_metrics_matrix
+#' @rdname sim_metrics_mat_vec
 #' @keywords internal
-cos_sim_matrix <- function(x, y) {
+cos_sim_mat_vec <- function(x, y) {
   stopifnot("x and y must have the same number of dimensions" = ncol(x) == length(y))
   normx <- sqrt(rowSums(x^2))
   normy <- sqrt(sum(y^2))
@@ -107,26 +111,25 @@ cos_sim_matrix <- function(x, y) {
   as.numeric(sims)
 }
 
-#' @rdname sim_metrics_matrix
+#' @rdname sim_metrics_mat_vec
 #' @keywords internal
-cos_sim_squished_matrix <- function(x, y) {
-  stopifnot("x and y must have the same number of dimensions" = ncol(x) == length(y))
-  cos <- cos_sim_matrix(x, y)
+cos_sim_squished_mat_vec <- function(x, y) {
+  cos <- cos_sim_mat_vec(x, y)
   cos*0.5 + 0.5
 }
 
-#' @rdname sim_metrics_matrix
+#' @rdname sim_metrics_mat_vec
 #' @keywords internal
-euc_dist_matrix <- function(x, y) {
+euc_dist_mat_vec <- function(x, y) {
   stopifnot("x and y must have the same number of dimensions" = ncol(x) == length(y))
   diff <- t(t(x) - y)
   sqrt(rowSums(diff^2))
 }
 
-#' @rdname sim_metrics_matrix
+#' @rdname sim_metrics_mat_vec
 #' @param p [p-norm](https://en.wikipedia.org/wiki/Lp_space#The_p-norm_in_finite_dimensions) used to compute the Minkowski distance
 #' @keywords internal
-minkowski_dist_matrix <- function(x, y, p = 1) {
+minkowski_dist_mat_vec <- function(x, y, p = 1) {
   stopifnot(
     "p must be greater than or equal to 1" = p >= 1,
     "p must be scalar" = length(p) == 1,
@@ -137,11 +140,101 @@ minkowski_dist_matrix <- function(x, y, p = 1) {
   rowSums(abs(diff)^p)^(1/p)
 }
 
-#' @rdname sim_metrics_matrix
+#' @rdname sim_metrics_mat_vec
 #' @keywords internal
-anchored_sim_matrix <- function(x, pos, neg) {
+anchored_sim_mat_vec <- function(x, pos, neg) {
   stopifnot("x, pos, and neg must have the same number of dimensions" = ncol(x) == length(pos) && length(pos) == length(neg))
   anchored_vec <- pos - neg
   dot <- t(t(x) - neg) %*% anchored_vec
   out <- as.numeric(dot)/sum(anchored_vec^2)
+}
+
+#' Similarity and Distance Matrices
+#'
+#' These functions compute pairwise [similarity metrics][sim_metrics] between
+#' each row of a matrix.
+#'
+#' @rdname sim_metrics_matrix
+#' @param x a numeric matrix or embeddings object
+#' @param tidy_output logical. If `FALSE` (the default), output a [stats::dist]
+#' object. If `TRUE`, output a tibble with columns `doc_id_1`, `doc_id_2`, and
+#' the similarity or distance metric.
+#' @section Value:
+#' A named numeric vector of length `nrow(x)`
+#' @keywords internal
+dot_prod_matrix <- function(x, tidy_output = FALSE) {
+  out <- tcrossprod(x, x)
+  out <- stats::as.dist(out)
+  if (tidy_output) {
+    rn <- rownames(x)
+    out <- tibble::tibble(
+      doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
+      doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)])),
+      dot_prod = out
+    )
+  }
+  out
+}
+
+#' @rdname sim_metrics_matrix
+#' @keywords internal
+cos_sim_matrix <- function(x, tidy_output = FALSE) {
+  normx <- sqrt(rowSums(x^2))
+  norm_prod <- tcrossprod(normx, normx)
+  out <- tcrossprod(x, x) / norm_prod
+  out[norm_prod == 0] <- NA_real_
+  out <- stats::as.dist(out)
+  if (tidy_output) {
+    rn <- rownames(x)
+    out <- tibble::tibble(
+      doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
+      doc_id_2 = unlist(sapply(2:nrow(x), function(i) rn[i:nrow(x)])),
+      cosine = out
+    )
+  }
+  out
+}
+
+#' @rdname sim_metrics_matrix
+#' @keywords internal
+cos_sim_squished_matrix <- function(x, tidy_output = FALSE) {
+  out <- cos_sim_matrix(x, tidy_output)
+  if (tidy_output) {
+    out$cosine <- out$cosine*0.5 + 0.5
+    names(out)[3] <- "cosine_squished"
+  }else{
+    out <- out*0.5 + 0.5
+  }
+  out
+}
+
+#' @rdname sim_metrics_matrix
+#' @keywords internal
+euc_dist_matrix <- function(x, tidy_output = FALSE) {
+  out <- stats::dist(method = "euclidean")
+  if (tidy_output) {
+    rn <- rownames(x)
+    out <- tibble::tibble(
+      doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
+      doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)])),
+      euclidean = out
+    )
+  }
+  out
+}
+
+#' @rdname sim_metrics_matrix
+#' @param p [p-norm](https://en.wikipedia.org/wiki/Lp_space#The_p-norm_in_finite_dimensions) used to compute the Minkowski distance
+#' @keywords internal
+minkowski_dist_matrix <- function(x, p = 1, tidy_output = FALSE) {
+  out <- stats::dist(method = "minkowski", p = p)
+  if (tidy_output) {
+    rn <- rownames(x)
+    out <- tibble::tibble(
+      doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
+      doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)])),
+      minkowski = out
+    )
+  }
+  out
 }

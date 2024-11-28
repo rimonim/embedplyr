@@ -6,30 +6,30 @@
 \alias{cos_sim_squished_matrix}
 \alias{euc_dist_matrix}
 \alias{minkowski_dist_matrix}
-\alias{anchored_sim_matrix}
-\title{Faster Similarity and Distance Metrics With Matrix Operations}
+\title{Similarity and Distance Matrices}
 \usage{
-dot_prod_matrix(x, y)
+dot_prod_matrix(x, tidy_output = FALSE)
 
-cos_sim_matrix(x, y)
+cos_sim_matrix(x, tidy_output = FALSE)
 
-cos_sim_squished_matrix(x, y)
+cos_sim_squished_matrix(x, tidy_output = FALSE)
 
-euc_dist_matrix(x, y)
+euc_dist_matrix(x, tidy_output = FALSE)
 
-minkowski_dist_matrix(x, y, p = 1)
-
-anchored_sim_matrix(x, pos, neg)
+minkowski_dist_matrix(x, p = 1, tidy_output = FALSE)
 }
 \arguments{
 \item{x}{a numeric matrix or embeddings object}
 
-\item{y}{a numeric vector of length \code{ncol(x)}}
+\item{tidy_output}{logical. If \code{FALSE} (the default), output a \link[stats:dist]{stats::dist}
+object. If \code{TRUE}, output a tibble with columns \code{doc_id_1}, \code{doc_id_2}, and
+the similarity or distance metric.}
 
 \item{p}{\href{https://en.wikipedia.org/wiki/Lp_space#The_p-norm_in_finite_dimensions}{p-norm} used to compute the Minkowski distance}
 }
 \description{
-Faster Similarity and Distance Metrics With Matrix Operations
+These functions compute pairwise \link[=sim_metrics]{similarity metrics} between
+each row of a matrix.
 }
 \section{Value}{
 

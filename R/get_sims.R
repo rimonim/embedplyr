@@ -1,6 +1,6 @@
 #' Row-wise Similarity and Distance Metrics
 #'
-#' `get_similarities(df, col1:col2, list(sim = vec2))` is essentially
+#' `get_sims(df, col1:col2, list(sim = vec2))` is essentially
 #' equivalent to `mutate(rowwise(df), sim = cos_sim(c_across(col1:col2), vec2))`.
 #' Includes methods for dataframes (in the style of `dplyr`), embeddings
 #' objects, and matrices.
@@ -50,20 +50,20 @@
 #' sad_vec <- predict(glove_twitter_25d, "sad")
 #'
 #' valence_embeddings |>
-#'   get_similarities(list(happy = happy_vec))
+#'   get_sims(list(happy = happy_vec))
 #' valence_embeddings |>
-#'   get_similarities(
+#'   get_sims(
 #'     list(happy = list(pos = happy_vec, neg = sad_vec)),
 #'     anchored_sim
 #'     )
 #' valence_embeddings |>
-#'   get_similarities(
+#'   get_sims(
 #'     list(happy = happy_vec),
 #'     method = function(x, y) sum(abs(x - y))
 #'     )
 #'
 #' valence_df <- tibble::as_tibble(valence_embeddings, rownames = "token")
-#' valence_df |> get_similarities(
+#' valence_df |> get_sims(
 #'   dim_1:dim_25,
 #'   list(happy = happy_vec, sad = sad_vec),
 #'   .keep_all = TRUE
@@ -71,16 +71,16 @@
 
 
 #' @export
-get_similarities <- function(x, ...) {
-  UseMethod("get_similarities")
+get_sims <- function(x, ...) {
+  UseMethod("get_sims")
 }
 
 #' @noRd
 #' @include sim_metrics.R
-sim_matrix_list <- list(
-	"cosine" = cos_sim_matrix, "cosine_squished" = cos_sim_squished_matrix,
-	"euclidean" = euc_dist_matrix, "minkowski" = minkowski_dist_matrix,
-	"dot_prod" = dot_prod_matrix, "anchored" = anchored_sim_matrix
+sim_mat_vec_list <- list(
+	"cosine" = cos_sim_mat_vec, "cosine_squished" = cos_sim_squished_mat_vec,
+	"euclidean" = euc_dist_mat_vec, "minkowski" = minkowski_dist_mat_vec,
+	"dot_prod" = dot_prod_mat_vec, "anchored" = anchored_sim_mat_vec
 )
 
 # wrap do.call so that input is first argument and further arguments can come from a list
@@ -95,10 +95,10 @@ call_with_list <- function(x, what, args, ...){
 apply_func <- function(y_item, x, method, ...) {
 	if (is.character(method)) {
 		method_name <- method[1]
-		method <- sim_matrix_list[[method_name]]
+		method <- sim_mat_vec_list[[method_name]]
 		if (is.null(method)) {
       stop("Unknown method '", method_name, "'. Supported methods are: ",
-           paste(names(sim_matrix_list), collapse = ", "))
+           paste(names(sim_mat_vec_list), collapse = ", "))
 		}
 		if (method_name == "anchored" && (!is.list(y_item) || !all(c("pos", "neg") %in% names(y_item)))) {
 			stop("For method 'anchored', each item in `y` must be a list with 'pos' and 'neg' vectors.")
@@ -121,12 +121,12 @@ apply_func <- function(y_item, x, method, ...) {
 					 paste(setdiff(names(as.list(args(method))), c("x", "")),collapse = ", "))
 		}
 	}else{
-		stop("`method` must be one of: ", paste(names(sim_matrix_list), collapse = ", "), " or a custom function.")
+		stop("`method` must be one of: ", paste(names(sim_mat_vec_list), collapse = ", "), " or a custom function.")
 	}
 }
 
 #' @export
-get_similarities.default <- function(x, y, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ...) {
+get_sims.default <- function(x, y, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ...) {
 	if (!inherits(x, "matrix")) stop("x must be an embeddings object or numeric matrix")
 	if (!is.list(y) || is.null(names(y)) || any(names(y) == "")) {
 		stop("`y` must be a named list with non-empty names.")
@@ -135,22 +135,22 @@ get_similarities.default <- function(x, y, method = c("cosine", "cosine_squished
 	tibble::as_tibble(out_cols)
 }
 
-#' @rdname get_similarities
-#' @method get_similarities embeddings
+#' @rdname get_sims
+#' @method get_sims embeddings
 #' @export
-get_similarities.embeddings <- function(x, y, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ...) {
-	out <- get_similarities.default(x, y, method, ...)
+get_sims.embeddings <- function(x, y, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ...) {
+	out <- get_sims.default(x, y, method, ...)
 	dplyr::bind_cols(tibble::tibble(doc_id = rownames(x)), out)
 }
 
-#' @rdname get_similarities
-#' @method get_similarities data.frame
+#' @rdname get_sims
+#' @method get_sims data.frame
 #' @export
-get_similarities.data.frame <- function(x, cols, y, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ..., .keep_all = "except.embeddings") {
+get_sims.data.frame <- function(x, cols, y, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ..., .keep_all = "except.embeddings") {
   in_dat <- as.matrix(dplyr::select(dplyr::ungroup(x), {{ cols }}))
   if (!is.numeric(in_dat)) stop("Selected columns must be numeric.")
   if (.keep_all != "except.embeddings" && !is.logical(.keep_all)) stop("`.keep_all` must be TRUE, FALSE, or 'except.embeddings'.")
-  out_dat <- get_similarities.default(in_dat, y)
+  out_dat <- get_sims.default(in_dat, y)
   if (.keep_all == "except.embeddings") {
   	dplyr::bind_cols( dplyr::select(x, -{{ cols }}), out_dat )
   }else if (.keep_all) {

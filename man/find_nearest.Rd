@@ -13,7 +13,7 @@ find_nearest(
   each = FALSE,
   include_self = TRUE,
   decreasing = NULL,
-  get_similarities = FALSE
+  get_sims = FALSE
 )
 }
 \arguments{
@@ -28,9 +28,9 @@ how many nearest neighbors should be output for each token?}
 
 \item{method}{either the name of a method to compute similarity or distance,
 or a function that takes two vectors and outputs a scalar, like those listed
-in \link[=sim_metrics]{Similarity and Distance Metrics}. The value is passed to \code{\link[=get_similarities]{get_similarities()}}.}
+in \link[=sim_metrics]{Similarity and Distance Metrics}. The value is passed to \code{\link[=get_sims]{get_sims()}}.}
 
-\item{...}{additional parameters to be passed to method function by way of \code{\link[=get_similarities]{get_similarities()}}}
+\item{...}{additional parameters to be passed to method function by way of \code{\link[=get_sims]{get_sims()}}}
 
 \item{each}{logical. If \code{FALSE} (the default), the embeddings of newdata are
 averaged and the function will output an embeddings object with the \code{top_n}
@@ -46,7 +46,7 @@ the embeddings with the highest similarity scores are output. If \code{FALSE}
 (the default for \code{"euclidean"} and \code{"minkowski"} methods), the embeddings with
 the lowest distance scores are output.}
 
-\item{get_similarities}{logical. If \code{FALSE} (the default), output an embeddings
+\item{get_sims}{logical. If \code{FALSE} (the default), output an embeddings
 object or list of embeddings objects. If \code{TRUE}, output a tibble with similarity
 or distance scores for each document.}
 }
@@ -55,8 +55,8 @@ Find Nearest Tokens in Embedding Space
 }
 \section{Value}{
 
-If \code{get_similarities = FALSE} (the default), an embeddings object or list of
-embeddings objects.  If \code{get_similarities = TRUE}, a tibble or list of tibbles
+If \code{get_sims = FALSE} (the default), an embeddings object or list of
+embeddings objects.  If \code{get_sims = TRUE}, a tibble or list of tibbles
 with similarity or distance scores for each document, with columns \code{doc_id}
 and the name of the requested \code{method}.
 }

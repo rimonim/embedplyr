@@ -44,7 +44,7 @@ Collate:
     'embeddings.R'
     'find_nearest.R'
     'sim_metrics.R'
-    'get_similarities.R'
+    'get_sims.R'
     'load_embeddings.R'
     'magnitude.R'
     'normalize.R'

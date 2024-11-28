@@ -72,14 +72,14 @@ test_that("find_nearest works with include_self = FALSE", {
 	expect_false("token1" %in% rownames(result))
 })
 
-test_that("find_nearest returns similarities when get_similarities = TRUE", {
+test_that("find_nearest returns similarities when get_sims = TRUE", {
 	embeddings_matrix <- matrix(runif(100), nrow = 10, dimnames = list(paste0("token", 1:10)))
 	embeddings <- as.embeddings(embeddings_matrix)
 
 	rownames(embeddings) <- paste0("token", 1:10)
 	newdata <- "token1"
 
-	result <- find_nearest(embeddings, newdata, top_n = 3, get_similarities = TRUE)
+	result <- find_nearest(embeddings, newdata, top_n = 3, get_sims = TRUE)
 
 	expect_true(is_tibble(result))
 	expect_equal(nrow(result), 3)
@@ -194,13 +194,13 @@ test_that("find_nearest errors when object is not an embeddings object", {
 	)
 })
 
-test_that("find_nearest works with get_similarities = TRUE and each = TRUE", {
+test_that("find_nearest works with get_sims = TRUE and each = TRUE", {
 	embeddings_matrix <- matrix(runif(100), nrow = 10, dimnames = list(paste0("token", 1:10)))
 	embeddings <- as.embeddings(embeddings_matrix)
 
 	newdata <- c("token1", "token2")
 
-	result <- find_nearest(embeddings, newdata, top_n = 3, each = TRUE, get_similarities = TRUE)
+	result <- find_nearest(embeddings, newdata, top_n = 3, each = TRUE, get_sims = TRUE)
 
 	expect_true(is.list(result))
 	expect_equal(length(result), length(newdata))

@@ -8,8 +8,8 @@
 #' how many nearest neighbors should be output for each token?
 #' @param method either the name of a method to compute similarity or distance,
 #' or a function that takes two vectors and outputs a scalar, like those listed
-#' in [Similarity and Distance Metrics][sim_metrics]. The value is passed to [get_similarities()].
-#' @param ... additional parameters to be passed to method function by way of [get_similarities()]
+#' in [Similarity and Distance Metrics][sim_metrics]. The value is passed to [get_sims()].
+#' @param ... additional parameters to be passed to method function by way of [get_sims()]
 #' @param each logical. If `FALSE` (the default), the embeddings of newdata are
 #' averaged and the function will output an embeddings object with the `top_n`
 #' nearest tokens to the overall average embedding. If `TRUE`, the function will
@@ -21,13 +21,13 @@
 #' the embeddings with the highest similarity scores are output. If `FALSE`
 #' (the default for `"euclidean"` and `"minkowski"` methods), the embeddings with
 #' the lowest distance scores are output.
-#' @param get_similarities logical. If `FALSE` (the default), output an embeddings
+#' @param get_sims logical. If `FALSE` (the default), output an embeddings
 #' object or list of embeddings objects. If `TRUE`, output a tibble with similarity
 #' or distance scores for each document.
 #'
 #' @section Value:
-#' If `get_similarities = FALSE` (the default), an embeddings object or list of
-#' embeddings objects.  If `get_similarities = TRUE`, a tibble or list of tibbles
+#' If `get_sims = FALSE` (the default), an embeddings object or list of
+#' embeddings objects.  If `get_sims = TRUE`, a tibble or list of tibbles
 #' with similarity or distance scores for each document, with columns `doc_id`
 #' and the name of the requested `method`.
 #'
@@ -52,7 +52,7 @@ find_nearest <- function(object, newdata,
                          each = FALSE,
                          include_self = TRUE,
                          decreasing = NULL,
-                         get_similarities = FALSE){
+                         get_sims = FALSE){
   if (!inherits(object, "embeddings")) {stop("`object` is not an embeddings object")}
   if (any(is.na(object))) stop("`object` contains NA values")
   # similarity or distance?
@@ -104,7 +104,7 @@ find_nearest <- function(object, newdata,
     if (length(available_tokens) > 1) {
       target <- colMeans(target, na.rm = TRUE)
     }
-    sims <- get_similarities(object, y = list(sim = target), method = method, ...)$sim
+    sims <- get_sims(object, y = list(sim = target), method = method, ...)$sim
     sims_order <- order(sims, decreasing = decreasing)
     if (include_self) {
       sims_order <- sims_order[1:top_n]
@@ -114,13 +114,13 @@ find_nearest <- function(object, newdata,
       object <- object[sims_order,]
       object <- object[!(rownames(object) %in% available_tokens),]
     }
-    if (get_similarities) {
+    if (get_sims) {
       tibble::tibble(doc_id = rownames(object), {{method}} := sims[sims_order])
     }else{
       as.embeddings(object, rowname_repair = FALSE)
     }
   }else{
-    sims <- lapply(target, function(vec) get_similarities(object, y = list(sim = vec), method = method, ...) )
+    sims <- lapply(target, function(vec) get_sims(object, y = list(sim = vec), method = method, ...) )
     sims_order <- lapply(sims, function(sim) order(sim$sim, decreasing = decreasing))
     object <- lapply(sims_order, function(sim_order) object[sim_order,] )
     if (!include_self) {
@@ -131,7 +131,7 @@ find_nearest <- function(object, newdata,
     object <- lapply(object, function(x){as.embeddings(utils::head(x, top_n))})
     object[all_tokens %in% missing_tokens] <- NA
     names(object) <- all_tokens
-    if (get_similarities) {
+    if (get_sims) {
       mapply(function(ob, sim, sim_order){
         sim_ordered <- sim[sim_order,]
         tibble::tibble(doc_id = rownames(ob), {{method}} := sim_ordered$sim[sim_ordered$doc_id %in% rownames(ob)])

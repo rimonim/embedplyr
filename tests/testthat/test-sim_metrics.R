@@ -148,131 +148,131 @@ test_that("anchored_sim returns error for mismatched dimensions", {
 	expect_error(anchored_sim(x, pos, neg), "x, pos, and neg must have the same number of dimensions")
 })
 
-test_that("dot_prod_matrix computes dot product for each row", {
+test_that("dot_prod_mat_vec computes dot product for each row", {
 	x <- matrix(1:6, nrow = 2)
 	y <- c(1, 1, 1)
 	expected <- x %*% y
-	result <- dot_prod_matrix(x, y)
+	result <- dot_prod_mat_vec(x, y)
 	expect_equal(result, expected)
 })
 
-test_that("dot_prod_matrix handles negative values", {
+test_that("dot_prod_mat_vec handles negative values", {
 	x <- matrix(c(-1, -2, -3, -4, -5, -6), nrow = 2)
 	y <- c(1, 2, 3)
 	expected <- x %*% y
-	result <- dot_prod_matrix(x, y)
+	result <- dot_prod_mat_vec(x, y)
 	expect_equal(result, expected)
 })
 
-test_that("dot_prod_matrix returns error for mismatched dimensions", {
+test_that("dot_prod_mat_vec returns error for mismatched dimensions", {
 	x <- matrix(1:6, nrow = 2)
 	y <- c(1, 1)
-	expect_error(dot_prod_matrix(x, y), "x and y must have the same number of dimensions")
+	expect_error(dot_prod_mat_vec(x, y), "x and y must have the same number of dimensions")
 })
 
-test_that("cos_sim_matrix computes cosine similarity for each row", {
+test_that("cos_sim_mat_vec computes cosine similarity for each row", {
 	x <- matrix(c(1, 0, 0, 1, 1, 0), nrow = 2, byrow = TRUE)
 	y <- c(1, 0, 0)
 	expected <- c(1, sqrt(1/2))
-	result <- cos_sim_matrix(x, y)
+	result <- cos_sim_mat_vec(x, y)
 	expect_equal(result, expected)
 })
 
-test_that("cos_sim_matrix handles zero vectors", {
+test_that("cos_sim_mat_vec handles zero vectors", {
 	x <- matrix(c(0, 0, 0, 1, 1, 1), nrow = 2, byrow = TRUE)
 	y <- c(1, 1, 1)
-	result <- cos_sim_matrix(x, y)
+	result <- cos_sim_mat_vec(x, y)
 	expect_true(is.na(result[1]))
 	expect_false(is.na(result[2]))
 })
 
-test_that("cos_sim_matrix returns error for mismatched dimensions", {
+test_that("cos_sim_mat_vec returns error for mismatched dimensions", {
 	x <- matrix(1:6, nrow = 2)
 	y <- c(1, 1)
-	expect_error(cos_sim_matrix(x, y), "x and y must have the same number of dimensions")
+	expect_error(cos_sim_mat_vec(x, y), "x and y must have the same number of dimensions")
 })
 
-test_that("cos_sim_squished_matrix squishes cosine similarity to [0,1]", {
+test_that("cos_sim_squished_mat_vec squishes cosine similarity to [0,1]", {
 	x <- matrix(c(1, 0, 0, -1, 0, 0), nrow = 2, byrow = TRUE)
 	y <- c(1, 0, 0)
-	result <- cos_sim_squished_matrix(x, y)
+	result <- cos_sim_squished_mat_vec(x, y)
 	expect_equal(result, c(1, 0))
 })
 
-test_that("cos_sim_squished_matrix handles zero vectors", {
+test_that("cos_sim_squished_mat_vec handles zero vectors", {
 	x <- matrix(c(0, 0, 0, 1, 1, 1), nrow = 2, byrow = TRUE)
 	y <- c(1, 1, 1)
-	result <- cos_sim_squished_matrix(x, y)
+	result <- cos_sim_squished_mat_vec(x, y)
 	expect_true(is.na(result[1]))
 	expect_false(is.na(result[2]))
 })
 
-test_that("euc_dist_matrix computes Euclidean distance for each row", {
+test_that("euc_dist_mat_vec computes Euclidean distance for each row", {
 	x <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, byrow = TRUE)
 	y <- c(1, 2, 3)
 	expected <- c(0, euc_dist(y, 4:6))
-	result <- euc_dist_matrix(x, y)
+	result <- euc_dist_mat_vec(x, y)
 	expect_equal(result, expected)
 })
 
-test_that("euc_dist_matrix handles mismatched dimensions", {
+test_that("euc_dist_mat_vec handles mismatched dimensions", {
 	x <- matrix(1:6, nrow = 2)
 	y <- c(1, 1)
-	expect_error(euc_dist_matrix(x, y), "x and y must have the same number of dimensions")
+	expect_error(euc_dist_mat_vec(x, y), "x and y must have the same number of dimensions")
 })
 
-test_that("minkowski_dist_matrix computes Minkowski distance with p=1", {
+test_that("minkowski_dist_mat_vec computes Minkowski distance with p=1", {
 	x <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, byrow = TRUE)
 	y <- c(1, 2, 3)
 	expected <- c(0, sum(abs(c(4,5,6)-c(1,2,3))))
-	result <- minkowski_dist_matrix(x, y, p = 1)
+	result <- minkowski_dist_mat_vec(x, y, p = 1)
 	expect_equal(result, expected)
 })
 
-test_that("minkowski_dist_matrix computes Minkowski distance with p=2", {
+test_that("minkowski_dist_mat_vec computes Minkowski distance with p=2", {
 	x <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, byrow = TRUE)
 	y <- c(1, 2, 3)
 	expected <- c(0, sqrt(sum((c(4,5,6)-c(1,2,3))^2)))
-	result <- minkowski_dist_matrix(x, y, p = 2)
+	result <- minkowski_dist_mat_vec(x, y, p = 2)
 	expect_equal(result, expected)
 })
 
-test_that("minkowski_dist_matrix handles p=Inf", {
+test_that("minkowski_dist_mat_vec handles p=Inf", {
 	x <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, byrow = TRUE)
 	y <- c(1, 2, 3)
 	expected <- c(0, max(abs(c(4,5,6)-c(1,2,3))))
-	result <- minkowski_dist_matrix(x, y, p = Inf)
+	result <- minkowski_dist_mat_vec(x, y, p = Inf)
 	expect_equal(result, expected)
 })
 
-test_that("minkowski_dist_matrix returns error for p < 1", {
+test_that("minkowski_dist_mat_vec returns error for p < 1", {
 	x <- matrix(1:6, nrow = 2)
 	y <- c(1, 2, 3)
-	expect_error(minkowski_dist_matrix(x, y, p = 0.5), "p must be greater than or equal to 1")
+	expect_error(minkowski_dist_mat_vec(x, y, p = 0.5), "p must be greater than or equal to 1")
 })
 
-test_that("anchored_sim_matrix computes anchored similarity for each row", {
+test_that("anchored_sim_mat_vec computes anchored similarity for each row", {
 	x <- matrix(c(2, 2, 0, 0), nrow = 2, byrow = TRUE)
 	pos <- c(4, 4)
 	neg <- c(0, 0)
 	expected <- c(0.5, 0)
-	result <- anchored_sim_matrix(x, pos, neg)
+	result <- anchored_sim_mat_vec(x, pos, neg)
 	expect_equal(result, expected)
 })
 
-test_that("anchored_sim_matrix handles zero-length anchored vector", {
+test_that("anchored_sim_mat_vec handles zero-length anchored vector", {
 	x <- matrix(c(1, 2, 3, 4), nrow = 2, byrow = TRUE)
 	pos <- c(1, 2)
 	neg <- c(1, 2)
-	result <- anchored_sim_matrix(x, pos, neg)
+	result <- anchored_sim_mat_vec(x, pos, neg)
 	expect_true(all(is.na(result)))
 })
 
-test_that("anchored_sim_matrix returns error for mismatched dimensions", {
+test_that("anchored_sim_mat_vec returns error for mismatched dimensions", {
 	x <- matrix(1:6, nrow = 2)
 	pos <- c(1, 2)
 	neg <- c(3)
-	expect_error(anchored_sim_matrix(x, pos, neg), "x, pos, and neg must have the same number of dimensions")
+	expect_error(anchored_sim_mat_vec(x, pos, neg), "x, pos, and neg must have the same number of dimensions")
 })
 
 test_that("cos_sim handles NA values in inputs", {
@@ -318,35 +318,35 @@ test_that("anchored_sim handles NA values in inputs", {
 	expect_true(is.na(result))
 })
 
-test_that("cos_sim_matrix handles NA values in matrix input", {
+test_that("cos_sim_mat_vec handles NA values in matrix input", {
 	x <- matrix(c(NA, 2, 3, 4, 5, 6), nrow = 2, byrow = TRUE)
 	y <- c(1, 2, 3)
-	result <- cos_sim_matrix(x, y)
+	result <- cos_sim_mat_vec(x, y)
 	expect_true(is.na(result[1]))
 	expect_false(is.na(result[2]))
 })
 
-test_that("euc_dist_matrix handles NA values in matrix input", {
+test_that("euc_dist_mat_vec handles NA values in matrix input", {
 	x <- matrix(c(NA, 2, 3, 4, 5, 6), nrow = 2, byrow = TRUE)
 	y <- c(1, 2, 3)
-	result <- euc_dist_matrix(x, y)
+	result <- euc_dist_mat_vec(x, y)
 	expect_true(is.na(result[1]))
 	expect_false(is.na(result[2]))
 })
 
-test_that("minkowski_dist_matrix handles NA values in matrix input", {
+test_that("minkowski_dist_mat_vec handles NA values in matrix input", {
 	x <- matrix(c(NA, 2, 3, 4, 5, 6), nrow = 2, byrow = TRUE)
 	y <- c(1, 2, 3)
-	result <- minkowski_dist_matrix(x, y)
+	result <- minkowski_dist_mat_vec(x, y)
 	expect_true(is.na(result[1]))
 	expect_false(is.na(result[2]))
 })
 
-test_that("anchored_sim_matrix handles NA values in matrix input", {
+test_that("anchored_sim_mat_vec handles NA values in matrix input", {
 	x <- matrix(c(NA, 2, 1, 2), nrow = 2, byrow = TRUE)
 	pos <- c(1, 2)
 	neg <- c(0, 0)
-	result <- anchored_sim_matrix(x, pos, neg)
+	result <- anchored_sim_mat_vec(x, pos, neg)
 	expect_true(is.na(result[1]))
 	expect_false(is.na(result[2]))
 })

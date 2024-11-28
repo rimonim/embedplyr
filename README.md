@@ -159,15 +159,15 @@ valence_sbert_df <- valence_df |>
 ```
 
 To quantify how good and how intense the texts are, we can compare them
-to the embeddings for “good” and “intense” using `get_similarities()`.
-Note that this step requires only a dataframe, tibble, or embeddings
-object with numeric columns; the embeddings can come from any source.
+to the embeddings for “good” and “intense” using `get_sims()`. Note that
+this step requires only a dataframe, tibble, or embeddings object with
+numeric columns; the embeddings can come from any source.
 
 ``` r
 good_vec <- predict(glove_twitter_25d, "good")
 intense_vec <- predict(glove_twitter_25d, "intense")
 valence_quantified <- valence_embeddings_df |> 
-    get_similarities(
+    get_sims(
         dim_1:dim_25, 
         list(
             good = good_vec, 
