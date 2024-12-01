@@ -137,7 +137,7 @@ embed_docs.data.frame <- function(x, text_col, model, id_col = NULL,
   if(output_embeddings) return(out)
   if(.keep_all){
     out <- dplyr::bind_cols(x, out[,-1])
-    return(tibble::as_tibble(dplyr::relocate(out, id_col)))
+    return(tibble::as_tibble(dplyr::relocate(out, !!id_col)))
   }else{
     names(out)[1] <- id_col %||% "doc_id"
     out

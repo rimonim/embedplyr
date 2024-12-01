@@ -21,7 +21,7 @@
 #' @section Value:
 #' If `output_embeddings = FALSE`, a tibble with columns `doc_id`, `token`, and embedding
 #' dimension names. If `.keep_all = TRUE`, the new columns will appear after
-#' existing ones.
+#' existing ones, and the class of the input will be maintained.
 #' If `output_embeddings = TRUE`, a named list of embeddings objects with tokens as
 #' rownames.
 #'
@@ -53,12 +53,17 @@ embed_tokens <- function(x, ...) {
 #' @export
 embed_tokens.default <- function(x, model, ..., .keep_missing = FALSE,
 												 tolower = TRUE, output_embeddings = FALSE) {
+	if (!is.embeddings(model)) stop("`model` must be an embeddings object.")
 	x <- quanteda::tokens(x, ...)
 	if (tolower) x <- quanteda::tokens_tolower(x)
 	x <- as.list(x)
-	out <- lapply(x, function(nd) predict.embeddings(model, nd, drop = FALSE, .keep_missing = .keep_missing))
+	embedding_not_found <- !sapply(unique(unlist(x)), exists, envir = attr(model, "token_index"))
+	if (any(embedding_not_found)) {
+		warning(sprintf("%d tokens in `x` are not present in `model`.", sum(embedding_not_found)))
+	}
+	out <- lapply(x, function(nd) suppressWarnings(predict.embeddings(model, nd, drop = FALSE, .keep_missing = .keep_missing)))
 	if (output_embeddings) return(out)
-	out <- lapply(out, as_tibble, rownames = "token")
+	out <- lapply(out, function(emb) if (nrow(emb) != 0) as_tibble(emb, rownames = "token") else NULL)
 	dplyr::bind_rows(out, .id = "doc_id")
 }
 

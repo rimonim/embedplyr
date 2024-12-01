@@ -61,7 +61,7 @@ returns the embedding for each token.
 
 If \code{output_embeddings = FALSE}, a tibble with columns \code{doc_id}, \code{token}, and embedding
 dimension names. If \code{.keep_all = TRUE}, the new columns will appear after
-existing ones.
+existing ones, and the class of the input will be maintained.
 If \code{output_embeddings = TRUE}, a named list of embeddings objects with tokens as
 rownames.
 }
