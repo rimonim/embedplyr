@@ -104,14 +104,14 @@ embed_docs <- function(x, ...) {
 embed_docs.default <- function(x, model, w = NULL, method = "mean", ...,
                                tolower = TRUE, output_embeddings = FALSE){
   if(inherits(model, "embeddings")){
-    x_dfm <- quanteda::dfm(quanteda::tokens(x, ...))
+    x_dfm <- quanteda::dfm(quanteda::tokens(x, ...), tolower = tolower)
     out <- textstat_embedding(x_dfm, model, w, method, output_embeddings = output_embeddings)
     if (output_embeddings) return(out)
   }else if(inherits(model, "function")){
     texts <- as.character(x)
     if (tolower) texts <- tolower(texts)
     out <- model(texts, ...)
-    if(!inherits(out, "data.frame") || nrow(out) != nrow(x)){
+    if(!inherits(out, "data.frame") || nrow(out) != length(texts)){
       stop("`model` must be either an embeddings object or a function that outputs a dataframe with the same number of rows as `x`")
     }
     docnames <- names(x) %||% paste0("text",seq_along(x))
