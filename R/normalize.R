@@ -39,6 +39,7 @@ normalize.default <- function(x, ...) {
 	out <- apply(x, 1, function(x){x / sqrt(sum(x^2))}, simplify = FALSE)
 	out <- as.embeddings(do.call(rbind, out))
 	colnames(out) <- colnames(x)
+	if (any(is.nan(out))) warning("NaNs produced")
 	out
 }
 
@@ -47,7 +48,9 @@ normalize.default <- function(x, ...) {
 #' @export
 normalize.numeric <- function(x, ...) {
 	if (!is.null(dim(x))) stop("x must be a numeric vector, an embeddings object, or a dataframe with one embedding per row")
-	x / sqrt(sum(x^2))
+	out <- x / sqrt(sum(x^2))
+	if (any(is.nan(out))) warning("NaNs produced")
+	out
 }
 
 #' @rdname normalize
@@ -63,6 +66,7 @@ normalize_rows.default <- function(x, ...) {
 	out <- apply(x, 1, function(x){x / sqrt(sum(x^2))}, simplify = FALSE)
 	out <- do.call(rbind, out)
 	colnames(out) <- colnames(x)
+	if (any(is.nan(out))) warning("NaNs produced")
 	out
 }
 
@@ -70,6 +74,7 @@ normalize_rows.default <- function(x, ...) {
 #' @method normalize_rows data.frame
 #' @export
 normalize_rows.data.frame <- function(x, cols, ...) {
+	if (missing(cols)) cols <- names(x)
 	in_dat <- dplyr::select(x, {{ cols }})
 	out_dat <- normalize_rows.default(in_dat)
 	dplyr::bind_cols( dplyr::select(x, -{{ cols }}), out_dat )
