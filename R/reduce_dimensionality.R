@@ -2,8 +2,8 @@
 #'
 #' Includes methods for dataframes (in the style of `dplyr`), embeddings objects, and matrices.
 #'
-#' @param x a dataframe, embeddings object, or matrix with one embedding per row,
-#' or a list of such objects
+#' @param x an [embeddings] object or dataframe with one embedding per row, or a
+#' list of such objects
 #' @param ... additional parameters to be passed to class-specific methods
 #' @param cols tidyselect - columns that contain numeric embedding values
 #' @param reduce_to number of dimensions to keep.
@@ -69,6 +69,7 @@ reduce_dimensionality.default <- function(x, reduce_to = NULL, center = TRUE, sc
   if (!is_matrixlike(x)) stop(paste(class(x),collapse = "/"), " object cannot be reduced.")
   if (any(is.na(x))) {
     warning("Input data contains missing values. Rows dropped in output.")
+    x <- stats::na.omit(x)
   }
   if (is.null(custom_rotation)) {
     pca <- stats::prcomp(~., data = x, center = center, scale. = scale, tol = tol, rank. = reduce_to)
@@ -96,6 +97,7 @@ reduce_dimensionality.default <- function(x, reduce_to = NULL, center = TRUE, sc
 #' @export
 reduce_dimensionality.data.frame <- function(x, cols, reduce_to = NULL, center = TRUE, scale = FALSE, tol = NULL, ..., custom_rotation = NULL, output_rotation = FALSE){
   in_dat <- dplyr::select(x, {{ cols }})
+  x <- x[stats::complete.cases(in_dat),]
   out_dat <- reduce_dimensionality.default(in_dat, reduce_to, center, scale, tol, custom_rotation = custom_rotation, output_rotation = output_rotation)
   if (output_rotation) return(out_dat)
   out_dat <- as.data.frame(out_dat)

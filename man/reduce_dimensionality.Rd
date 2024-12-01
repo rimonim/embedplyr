@@ -32,8 +32,8 @@ reduce_dimensionality(x, ...)
 )
 }
 \arguments{
-\item{x}{a dataframe, embeddings object, or matrix with one embedding per row,
-or a list of such objects}
+\item{x}{an \link{embeddings} object or dataframe with one embedding per row, or a
+list of such objects}
 
 \item{...}{additional parameters to be passed to class-specific methods}
 
