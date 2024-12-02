@@ -17,6 +17,8 @@ options(embeddings.model.path = "~/Documents/data/embeddings")
 # embedplyr <img src="man/figures/logo.png" align="right" height="138" alt="" />
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/rimonim/embedplyr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rimonim/embedplyr/actions/workflows/R-CMD-check.yaml)
+[![codecov test coverage](https://codecov.io/github/rimonim/embedplyr/graph/badge.svg?token=CNJZ8R2LYZ)](https://codecov.io/github/rimonim/embedplyr)
 <!-- badges: end -->
 
 ## Overview
