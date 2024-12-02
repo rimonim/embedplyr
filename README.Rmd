@@ -11,6 +11,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+options(embeddings.model.path = "~/Documents/data/embeddings")
 ```
 
 # embedplyr <img src="man/figures/logo.png" align="right" height="138" alt="" />
@@ -55,7 +56,7 @@ embedplyr won't help you train new embedding models, but it can load embeddings 
 ```{r, warning=FALSE, message=FALSE}
 library(embedplyr)
 
-glove_twitter_25d <- load_embeddings("glove.twitter.27B.25d", save = FALSE)
+glove_twitter_25d <- load_embeddings("glove.twitter.27B.25d")
 ```
 
 The outcome is an embeddings object. An embeddings object is just a numeric matrix with fast hash table indexing by rownames (generally tokens). This means that it can be easily coerced to a dataframe or tibble, while also allowing special embeddings-specific methods and functions, such as `predict.embeddings()` and `find_nearest()`:

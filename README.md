@@ -68,7 +68,7 @@ online sources with `load_embeddings()`.
 ``` r
 library(embedplyr)
 
-glove_twitter_25d <- load_embeddings("glove.twitter.27B.25d", save = FALSE)
+glove_twitter_25d <- load_embeddings("glove.twitter.27B.25d")
 ```
 
 The outcome is an embeddings object. An embeddings object is just a

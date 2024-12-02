@@ -12,7 +12,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-options(embeddings.model.path = "~/Documents/data/embeddings")
 ```
 
 ```{r setup, warning=FALSE, message=FALSE}
@@ -26,9 +25,8 @@ DDR is ideal for studies of abstract constructs like emotions, that refer to the
 
 ## Load Word Embedding Model
 
-```{r}
+```{r, eval=FALSE}
 glove_twitter_25d <- load_embeddings("glove.twitter.27B.25d")
-glove_twitter_25d
 ```
 
 ## Embed Texts of Interest
