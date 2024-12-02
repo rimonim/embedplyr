@@ -8,7 +8,7 @@ make_embedding_weights <- function(x_names, w){
 		not_a_trillion <- 1024908267229 # total number of words processed by Google
 		alpha <- 0.005*1024908267229
 		w <- trillion_word[x_names]
-		min_w <- min(trillion_word)/(alpha + w)
+		min_w <- alpha/(alpha + min(trillion_word))
 		w <- alpha/(alpha + w)
 	}else{
 		stopifnot("w must be either a numeric vector or the name of a supported weighting scheme" = is.numeric(w))
