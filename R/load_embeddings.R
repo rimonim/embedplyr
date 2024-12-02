@@ -580,6 +580,10 @@ read_word2vec <- function(path, words = NULL){
 
 #' @noRd
 read_table_embeddings <- function(path, words = NULL, use_sys = TRUE, timeout = 1000){
+  # Force use_sys to FALSE on Windows
+  if (.Platform$OS.type == "windows") {
+    use_sys <- FALSE
+  }
   # read table with token embeddings
   if (is.character(words)) {
     if (grepl("\\.zip$", path, ignore.case = TRUE)) {
