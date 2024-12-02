@@ -16,6 +16,7 @@
 #' print(glove_twitter_25d, n = 5)
 #'
 #' @method format embeddings
+#' @importFrom rlang %||%
 #' @export
 format.embeddings <- function(x, ..., n = NULL, round = 2L) {
   # how many columns to show
@@ -46,6 +47,7 @@ format.embeddings <- function(x, ..., n = NULL, round = 2L) {
 }
 
 #' @noRd
+#' @importFrom rlang %||%
 #' @method print embeddings
 #' @export
 print.embeddings <- function(x, n = NULL, round = 2, ...) {

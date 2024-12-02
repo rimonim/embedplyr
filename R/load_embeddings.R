@@ -398,6 +398,7 @@ supported_models <- c(
 #'
 #' Speer, R., Chin, J., and Havasi, C. (2017). ConceptNet 5.5: An Open Multilingual Graph of General Knowledge. In proceedings of AAAI 2017. http://aaai.org/ocs/index.php/AAAI/AAAI17/paper/view/14972
 #'
+#' @importFrom rlang %||%
 #' @export
 load_embeddings <- function(model, dir = NULL, words = NULL, save = TRUE, format = "original"){
   stopifnot("Unrecognized model. Please specify a supported model." = model %in% names(supported_models))

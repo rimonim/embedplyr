@@ -87,6 +87,7 @@ as.matrix.embeddings <- function(x, ...){
 }
 
 #' @importFrom rlang :=
+#' @importFrom rlang %||%
 #' @rdname embeddings-methods
 #' @method as_tibble embeddings
 #' @export

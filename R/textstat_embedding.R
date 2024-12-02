@@ -100,6 +100,7 @@ embed_docs <- function(x, ...) {
 }
 
 #' @rdname textstat_embedding
+#' @importFrom rlang %||%
 #' @export
 embed_docs.default <- function(x, model, w = NULL, method = "mean", ...,
                                tolower = TRUE, output_embeddings = FALSE){
@@ -124,6 +125,7 @@ embed_docs.default <- function(x, model, w = NULL, method = "mean", ...,
 }
 
 #' @importFrom rlang :=
+#' @importFrom rlang %||%
 #' @rdname textstat_embedding
 #' @method embed_docs data.frame
 #' @export

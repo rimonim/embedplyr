@@ -22,6 +22,7 @@
 #'
 #' @export
 project_points_onto_line <- function(points, line_start, line_end) {
+  stopifnot("all arguments must have the same number of dimensions" = ncol(points) == length(line_start) && length(line_start) == length(line_end))
 
   # direction vector of the line segment
   line_direction <- line_end - line_start
