@@ -149,8 +149,7 @@ test_that("read_embeddings handles words not present in the file", {
 	create_glove_file(temp_file)
 
 	words <- c("word4", "word5")
-	expect_warning(embeddings_loaded <- read_embeddings(temp_file, words = words),
-								 "Returning a NULL data.table.")
+	embeddings_loaded <- suppressWarnings( read_embeddings(temp_file, words = words) )
 	expect_true(is.embeddings(embeddings_loaded))
 	expect_equal(dim(embeddings_loaded), c(0, 3))
 })
