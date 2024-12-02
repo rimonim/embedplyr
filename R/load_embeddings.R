@@ -588,6 +588,9 @@ read_table_embeddings <- function(path, words = NULL, use_sys = TRUE, timeout = 
       x <- x[x[[1]] %in% words,]
     }else{
       x <- fread_filtered(path, words = words, use_sys = use_sys, quote = "", showProgress = TRUE)
+      if (nrow(x) == 0){
+        x <- data.table::fread(path, nrows = 0, quote = "", showProgress = TRUE)
+      }
     }
   }else{
     x <- suppressWarnings( data.table::fread(path, quote = "", showProgress = TRUE) )
