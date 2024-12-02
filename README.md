@@ -1,7 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# embedplyr: Tools for Working With Text Embeddings
+# embedplyr <img src="man/figures/logo.png" align="right" height="138" alt="" />
+
+# embedplyr
 
 <!-- badges: start -->
 <!-- badges: end -->
