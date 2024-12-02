@@ -1,0 +1,9 @@
+pandoc: 3.1.11
+pkgdown: 2.1.1
+pkgdown_sha: ~
+articles:
+  DDR: DDR.html
+last_built: 2024-12-02T18:05Z
+urls:
+  reference: https://rimonim.github.io/embedplyr/reference
+  article: https://rimonim.github.io/embedplyr/articles
