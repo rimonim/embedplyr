@@ -580,10 +580,6 @@ read_word2vec <- function(path, words = NULL){
 
 #' @noRd
 read_table_embeddings <- function(path, words = NULL, use_sys = TRUE, timeout = 1000){
-  # Force use_sys to FALSE on Windows
-  if (.Platform$OS.type == "windows") {
-    use_sys <- FALSE
-  }
   # read table with token embeddings
   if (is.character(words)) {
     if (grepl("\\.zip$", path, ignore.case = TRUE)) {
@@ -630,6 +626,10 @@ is_url <- function(x) {
 # read tabular from file or url, ignoring lines that don't start with a word in `words`
 #' @noRd
 fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
+  # Force use_sys to FALSE on Windows
+  if (.Platform$OS.type == "windows") {
+    use_sys <- FALSE
+  }
   # check for the required system commands
   sys_commands_available <- all(nzchar(Sys.which(c("curl", "gunzip", "awk"))))
   # is file gzipped?
