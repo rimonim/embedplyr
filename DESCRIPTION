@@ -51,6 +51,7 @@ Collate:
     'magnitude.R'
     'normalize.R'
     'reduce_dimensionality.R'
+    'sim_matrix.R'
     'textstat_embedding.R'
     'vector_utilities.R'
 Depends: 

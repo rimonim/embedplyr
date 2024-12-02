@@ -139,7 +139,7 @@ get_sims.default <- function(x, y, method = c("cosine", "cosine_squished", "eucl
 #' @method get_sims embeddings
 #' @export
 get_sims.embeddings <- function(x, y, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ...) {
-	out <- get_sims.default(x, y, method, ...)
+	out <- get_sims.default(x, y, method = method, ...)
 	dplyr::bind_cols(tibble::tibble(doc_id = rownames(x)), out)
 }
 
@@ -150,7 +150,7 @@ get_sims.data.frame <- function(x, cols, y, method = c("cosine", "cosine_squishe
   in_dat <- as.matrix(dplyr::select(dplyr::ungroup(x), {{ cols }}))
   if (!is.numeric(in_dat)) stop("Selected columns must be numeric.")
   if (.keep_all != "except.embeddings" && !is.logical(.keep_all)) stop("`.keep_all` must be TRUE, FALSE, or 'except.embeddings'.")
-  out_dat <- get_sims.default(in_dat, y)
+  out_dat <- get_sims.default(in_dat, y, method = method, ...)
   if (.keep_all == "except.embeddings") {
   	dplyr::bind_cols( dplyr::select(x, -{{ cols }}), out_dat )
   }else if (.keep_all) {

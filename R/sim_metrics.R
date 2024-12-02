@@ -211,7 +211,7 @@ cos_sim_squished_matrix <- function(x, tidy_output = FALSE) {
 #' @rdname sim_metrics_matrix
 #' @keywords internal
 euc_dist_matrix <- function(x, tidy_output = FALSE) {
-  out <- stats::dist(method = "euclidean")
+  out <- stats::dist(x, method = "euclidean")
   if (tidy_output) {
     rn <- rownames(x)
     out <- tibble::tibble(
