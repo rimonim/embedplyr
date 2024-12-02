@@ -57,3 +57,4 @@ Collate:
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
+URL: https://rimonim.github.io/embedplyr/
