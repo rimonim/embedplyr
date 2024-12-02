@@ -6,6 +6,8 @@
 \alias{embedplyr-package}
 \title{embedplyr: Tools for Working With Text Embeddings}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Common operations with word and text embeddings within a 'tidyverse'/'quanteda' workflow, as demonstrated in "Data Science for Psychology: Natural Language". Includes simple functions for calculating common similarity metrics, as well as higher level functions for loading pretrained word embedding models (e.g. 'GloVe'), applying them to words, aggregating to produce text embeddings, and reducing dimensionality.
 }
 \author{
