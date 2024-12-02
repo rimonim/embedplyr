@@ -711,7 +711,7 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
     pattern <- paste0("^(", paste(words, collapse = "|"), ")\\b")
 
     # process lines one at a time
-    filtered_lines <- vector("list")
+    filtered_lines <- character()
     i <- 1
     message("Processing file...")
     line <- readLines(conn, n = 1, warn = FALSE)
@@ -722,16 +722,16 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
       for (i in seq_len(numlines)) {
         line <- readLines(conn, n = 1, warn = FALSE)
         if (grepl(pattern, line)) {
-          filtered_lines[[i]] <- line
+          filtered_lines <- c(filtered_lines, line)
           i <- i + 1
         }
         utils::setTxtProgressBar(pb, i)
       }
     }else{
-      if (grepl(pattern, line)) filtered_lines[[1]] <- line
+      if (grepl(pattern, line)) filtered_lines <- c(filtered_lines, line)
       while (length(line <- readLines(conn, n = 1, warn = FALSE)) > 0) {
         if (grepl(pattern, line)) {
-          filtered_lines[[i]] <- line
+          filtered_lines <- c(filtered_lines, line)
           i <- i + 1
         }
       }
@@ -744,7 +744,7 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
     }
 
     # convert filtered lines to a data.table
-    data <- data.table::fread(paste(unlist(filtered_lines), collapse = "\n"), header = FALSE, ...)
+    data <- data.table::fread(text = filtered_lines, header = FALSE, ...)
 
     return(data)
   }
