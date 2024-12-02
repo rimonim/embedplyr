@@ -6,16 +6,29 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-## About
+## Overview
 
 embedplyr enables common operations with word and text embeddings within
 a ‘tidyverse’/‘quanteda’ workflow, as demonstrated in [Data Science for
-Psychology: Natural Language](http://ds4psych.com). It includes simple
-functions for calculating common similarity metrics, as well as higher
-level functions for loading pretrained word embedding models
-(e.g. [GloVe](https://nlp.stanford.edu/projects/glove/)), applying them
-to words, aggregating to produce text embeddings, reducing
-dimensionality, and more.
+Psychology: Natural Language](http://ds4psych.com).
+
+- `load_embeddings()` loads pretrained
+  [GloVe](https://nlp.stanford.edu/projects/glove/),
+  [word2vec](https://code.google.com/archive/p/word2vec/), [ConceptNet
+  Numberbatch](https://github.com/commonsense/conceptnet-numberbatch),
+  and [fastText](https://fasttext.cc) word embedding models from
+  Internet sources or from your working directory
+- `embed_tokens()` returns the embedding for each token in a set of
+  texts
+- `embed_docs()` generates text embeddings for a set of documents
+- `get_sims()` calculates row-wise similarity metrics between a set of
+  embeddings and a given reference
+- `average_embedding()` calculates the (weighted) average of multiple
+  embeddings
+- `reduce_dimensionality()` reduces the dimensionality of embeddings
+- `normalize()` and `normalize_rows()` normalize embeddings to the unit
+  hypersphere
+- and more…
 
 ## Installation
 
