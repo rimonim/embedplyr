@@ -1,4 +1,4 @@
-Package: embeddingplyr
+Package: embedplyr
 Type: Package
 Title: Tools for Working With Text Embeddings
 Version: 0.1.0
@@ -20,8 +20,10 @@ Imports:
     utils
 Suggests:
     Gmedian,
+    knitr,
     Matrix,
     purrr,
+    rmarkdown,
     testthat (>= 3.0.0),
     text2vec
 Enhances:
@@ -36,12 +38,12 @@ Collate:
     'average_embedding.R'
     'data.R'
     'embed_tokens.R'
-    'embeddingplyr-package.R'
     'embeddings-methods.R'
     'embeddings-predict.R'
     'embeddings-print.R'
     'embeddings-subsetting.R'
     'embeddings.R'
+    'embedplyr-package.R'
     'find_nearest.R'
     'sim_metrics.R'
     'get_sims.R'
@@ -53,3 +55,4 @@ Collate:
     'vector_utilities.R'
 Depends: 
     R (>= 2.10)
+VignetteBuilder: knitr

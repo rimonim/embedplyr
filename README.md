@@ -1,40 +1,40 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# embeddingplyr: Tools for Working With Text Embeddings
+# embedplyr: Tools for Working With Text Embeddings
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 ## About
 
-embeddingplyr enables common operations with word and text embeddings
-within a ‘tidyverse’/‘quanteda’ workflow, as demonstrated in [Data
-Science for Psychology: Natural Language](http://ds4psych.com). It
-includes simple functions for calculating common similarity metrics, as
-well as higher level functions for loading pretrained word embedding
-models (e.g. [GloVe](https://nlp.stanford.edu/projects/glove/)),
-applying them to words, aggregating to produce text embeddings, reducing
+embedplyr enables common operations with word and text embeddings within
+a ‘tidyverse’/‘quanteda’ workflow, as demonstrated in [Data Science for
+Psychology: Natural Language](http://ds4psych.com). It includes simple
+functions for calculating common similarity metrics, as well as higher
+level functions for loading pretrained word embedding models
+(e.g. [GloVe](https://nlp.stanford.edu/projects/glove/)), applying them
+to words, aggregating to produce text embeddings, reducing
 dimensionality, and more.
 
 ## Installation
 
-You can install the development version of embeddingplyr from
+You can install the development version of embedplyr from
 [GitHub](https://github.com/) with:
 
 ``` r
 # devtools package required to install quanteda from Github 
-remotes::install_github("rimonim/embeddingplyr") 
+remotes::install_github("rimonim/embedplyr") 
 ```
 
 ## Functionality
 
-embeddingplyr is designed to facilitate the use of word and text
-embeddings in common data manipulation and text analysis workflows,
-without introducing new syntax or unfamiliar data structures.
+embedplyr is designed to facilitate the use of word and text embeddings
+in common data manipulation and text analysis workflows, without
+introducing new syntax or unfamiliar data structures.
 
-embeddingplyr is model agnostic; it can be used to work with embeddings
-from decontextualized models like
+embedplyr is model agnostic; it can be used to work with embeddings from
+decontextualized models like
 [GloVe](https://nlp.stanford.edu/projects/glove/) and
 [word2vec](https://code.google.com/archive/p/word2vec/), or from
 contextualized models like BERT or others made available through the
@@ -42,14 +42,14 @@ contextualized models like BERT or others made available through the
 
 ### Loading Pretrained Embeddings
 
-embeddingplyr won’t help you train new embedding models, but it can load
+embedplyr won’t help you train new embedding models, but it can load
 embeddings from a file or download them from online. This is especially
 useful for pretrained word embedding models like GloVe, word2vec, and
 fastText. Dozens of these models can be conveniently downloaded from
 online sources with `load_embeddings()`.
 
 ``` r
-library(embeddingplyr)
+library(embedplyr)
 
 glove_twitter_25d <- load_embeddings("glove.twitter.27B.25d")
 ```

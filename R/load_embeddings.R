@@ -520,7 +520,7 @@ read_word2vec <- function(path, words = NULL){
   # handle for HTTP requests
   h <- curl::new_handle()
   curl::handle_setopt(h, timeout = 10000);
-  curl::handle_setheaders(h, "User-Agent" = "embeddingplyr (https://github.com/rimonim/embeddingplyr)")
+  curl::handle_setheaders(h, "User-Agent" = "embedplyr (https://github.com/rimonim/embedplyr)")
   # open binary file in read mode
   is_gz <- is_gzipped(path)
   if (is_url(path)) {
@@ -674,7 +674,7 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
     # handle for HTTP requests
     h <- curl::new_handle()
     curl::handle_setopt(h, timeout = 10000);
-    curl::handle_setheaders(h, "User-Agent" = "embeddingplyr (https://github.com/rimonim/embeddingplyr)")
+    curl::handle_setheaders(h, "User-Agent" = "embedplyr (https://github.com/rimonim/embedplyr)")
     # open connection
     if (is_url(file)) {
       conn <- tryCatch({

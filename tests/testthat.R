@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(embeddingplyr)
+library(embedplyr)
 
-test_check("embeddingplyr")
+test_check("embedplyr")
