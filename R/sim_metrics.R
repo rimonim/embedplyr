@@ -161,12 +161,13 @@ anchored_sim_mat_vec <- function(x, pos, neg) {
 #' the similarity or distance metric.
 #' @section Value:
 #' A named numeric vector of length `nrow(x)`
+#' @importFrom rlang %||%
 #' @keywords internal
 dot_prod_matrix <- function(x, tidy_output = FALSE) {
   out <- tcrossprod(x, x)
   out <- stats::as.dist(out)
   if (tidy_output) {
-    rn <- rownames(x)
+    rn <- rownames(x) %||% seq_len(nrow(x))
     out <- tibble::tibble(
       doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
       doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)])),
@@ -185,7 +186,7 @@ cos_sim_matrix <- function(x, tidy_output = FALSE) {
   out[norm_prod == 0] <- NA_real_
   out <- stats::as.dist(out)
   if (tidy_output) {
-    rn <- rownames(x)
+    rn <- rownames(x) %||% seq_len(nrow(x))
     out <- tibble::tibble(
       doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
       doc_id_2 = unlist(sapply(2:nrow(x), function(i) rn[i:nrow(x)])),
@@ -213,7 +214,7 @@ cos_sim_squished_matrix <- function(x, tidy_output = FALSE) {
 euc_dist_matrix <- function(x, tidy_output = FALSE) {
   out <- stats::dist(x, method = "euclidean")
   if (tidy_output) {
-    rn <- rownames(x)
+    rn <- rownames(x) %||% seq_len(nrow(x))
     out <- tibble::tibble(
       doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
       doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)])),
@@ -227,9 +228,15 @@ euc_dist_matrix <- function(x, tidy_output = FALSE) {
 #' @param p [p-norm](https://en.wikipedia.org/wiki/Lp_space#The_p-norm_in_finite_dimensions) used to compute the Minkowski distance
 #' @keywords internal
 minkowski_dist_matrix <- function(x, p = 1, tidy_output = FALSE) {
-  out <- stats::dist(method = "minkowski", p = p)
+  if (is.infinite(p)) {
+    diff_list <- apply(x, 1, function(y) t(t(x) - y), simplify = F)
+    chebyshev <- lapply(diff_list, function(diff) apply(abs(diff), 1, max))
+    out <- stats::as.dist( do.call(rbind, chebyshev) )
+  }else{
+    out <- stats::dist(x, method = "minkowski", p = p)
+  }
   if (tidy_output) {
-    rn <- rownames(x)
+    rn <- rownames(x) %||% seq_len(nrow(x))
     out <- tibble::tibble(
       doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
       doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)])),

@@ -351,3 +351,248 @@ test_that("anchored_sim_mat_vec handles NA values in matrix input", {
 	expect_false(is.na(result[2]))
 })
 
+test_that("dot_prod_matrix works correctly with default settings", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- dot_prod_matrix(x)
+	expect_s3_class(result, "dist")
+	expect_equal(length(result), choose(nrow(x), 2))
+	# Check that values are correct
+	expected_values <- c(
+		sum(x[1, ] * x[2, ]),
+		sum(x[1, ] * x[3, ]),
+		sum(x[2, ] * x[3, ])
+	)
+	expect_equal(as.vector(result), expected_values)
+})
+
+test_that("dot_prod_matrix works with tidy_output = TRUE", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- dot_prod_matrix(x, tidy_output = TRUE)
+	expect_s3_class(result, "tbl_df")
+	expect_equal(ncol(result), 3)
+	expect_equal(nrow(result), choose(nrow(x), 2))
+	expect_equal(names(result), c("doc_id_1", "doc_id_2", "dot_prod"))
+	# Check that values are correct
+	expected_values <- c(
+		sum(x[1, ] * x[2, ]),
+		sum(x[1, ] * x[3, ]),
+		sum(x[2, ] * x[3, ])
+	)
+	expect_equal(as.numeric(result$dot_prod), expected_values)
+})
+
+test_that("cos_sim_matrix works correctly with default settings", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- cos_sim_matrix(x)
+	expect_s3_class(result, "dist")
+	expect_equal(length(result), choose(nrow(x), 2))
+	# Compute expected cosine similarities
+	norms <- sqrt(rowSums(x^2))
+	expected_values <- c(
+		sum(x[1, ] * x[2, ]) / (norms[1] * norms[2]),
+		sum(x[1, ] * x[3, ]) / (norms[1] * norms[3]),
+		sum(x[2, ] * x[3, ]) / (norms[2] * norms[3])
+	)
+	expect_equal(as.numeric(result), as.numeric(expected_values))
+})
+
+test_that("cos_sim_matrix works with tidy_output = TRUE", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- cos_sim_matrix(x, tidy_output = TRUE)
+	expect_s3_class(result, "tbl_df")
+	expect_equal(ncol(result), 3)
+	expect_equal(nrow(result), choose(nrow(x), 2))
+	expect_equal(names(result), c("doc_id_1", "doc_id_2", "cosine"))
+	# Check that values are correct
+	norms <- sqrt(rowSums(x^2))
+	expected_values <- c(
+		sum(x[1, ] * x[2, ]) / (norms[1] * norms[2]),
+		sum(x[1, ] * x[3, ]) / (norms[1] * norms[3]),
+		sum(x[2, ] * x[3, ]) / (norms[2] * norms[3])
+	)
+	expect_equal(as.numeric(result$cosine), as.numeric(expected_values))
+})
+
+test_that("cos_sim_squished_matrix works correctly", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- cos_sim_squished_matrix(x)
+	expect_s3_class(result, "dist")
+	expect_equal(length(result), choose(nrow(x), 2))
+	# Compute expected squished cosine similarities
+	norms <- sqrt(rowSums(x^2))
+	cos_values <- c(
+		sum(x[1, ] * x[2, ]) / (norms[1] * norms[2]),
+		sum(x[1, ] * x[3, ]) / (norms[1] * norms[3]),
+		sum(x[2, ] * x[3, ]) / (norms[2] * norms[3])
+	)
+	expected_values <- cos_values * 0.5 + 0.5
+	expect_equal(as.numeric(result), as.numeric(expected_values))
+})
+
+test_that("cos_sim_squished_matrix works with tidy_output = TRUE", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- cos_sim_squished_matrix(x, tidy_output = TRUE)
+	expect_s3_class(result, "tbl_df")
+	expect_equal(ncol(result), 3)
+	expect_equal(nrow(result), choose(nrow(x), 2))
+	expect_equal(names(result), c("doc_id_1", "doc_id_2", "cosine_squished"))
+	# Check that values are correct
+	norms <- sqrt(rowSums(x^2))
+	cos_values <- c(
+		sum(x[1, ] * x[2, ]) / (norms[1] * norms[2]),
+		sum(x[1, ] * x[3, ]) / (norms[1] * norms[3]),
+		sum(x[2, ] * x[3, ]) / (norms[2] * norms[3])
+	)
+	expected_values <- cos_values * 0.5 + 0.5
+	expect_equal(as.numeric(result$cosine_squished), as.numeric(expected_values))
+})
+
+test_that("euc_dist_matrix works correctly", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- euc_dist_matrix(x)
+	expect_s3_class(result, "dist")
+	expect_equal(length(result), choose(nrow(x), 2))
+	# Compute expected Euclidean distances
+	expected_values <- c(
+		sqrt(sum((x[1, ] - x[2, ])^2)),
+		sqrt(sum((x[1, ] - x[3, ])^2)),
+		sqrt(sum((x[2, ] - x[3, ])^2))
+	)
+	expect_equal(as.vector(result), expected_values)
+})
+
+test_that("euc_dist_matrix works with tidy_output = TRUE", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- euc_dist_matrix(x, tidy_output = TRUE)
+	expect_s3_class(result, "tbl_df")
+	expect_equal(ncol(result), 3)
+	expect_equal(nrow(result), choose(nrow(x), 2))
+	expect_equal(names(result), c("doc_id_1", "doc_id_2", "euclidean"))
+	# Check that values are correct
+	expected_values <- c(
+		sqrt(sum((x[1, ] - x[2, ])^2)),
+		sqrt(sum((x[1, ] - x[3, ])^2)),
+		sqrt(sum((x[2, ] - x[3, ])^2))
+	)
+	expect_equal(as.numeric(result$euclidean), as.numeric(expected_values))
+})
+
+test_that("minkowski_dist_matrix works correctly with default p = 1", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- minkowski_dist_matrix(x)
+	expect_s3_class(result, "dist")
+	expect_equal(length(result), choose(nrow(x), 2))
+	# Compute expected Minkowski distances with p = 1 (Manhattan distance)
+	expected_values <- c(
+		sum(abs(x[1, ] - x[2, ])),
+		sum(abs(x[1, ] - x[3, ])),
+		sum(abs(x[2, ] - x[3, ]))
+	)
+	expect_equal(as.vector(result), expected_values)
+})
+
+test_that("minkowski_dist_matrix works correctly with p = 2", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- minkowski_dist_matrix(x, p = 2)
+	expect_s3_class(result, "dist")
+	expect_equal(length(result), choose(nrow(x), 2))
+	# Compute expected Minkowski distances with p = 2 (Euclidean distance)
+	expected_values <- c(
+		sqrt(sum((x[1, ] - x[2, ])^2)),
+		sqrt(sum((x[1, ] - x[3, ])^2)),
+		sqrt(sum((x[2, ] - x[3, ])^2))
+	)
+	expect_equal(as.vector(result), expected_values)
+})
+
+test_that("minkowski_dist_matrix works with tidy_output = TRUE and p = 2", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- minkowski_dist_matrix(x, p = 2, tidy_output = TRUE)
+	expect_s3_class(result, "tbl_df")
+	expect_equal(ncol(result), 3)
+	expect_equal(nrow(result), choose(nrow(x), 2))
+	expect_equal(names(result), c("doc_id_1", "doc_id_2", "minkowski"))
+	# Check that values are correct
+	expected_values <- c(
+		sqrt(sum((x[1, ] - x[2, ])^2)),
+		sqrt(sum((x[1, ] - x[3, ])^2)),
+		sqrt(sum((x[2, ] - x[3, ])^2))
+	)
+	expect_equal(as.numeric(result$minkowski), as.numeric(expected_values))
+})
+
+test_that("Functions handle missing rownames", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	rownames(x) <- NULL
+	result <- cos_sim_matrix(x, tidy_output = TRUE)
+	expect_s3_class(result, "tbl_df")
+	expect_equal(result$doc_id_1, c(1, 1, 2))
+	expect_equal(result$doc_id_2, c(2, 3, 3))
+})
+
+test_that("Functions handle single-row input", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))[1, , drop = FALSE]
+	result <- cos_sim_matrix(x)
+	expect_s3_class(result, "dist")
+	expect_equal(length(result), 0)
+})
+
+test_that("Functions handle zero vectors", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	x[1, ] <- 0
+	result <- cos_sim_matrix(x)
+	expect_true(any(is.na(result)))
+})
+
+test_that("Functions handle NA values", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	x[1, 1] <- NA
+	result <- cos_sim_matrix(x)
+	expect_true(any(is.na(result)))
+})
+
+test_that("dot_prod_matrix handles zero vectors correctly", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	x[1, ] <- 0
+	result <- dot_prod_matrix(x)
+	expect_equal(as.vector(result), c(0, 0, sum(x[2, ] * x[3, ])))
+})
+
+test_that("minkowski_dist_matrix handles p = Inf (Chebyshev distance)", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	result <- minkowski_dist_matrix(x, p = Inf)
+	expect_s3_class(result, "dist")
+	expected_values <- c(
+		max(abs(x[1, ] - x[2, ])),
+		max(abs(x[1, ] - x[3, ])),
+		max(abs(x[2, ] - x[3, ]))
+	)
+	expect_equal(as.vector(result), expected_values)
+})
+
+test_that("cos_sim_matrix handles identical rows", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	x[2, ] <- x[1, ]
+	result <- cos_sim_matrix(x)
+	expect_equal(as.vector(result)[1], 1)
+})
+
+test_that("euc_dist_matrix handles identical rows", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	x[2, ] <- x[1, ]
+	result <- euc_dist_matrix(x)
+	expect_equal(as.vector(result)[1], 0)
+})
+
+test_that("cos_sim_matrix handles negative values", {
+	x <- embeddings(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), nrow = 3, byrow = TRUE, dimnames = list(paste0("word", 1:3), paste0("dim", 1:3)))
+	x[1, ] <- -x[1, ]
+	result <- cos_sim_matrix(x)
+	norms <- sqrt(rowSums(x^2))
+	expected_values <- c(
+		sum(x[1, ] * x[2, ]) / (norms[1] * norms[2]),
+		sum(x[1, ] * x[3, ]) / (norms[1] * norms[3]),
+		sum(x[2, ] * x[3, ]) / (norms[2] * norms[3])
+	)
+	expect_equal(as.numeric(result), as.numeric(expected_values))
+})

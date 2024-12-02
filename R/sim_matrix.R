@@ -57,18 +57,23 @@ sim_matrix_list <- list(
 	"dot_prod" = dot_prod_matrix
 )
 
+#' @importFrom rlang %||%
 #' @export
 sim_matrix.default <- function(x, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ..., tidy_output = FALSE) {
 	if (!inherits(x, "matrix")) stop("x must be an embeddings object or numeric matrix")
 	if (is.character(method)) {
 		method_name <- method[1]
 		method <- sim_matrix_list[[method_name]]
+		if (is.null(method)) {
+			stop("Unknown method '", method_name, "'. Supported methods are: ",
+					 paste(names(sim_mat_vec_list), collapse = ", "))
+		}
 		method(x, ..., tidy_output = tidy_output)
 	}else if (is.function(method)){
 		out <- apply(x, 1, function(v1) apply(x, 1, function(v2) method(v1, v2)))
 		out <- stats::as.dist(out)
 		if (tidy_output) {
-			rn <- rownames(x)
+			rn <- rownames(x) %||% seq_len(nrow(x))
 			out <- tibble::tibble(
 				doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
 				doc_id_2 = unlist(sapply(2:nrow(x), function(i) rn[i:nrow(x)])),
@@ -87,5 +92,5 @@ sim_matrix.default <- function(x, method = c("cosine", "cosine_squished", "eucli
 sim_matrix.data.frame <- function(x, cols, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ..., tidy_output = FALSE) {
 	in_dat <- as.matrix(dplyr::select(dplyr::ungroup(x), {{ cols }}))
 	if (!is.numeric(in_dat)) stop("Selected columns must be numeric.")
-	sim_matrix.default(in_dat, method = method, ..., tidy_output = FALSE)
+	sim_matrix.default(in_dat, method = method, ..., tidy_output = tidy_output)
 }
