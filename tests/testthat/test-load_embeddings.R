@@ -13,15 +13,19 @@ create_sample_embeddings <- function() {
 }
 
 # Function to create a small GloVe format file
-create_glove_file <- function(filepath) {
-	embeddings_obj <- create_sample_embeddings()
+create_glove_file <- function(filepath, embeddings_obj = NULL) {
+	if (is.null(embeddings_obj)) {
+		embeddings_obj <- create_sample_embeddings()
+	}
 	write.table(cbind(rownames(embeddings_obj), embeddings_obj), quote = FALSE,
 							file = filepath, row.names = FALSE, col.names = FALSE, sep = " ")
 }
 
 # Function to create a small word2vec binary format file
-create_word2vec_bin_file <- function(filepath) {
-	embeddings_obj <- create_sample_embeddings()
+create_word2vec_bin_file <- function(filepath, embeddings_obj = NULL) {
+	if (is.null(embeddings_obj)) {
+		embeddings_obj <- create_sample_embeddings()
+	}
 	vocab_size <- nrow(embeddings_obj)
 	vector_size <- ncol(embeddings_obj)
 
@@ -161,6 +165,77 @@ test_that("read_word2vec reads only specified words when 'words' parameter is us
 
 	words <- c("word1", "word3")
 	embeddings_loaded <- quiet( read_word2vec(temp_file, words = words) )
+
+	expect_true(is.embeddings(embeddings_loaded))
+	expect_equal(dim(embeddings_loaded), c(2, 3))
+	expect_equal(rownames(embeddings_loaded), words)
+})
+
+test_that("load_embeddings reads from and writes to RDS", {
+	model_name <- "word2vec.test.3d"
+	temp_dir <- tempdir()
+	temp_file <- file.path(temp_dir, paste0(model_name, ".bin"))
+
+	# Create a small word2vec binary format file
+	create_word2vec_bin_file(temp_file)
+
+	# Mock supported_models to point to our local file
+	local_mocked_bindings(supported_models = c(word2vec.test.3d = temp_file))
+
+	# Run load_embeddings
+	embeddings_loaded <- suppressWarnings(suppressMessages(quiet( load_embeddings(model_name, dir = temp_dir, format = "rds") )))
+
+	expect_true(is.embeddings(embeddings_loaded))
+	expect_equal(dim(embeddings_loaded), c(3, 3))
+	expect_equal(rownames(embeddings_loaded), c("word1", "word2", "word3"))
+
+	# Read saved embeddings
+	expect_warning(
+		embeddings_loaded <- suppressMessages(quiet( load_embeddings(model_name, dir = temp_dir) )),
+		"More than one file matches `model`. Using the first one."
+	)
+
+	expect_true(is.embeddings(embeddings_loaded))
+	expect_equal(dim(embeddings_loaded), c(3, 3))
+	expect_equal(rownames(embeddings_loaded), c("word1", "word2", "word3"))
+})
+
+test_that("load_embeddings turns use_sys off for numberbatch files", {
+	model_name <- "numberbatch.file"
+	temp_dir <- tempdir()
+	temp_file <- file.path(temp_dir, paste0(model_name, ".txt"))
+
+	# Create a small GloVe format file
+	create_glove_file(temp_file)
+
+	# Mock supported_models to point to our local file
+	local_mocked_bindings(supported_models = c(numberbatch.file = temp_file))
+
+	words <- c("word1", "word3")
+
+	# Run load_embeddings
+	embeddings_loaded <- suppressMessages( load_embeddings(model_name, dir = temp_dir, words = words, save = FALSE) )
+
+	expect_true(is.embeddings(embeddings_loaded))
+	expect_equal(dim(embeddings_loaded), c(2, 3))
+	expect_equal(rownames(embeddings_loaded), words)
+})
+
+test_that("load_embeddings uses informative header when use_sys = FALSE", {
+	model_name <- "numberbatch.file"
+	temp_dir <- tempdir()
+	temp_file <- file.path(temp_dir, paste0(model_name, ".txt"))
+
+	# Create a small GloVe format file
+	create_glove_file(temp_file)
+
+	# Mock supported_models to point to our local file
+	local_mocked_bindings(supported_models = c(numberbatch.file = temp_file))
+
+	words <- c("word1", "word3")
+
+	# Run load_embeddings
+	embeddings_loaded <- suppressMessages( load_embeddings(model_name, dir = temp_dir, words = words, save = FALSE) )
 
 	expect_true(is.embeddings(embeddings_loaded))
 	expect_equal(dim(embeddings_loaded), c(2, 3))
