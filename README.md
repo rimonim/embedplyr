@@ -13,8 +13,8 @@ coverage](https://codecov.io/github/rimonim/embedplyr/graph/badge.svg?token=CNJZ
 ## Overview
 
 embedplyr enables common operations with word and text embeddings within
-a ‘tidyverse’/‘quanteda’ workflow, as demonstrated in [Data Science for
-Psychology: Natural Language](http://ds4psych.com).
+a ‘tidyverse’ and/or ‘quanteda’ workflow, as demonstrated in [Data
+Science for Psychology: Natural Language](http://ds4psych.com).
 
 - `load_embeddings()` loads pretrained
   [GloVe](https://nlp.stanford.edu/projects/glove/),
@@ -40,7 +40,6 @@ You can install the development version of embedplyr from
 [GitHub](https://github.com/) with:
 
 ``` r
-# devtools package required to install quanteda from Github 
 remotes::install_github("rimonim/embedplyr") 
 ```
 

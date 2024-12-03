@@ -23,7 +23,7 @@ options(embeddings.model.path = "~/Documents/data/embeddings")
 
 ## Overview
 
-embedplyr enables common operations with word and text embeddings within a 'tidyverse'/'quanteda' workflow, as demonstrated in [Data Science for Psychology: Natural Language](http://ds4psych.com). 
+embedplyr enables common operations with word and text embeddings within a 'tidyverse' and/or 'quanteda' workflow, as demonstrated in [Data Science for Psychology: Natural Language](http://ds4psych.com). 
 
 * `load_embeddings()` loads pretrained [GloVe](https://nlp.stanford.edu/projects/glove/), [word2vec](https://code.google.com/archive/p/word2vec/), [ConceptNet Numberbatch](https://github.com/commonsense/conceptnet-numberbatch), and [fastText](https://fasttext.cc) word embedding models from Internet sources or from your working directory
 * `embed_tokens()` returns the embedding for each token in a set of texts
@@ -39,7 +39,6 @@ embedplyr enables common operations with word and text embeddings within a 'tidy
 You can install the development version of embedplyr from [GitHub](https://github.com/) with:
 
 ``` r
-# devtools package required to install quanteda from Github 
 remotes::install_github("rimonim/embedplyr") 
 ```
 
