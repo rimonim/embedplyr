@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   DDR: DDR.html
-last_built: 2024-12-02T18:05Z
+last_built: 2024-12-03T07:11Z
 urls:
   reference: https://rimonim.github.io/embedplyr/reference
   article: https://rimonim.github.io/embedplyr/articles
