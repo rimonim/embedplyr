@@ -747,10 +747,14 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
         if (i %% 10000 == 0) utils::setTxtProgressBar(pb, i)
       }
     }else{
-      if (grepl(pattern, line)) filtered_lines <- c(filtered_lines, line)
+      if (grepl(pattern, line)) {
+        filtered_lines[w] <- line
+        w <- w + 1L
+      }
       while (length(line <- readLines(conn, n = 1, warn = FALSE)) > 0) {
         if (grepl(pattern, line)) {
-          filtered_lines <- c(filtered_lines, line)
+          filtered_lines[w] <- line
+          w <- w + 1
         }
       }
     }
