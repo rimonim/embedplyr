@@ -76,7 +76,7 @@ sim_matrix.default <- function(x, method = c("cosine", "cosine_squished", "eucli
 			rn <- rownames(x) %||% seq_len(nrow(x))
 			out <- tibble::tibble(
 				doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
-				doc_id_2 = unlist(sapply(2:nrow(x), function(i) rn[i:nrow(x)])),
+				doc_id_2 = unlist(sapply(2:nrow(x), function(i) rn[i:nrow(x)]), use.names = FALSE),
 				cosine = out
 			)
 		}

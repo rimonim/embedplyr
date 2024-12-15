@@ -31,7 +31,7 @@ predict.embeddings <- function(object, newdata, drop = TRUE, .keep_missing = FAL
     warning(sprintf('Replacing %d empty strings with " ".', sum(zchars)))
     newdata[zchars] <- " "
   }
-  embedding_not_found <- !sapply(newdata, exists, envir = attr(object, "token_index"))
+  embedding_not_found <- !vapply(newdata, exists, FALSE, envir = attr(object, "token_index"))
   if (any(embedding_not_found)) {
     warning(sprintf("%d items in `newdata` are not present in the embeddings object.", sum(embedding_not_found)))
   }

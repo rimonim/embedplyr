@@ -507,14 +507,17 @@ is_gzipped <- function(file) {
 
 #' @noRd
 read_word2vec_word <- function(f, max_len = 50) {
-  number_str <- ""
+  chars <- character(max_len)
+  # read characters until whitespace or max_len
   for (i in seq_len(max_len)) {
     ch <- suppressWarnings( readChar(f, nchars = 1, useBytes = TRUE) )
-    if (ch %in% c(" ", "\n", "\t")) break
-    number_str <- paste0(number_str, ch)
+    if (ch == " " || ch == "" || ch == "\n" || ch == "\t") break
+    chars[i] <- ch
   }
-  number_str
+  # collapse characters into string
+  paste0(chars[1:i], collapse = "")
 }
+
 
 #' @noRd
 read_word2vec <- function(path, words = NULL){
@@ -546,36 +549,46 @@ read_word2vec <- function(path, words = NULL){
   vocab_size <- as.numeric(read_word2vec_word(conn))
   dimensions <- as.numeric(read_word2vec_word(conn))
   # read word embeddings
-  pb <- utils::txtProgressBar(0, vocab_size, style = 3)
+  if (vocab_size >= 10000) {
+    pb <- utils::txtProgressBar(0, vocab_size, style = 3)
+    on.exit(close(pb), add = TRUE)
+  }
   if (is.null(words)) {
     vocab <- character(vocab_size)
     mat <- matrix(0, nrow = vocab_size, ncol = dimensions)
     for (r in seq_len(vocab_size)) {
-      utils::setTxtProgressBar(pb, r)
-      vocab[r] <- read_word2vec_word(conn)
-      mat[r,seq_len(dimensions)] <- readBin(conn, what = "numeric", size = 4, n = dimensions, endian = "little")
-    }
-  }else{
-    vocab <- character(length(words))
-    mat <- matrix(NA, nrow = length(words), ncol = dimensions)
-    i <- 1L
-    for (r in seq_len(vocab_size)) {
-      utils::setTxtProgressBar(pb, r)
+      if (r %% 10000 == 0) utils::setTxtProgressBar(pb, r)
       new_word <- read_word2vec_word(conn)
       new_vec <- readBin(conn, what = "numeric", size = 4, n = dimensions, endian = "little")
-      if (new_word %in% words) {
-        vocab[i] <- new_word
-        mat[i,seq_len(dimensions)] <- new_vec
-        i <- i + 1L
+      if (nzchar(new_word)) {
+        vocab[r] <- new_word
+        mat[r,] <- new_vec
       }
     }
+    rownames(mat) <- vocab
+    mat <- as.embeddings(mat)
+  }else{
+    mat <- matrix(NA_real_, nrow = length(words), ncol = dimensions,
+                  dimnames = list(words))
+    token_index <- new.env(hash = TRUE, parent = emptyenv())
+    for (i in seq_along(words)) token_index[[words[i]]] <- i
+    w <- 1L
+    for (r in seq_len(vocab_size)) {
+      if (r %% 10000 == 0) utils::setTxtProgressBar(pb, r)
+      new_word <- read_word2vec_word(conn)
+      new_vec <- readBin(conn, what = "numeric", size = 4, n = dimensions, endian = "little")
+      if (nzchar(new_word) && exists(new_word, envir = token_index)) {
+        mat[get(new_word, envir = token_index),] <- new_vec
+        w <- w + 1L
+        if (w == length(words)) {
+          if (vocab_size >= 10000) utils::setTxtProgressBar(pb, vocab_size)
+          break
+        }
+      }
+    }
+    mat <- as.embeddings(mat)
   }
-  close(pb)
-  # output embeddings object
-  dup <- duplicated(vocab)
-  mat <- mat[!dup,]
-  rownames(mat) <- vocab[!dup]
-  mat <- as.embeddings(mat)
+  mat
 }
 
 #' @noRd
@@ -606,7 +619,7 @@ read_table_embeddings <- function(path, words = NULL, use_sys = TRUE, timeout = 
   }
   # coerce to numeric matrix
   x <- x[,-1]
-  if (!all(sapply(x, is.numeric))) {
+  if (!all(vapply(x, is.numeric, TRUE))) {
     stop("Input is not numeric")
   }
   x <- as.matrix(x)
@@ -711,28 +724,33 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
     pattern <- paste0("^(", paste(words, collapse = "|"), ")\\b")
 
     # process lines one at a time
-    filtered_lines <- character()
-    i <- 1
+    filtered_lines <- character(length(words))
+    w <- 1
     message("Processing file...")
     line <- readLines(conn, n = 1, warn = FALSE)
     if (!is.na(numlines <- suppressWarnings(as.numeric(strsplit(line, " ")[[1]]))[1])) {
       # number of rows is known from header
-      pb <- utils::txtProgressBar(0, numlines, style = 3)
-      on.exit(close(pb), add = TRUE)
+      if (numlines >= 10000) {
+        pb <- utils::txtProgressBar(0, numlines, style = 3)
+        on.exit(close(pb), add = TRUE)
+      }
       for (i in seq_len(numlines)) {
         line <- readLines(conn, n = 1, warn = FALSE)
         if (grepl(pattern, line)) {
-          filtered_lines <- c(filtered_lines, line)
-          i <- i + 1
+          filtered_lines[w] <- line
+          w <- w + 1
+          if (w == length(words)) {
+            if (numlines >= 10000) utils::setTxtProgressBar(pb, numlines)
+            break
+          }
         }
-        utils::setTxtProgressBar(pb, i)
+        if (i %% 10000 == 0) utils::setTxtProgressBar(pb, i)
       }
     }else{
       if (grepl(pattern, line)) filtered_lines <- c(filtered_lines, line)
       while (length(line <- readLines(conn, n = 1, warn = FALSE)) > 0) {
         if (grepl(pattern, line)) {
           filtered_lines <- c(filtered_lines, line)
-          i <- i + 1
         }
       }
     }

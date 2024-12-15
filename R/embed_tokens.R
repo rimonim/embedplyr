@@ -57,7 +57,8 @@ embed_tokens.default <- function(x, model, ..., .keep_missing = FALSE,
 	x <- quanteda::tokens(x, ...)
 	if (tolower) x <- quanteda::tokens_tolower(x)
 	x <- as.list(x)
-	embedding_not_found <- !sapply(unique(unlist(x)), exists, envir = attr(model, "token_index"))
+	unique_x <- unique(unlist(x, use.names = FALSE))
+	embedding_not_found <- !vapply(unique_x, exists, FALSE, envir = attr(model, "token_index"))
 	if (any(embedding_not_found)) {
 		warning(sprintf("%d tokens in `x` are not present in `model`.", sum(embedding_not_found)))
 	}

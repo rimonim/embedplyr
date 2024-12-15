@@ -170,7 +170,7 @@ dot_prod_matrix <- function(x, tidy_output = FALSE) {
     rn <- rownames(x) %||% seq_len(nrow(x))
     out <- tibble::tibble(
       doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
-      doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)])),
+      doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)]), use.names = FALSE),
       dot_prod = out
     )
   }
@@ -189,7 +189,7 @@ cos_sim_matrix <- function(x, tidy_output = FALSE) {
     rn <- rownames(x) %||% seq_len(nrow(x))
     out <- tibble::tibble(
       doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
-      doc_id_2 = unlist(sapply(2:nrow(x), function(i) rn[i:nrow(x)])),
+      doc_id_2 = unlist(sapply(2:nrow(x), function(i) rn[i:nrow(x)]), use.names = FALSE),
       cosine = out
     )
   }
@@ -217,7 +217,7 @@ euc_dist_matrix <- function(x, tidy_output = FALSE) {
     rn <- rownames(x) %||% seq_len(nrow(x))
     out <- tibble::tibble(
       doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
-      doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)])),
+      doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)]), use.names = FALSE),
       euclidean = out
     )
   }
@@ -239,7 +239,7 @@ minkowski_dist_matrix <- function(x, p = 1, tidy_output = FALSE) {
     rn <- rownames(x) %||% seq_len(nrow(x))
     out <- tibble::tibble(
       doc_id_1 = rep.int(rn, rev(seq_along(rn) - 1L)),
-      doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)])),
+      doc_id_2 = unlist(sapply(seq_len(length(rn) - 1L) + 1L, function(i) rn[i:nrow(x)]), use.names = FALSE),
       minkowski = out
     )
   }

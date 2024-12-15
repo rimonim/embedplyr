@@ -10,6 +10,13 @@
 
 Common operations with word and text embeddings within a 'tidyverse'/'quanteda' workflow, as demonstrated in "Data Science for Psychology: Natural Language". Includes simple functions for calculating common similarity metrics, as well as higher level functions for loading pretrained word embedding models (e.g. 'GloVe'), applying them to words, aggregating to produce text embeddings, and reducing dimensionality.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://rimonim.github.io/embedplyr/}
+}
+
+}
 \author{
 \strong{Maintainer}: Louis Teitelbaum \email{louist@post.bgu.ac.il} (\href{https://orcid.org/0009-0001-9347-0145}{ORCID}) [copyright holder]
 

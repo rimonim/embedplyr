@@ -71,7 +71,7 @@ rbind.embeddings <- function(..., deparse.level = 1) {
 	embeddings_list <- lapply(embeddings_list, unclass) # unclass to avoid recursion
 	result <- do.call(rbind, embeddings_list)
 	# Update hash table
-	added_tokens <- unlist(lapply(embeddings_list[-1], rownames))
+	added_tokens <- unlist(lapply(embeddings_list[-1], rownames), use.names = FALSE)
 	result <- token_index_add(result, added_tokens)
 	result <- as.embeddings(result, rowname_repair = FALSE, rebuild_token_index = FALSE)
 	result

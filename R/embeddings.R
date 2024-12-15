@@ -125,7 +125,7 @@ as.embeddings.data.frame <- function(x, id_col = NULL, ..., rowname_repair = TRU
   }else{
     id <- NULL
   }
-  if (!all(sapply(x, is.numeric))) {
+  if (!all(vapply(x, is.numeric, TRUE))) {
     stop("Input contains non-numeric columns other than id_col")
   }
   x <- data.matrix(x)
