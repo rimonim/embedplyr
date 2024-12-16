@@ -92,6 +92,20 @@ test_that("dimnames<-.embeddings assigns new dimnames and updates token_index", 
 	expect_equal(length(ls(token_index)), 0)
 })
 
+test_that("rownames<-.embeddings assigns new dimnames and updates token_index", {
+	embeddings <- embeddings(1:9, nrow = 3, dimnames = list(paste0("token", 1:3), paste0("dim", 1:3)))
+
+	# Assign new dimnames
+	rownames(embeddings) <- c("new_token1", "new_token2", "new_token3")
+
+	expect_equal(rownames(embeddings), c("new_token1", "new_token2", "new_token3"))
+	expect_equal(colnames(embeddings), c("dim1", "dim2", "dim3"))
+
+	# Check that token_index is updated
+	token_index <- attr(embeddings, "token_index")
+	expect_equal(sort(ls(token_index)), c("new_token1", "new_token2", "new_token3"))
+})
+
 test_that("dim<-.embeddings throws an error when attempting to change dimensions", {
 	embeddings <- embeddings(1:9, nrow = 3, dimnames = list(paste0("token", 1:3), paste0("dim", 1:3)))
 

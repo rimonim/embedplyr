@@ -738,11 +738,11 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
         line <- readLines(conn, n = 1, warn = FALSE)
         if (grepl(pattern, line)) {
           filtered_lines[w] <- line
-          w <- w + 1
           if (w == length(words)) {
             if (numlines >= 10000) utils::setTxtProgressBar(pb, numlines)
             break
           }
+          w <- w + 1
         }
         if (i %% 10000 == 0) utils::setTxtProgressBar(pb, i)
       }
@@ -760,7 +760,7 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
     }
 
     # check if any lines were matched
-    if (length(filtered_lines) == 0) {
+    if (length(filtered_lines) == 0 || all(grepl("^\\s*$", filtered_lines))) {
       warning("No embeddings found for items in `words`")
       return(data.table::data.table())
     }
