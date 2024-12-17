@@ -210,10 +210,12 @@ supported_models <- c(
 #'   \item `glove.twitter.27B.200d`: Twitter (2B tweets, 27B tokens, 1.2M vocab, uncased, 200d). Downloaded from https://github.com/piskvorky/gensim-data
 #' }
 #' ## word2vec
+#' Note that reading in word2vec bin files may be slower than other formats. If
+#' read time is a concern, consider setting `format = "csv"` or `format = "rds"`.
 #' \itemize{
 #'   \item `GoogleNews.vectors.negative300`: Trained with skip-gram on Google News (~100B tokens, 3M vocab, cased, 300d). Downloaded from https://github.com/piskvorky/gensim-data
 #' }
-#' ### ConceptNet Numberbatch
+#' ## ConceptNet Numberbatch
 #' Multilingual word embeddings trained using an ensemble that combines data from
 #' word2vec, GloVe, OpenSubtitles, and the ConceptNet common sense knowledge database.
 #' Tokens are prefixed with language codes. For example, the English word "token" is
@@ -465,7 +467,8 @@ load_embeddings <- function(model, dir = NULL, words = NULL, save = TRUE, format
 #' @param words optional list of words for which to retrieve embeddings.
 #'
 #' @details
-#' If using a custom tabular format, the file must have tokens in the first column and numbers in all other columns.
+#' If using a custom tabular format, the file must have tokens in the first
+#' column and numbers in all other columns.
 #'
 #' @section Value:
 #' An embeddings object (a numeric matrix with tokens as rownames)
@@ -566,7 +569,7 @@ read_word2vec <- function(path, words = NULL){
       }
     }
     rownames(mat) <- vocab
-    mat <- as.embeddings(mat)
+    mat <- as.embeddings(mat, rowname_repair = FALSE)
   }else{
     mat <- matrix(NA_real_, nrow = length(words), ncol = dimensions,
                   dimnames = list(words))
@@ -586,7 +589,7 @@ read_word2vec <- function(path, words = NULL){
         }
       }
     }
-    mat <- as.embeddings(mat)
+    mat <- as.embeddings(mat, rowname_repair = FALSE)
   }
   mat
 }
@@ -597,16 +600,16 @@ read_table_embeddings <- function(path, words = NULL, use_sys = TRUE, timeout = 
   if (is.character(words)) {
     if (grepl("\\.zip$", path, ignore.case = TRUE)) {
       warning("Line by line file reading is not supported for zip files. Loading full file before filtering words.")
-      x <- suppressWarnings( data.table::fread(path, quote = "", showProgress = TRUE) )
+      x <- suppressWarnings( data.table::fread(path, showProgress = TRUE) )
       x <- x[x[[1]] %in% words,]
     }else{
-      x <- fread_filtered(path, words = words, use_sys = use_sys, quote = "", showProgress = TRUE)
+      x <- fread_filtered(path, words = words, use_sys = use_sys, showProgress = TRUE)
       if (nrow(x) == 0){
-        x <- data.table::fread(path, nrows = 0, quote = "", showProgress = TRUE)
+        x <- data.table::fread(path, nrows = 0, showProgress = TRUE)
       }
     }
   }else{
-    x <- suppressWarnings( data.table::fread(path, quote = "", showProgress = TRUE) )
+    x <- suppressWarnings( data.table::fread(path, showProgress = TRUE) )
   }
   id <- x[[1]]
 
@@ -639,52 +642,74 @@ is_url <- function(x) {
 # read tabular from file or url, ignoring lines that don't start with a word in `words`
 #' @noRd
 fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
-  # Force use_sys to FALSE on Windows
-  if (.Platform$OS.type == "windows") {
-    use_sys <- FALSE
-  }
+  # check system
+  on_windows <- .Platform$OS.type == "windows"
+
   # check for the required system commands
-  sys_commands_available <- all(nzchar(Sys.which(c("curl", "gunzip", "awk"))))
+  sys_commands_available <- if (on_windows) {
+  	all(nzchar(Sys.which(c("curl", "findstr"))))
+  }else{
+  	all(nzchar(Sys.which(c("curl", "gunzip", "awk"))))
+  }
+
   # is file gzipped?
   is_gz <- is_gzipped(file)
   # expand file path
   file <- path.expand(file)
-  if (use_sys && sys_commands_available) {
-    awk_script <- "NR==FNR{words[$1]=1;next} words[$1]"
-    # write words to temporary file
-    wordfile <- tempfile()
-    writeLines(words, wordfile)
-    # write shell command
-    if (is_url(file)) {
-      if (is_gz) {
-        cmd <- paste(
-          "curl -L -s", shQuote(file), "|",
-          "gunzip -c |",
-          "awk", shQuote(awk_script),
-          shQuote(wordfile), "-"
-        )
-      } else {
-        cmd <- paste(
-          "curl -L -s", shQuote(file), "|",
-          "awk", shQuote(awk_script),
-          shQuote(wordfile), "-"
-        )
-      }
-    } else {
-      # Local file
-      if (is_gz) {
-        cmd <- paste(
-          "gunzip -c", shQuote(file), "|",
-          "awk", shQuote(awk_script),
-          shQuote(wordfile), "-"
-        )
-      } else {
-        cmd <- paste(
-          "awk", shQuote(awk_script),
-          shQuote(wordfile), shQuote(file)
-        )
-      }
-    }
+  if (use_sys && sys_commands_available && (!on_windows || !is_gz)) {
+  	wordfile <- tempfile()
+  	on.exit(unlink(wordfile), add = TRUE)
+  	if (on_windows) {
+  		file <- normalizePath(file, winslash = "\\", mustWork = FALSE)
+  		file_format <- substring(file, regexpr("\\.([[:alnum:]]+)$", file) + 1L)
+  		delim <- if (file_format == "csv") "," else if (file_format == "tsv") "\t" else " "
+  		# write words to temporary file
+  		writeLines(paste0("^", words, delim), wordfile)
+  		# write shell command
+  		if (is_url(file)) {
+  			cmd <- paste0(
+  				"curl -L -s ", shQuote(file), " | ",
+  				"findstr /r /G:", shQuote(wordfile)
+  			)
+  		} else {
+  			cmd <- paste0("findstr /r /G:", shQuote(wordfile), " ", shQuote(file))
+  		}
+  	}else{
+  		awk_script <- "NR==FNR{words[$1]=1;next} words[$1]"
+  		# write words to temporary file
+  		writeLines(words, wordfile)
+  		# write shell command
+  		if (is_url(file)) {
+  			if (is_gz) {
+  				cmd <- paste(
+  					"curl -L -s", shQuote(file), "|",
+  					"gunzip -c |",
+  					"awk", shQuote(awk_script),
+  					shQuote(wordfile), "-"
+  				)
+  			} else {
+  				cmd <- paste(
+  					"curl -L -s", shQuote(file), "|",
+  					"awk", shQuote(awk_script),
+  					shQuote(wordfile), "-"
+  				)
+  			}
+  		} else {
+  			# Local file
+  			if (is_gz) {
+  				cmd <- paste(
+  					"gunzip -c", shQuote(file), "|",
+  					"awk", shQuote(awk_script),
+  					shQuote(wordfile), "-"
+  				)
+  			} else {
+  				cmd <- paste(
+  					"awk", shQuote(awk_script),
+  					shQuote(wordfile), shQuote(file)
+  				)
+  			}
+  		}
+  	}
 
     # Read data and finish up
     data <- data.table::fread(cmd = cmd, ...)
@@ -720,8 +745,9 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
     }
     on.exit(close(conn))
 
-    # regex for matching words
-    pattern <- paste0("^(", paste(words, collapse = "|"), ")\\b")
+    # hash table for matching words
+    token_index <- new.env(hash = TRUE, parent = emptyenv())
+    for (i in seq_along(words)) token_index[[words[i]]] <- i
 
     # process lines one at a time
     filtered_lines <- character(length(words))
@@ -729,14 +755,14 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
     message("Processing file...")
     line <- readLines(conn, n = 1, warn = FALSE)
     if (!is.na(numlines <- suppressWarnings(as.numeric(strsplit(line, " ")[[1]]))[1])) {
-      # number of rows is known from header
+      # number of rows is known from space delimited header
       if (numlines >= 10000) {
         pb <- utils::txtProgressBar(0, numlines, style = 3)
         on.exit(close(pb), add = TRUE)
       }
       for (i in seq_len(numlines)) {
         line <- readLines(conn, n = 1, warn = FALSE)
-        if (grepl(pattern, line)) {
+        if (exists(sub(" .*", "", line), envir = token_index)) {
           filtered_lines[w] <- line
           if (w == length(words)) {
             if (numlines >= 10000) utils::setTxtProgressBar(pb, numlines)
@@ -747,12 +773,12 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
         if (i %% 10000 == 0) utils::setTxtProgressBar(pb, i)
       }
     }else{
-      if (grepl(pattern, line)) {
+      if (exists(sub(" .*", "", line), envir = token_index)) {
         filtered_lines[w] <- line
         w <- w + 1L
       }
       while (length(line <- readLines(conn, n = 1, warn = FALSE)) > 0) {
-        if (grepl(pattern, line)) {
+        if (exists(sub(" .*", "", line), envir = token_index)) {
           filtered_lines[w] <- line
           w <- w + 1
         }

@@ -201,7 +201,7 @@ test_that("read_embeddings handles words not present in the file", {
 	create_glove_file(temp_file)
 
 	words <- c("word4", "word5")
-	embeddings_loaded <- suppressWarnings( read_embeddings(temp_file, words = words) )
+	embeddings_loaded <- suppressMessages( suppressWarnings( read_embeddings(temp_file, words = words) ) )
 	expect_true(is.embeddings(embeddings_loaded))
 	expect_equal(dim(embeddings_loaded), c(0, 3))
 })
@@ -328,7 +328,7 @@ test_that("read_embeddings handles gzipped GloVe files", {
 	temp_file <- tempfile(fileext = ".txt.gz")
 	create_glove_gz_file(temp_file)
 
-	embeddings_loaded <- read_embeddings(temp_file, words = c("word1", "word3"))
+	embeddings_loaded <- suppressMessages( read_embeddings(temp_file, words = c("word1", "word3")) )
 	expect_true(is.embeddings(embeddings_loaded))
 	expect_equal(dim(embeddings_loaded), c(2, 3))
 	expect_equal(rownames(embeddings_loaded), c("word1", "word3"))
