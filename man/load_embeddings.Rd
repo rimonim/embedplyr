@@ -58,9 +58,13 @@ This file is a zip archive and must temporarily be downloaded in its entirety ev
 
 \subsection{word2vec}{
 
+Note that reading word2vec bin files may be slower than other formats. If
+read time is a concern, consider setting \code{format = "csv"} or \code{format = "rds"}.
 \itemize{
 \item \code{GoogleNews.vectors.negative300}: Trained with skip-gram on Google News (~100B tokens, 3M vocab, cased, 300d). Downloaded from https://github.com/piskvorky/gensim-data
 }
+}
+
 \subsection{ConceptNet Numberbatch}{
 
 Multilingual word embeddings trained using an ensemble that combines data from
@@ -71,8 +75,6 @@ Downloaded from https://github.com/commonsense/conceptnet-numberbatch
 \itemize{
 \item \code{numberbatch.19.08}: Multilingual (9.2M vocab, uncased, 300d)
 }
-}
-
 }
 
 \subsection{fastText}{

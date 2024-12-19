@@ -210,7 +210,7 @@ supported_models <- c(
 #'   \item `glove.twitter.27B.200d`: Twitter (2B tweets, 27B tokens, 1.2M vocab, uncased, 200d). Downloaded from https://github.com/piskvorky/gensim-data
 #' }
 #' ## word2vec
-#' Note that reading in word2vec bin files may be slower than other formats. If
+#' Note that reading word2vec bin files may be slower than other formats. If
 #' read time is a concern, consider setting `format = "csv"` or `format = "rds"`.
 #' \itemize{
 #'   \item `GoogleNews.vectors.negative300`: Trained with skip-gram on Google News (~100B tokens, 3M vocab, cased, 300d). Downloaded from https://github.com/piskvorky/gensim-data
@@ -654,15 +654,35 @@ fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
 
   # is file gzipped?
   is_gz <- is_gzipped(file)
+  # is file url
+  is_url <- is_url(file)
   # expand file path
   file <- path.expand(file)
-  if (use_sys && sys_commands_available && (!on_windows || !is_gz)) {
+  if (use_sys && sys_commands_available) {
   	wordfile <- tempfile()
   	on.exit(unlink(wordfile), add = TRUE)
   	if (on_windows) {
-  		file <- normalizePath(file, winslash = "\\", mustWork = FALSE)
   		file_format <- substring(file, regexpr("\\.([[:alnum:]]+)$", file) + 1L)
   		delim <- if (file_format == "csv") "," else if (file_format == "tsv") "\t" else " "
+  		if (is_url) {
+  			if (is_gz) {
+  				# gz files must be downloaded in order to be unzipped
+  				tmpFile = tempfile(fileext = paste0(".", file_format), tmpdir = tempdir())
+  				utils::download.file(file, tmpFile, mode = "wb")
+  				file <- tmpFile
+  				on.exit(unlink(tmpFile), add = TRUE)
+  			}
+  		}else{
+  			file <- normalizePath(file, winslash = "\\", mustWork = FALSE)
+  		}
+  		# unzip file if necessary
+  		if (is_gz) {
+  			if (!requireNamespace("R.utils", quietly = TRUE)) stop("read_embeddings() requires 'R.utils' package to read gzipped files. Please install 'R.utils' using 'install.packages('R.utils')'.")
+  			R.utils::decompressFile(file, decompFile <- tempfile(tmpdir = tempdir()),
+  															ext = NULL, FUN = gzfile, remove = FALSE)
+  			file <- decompFile
+  			on.exit(unlink(decompFile), add = TRUE)
+  		}
   		# write words to temporary file
   		writeLines(paste0("^", words, delim), wordfile)
   		# write shell command

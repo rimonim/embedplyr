@@ -16,7 +16,8 @@ Reads GloVe text format, fastText text format, word2vec binary format,
 and most tabular formats (csv, tsv, etc.)
 }
 \details{
-If using a custom tabular format, the file must have tokens in the first column and numbers in all other columns.
+If using a custom tabular format, the file must have tokens in the first
+column and numbers in all other columns.
 }
 \section{Value}{
 
