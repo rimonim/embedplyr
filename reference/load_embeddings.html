@@ -111,9 +111,12 @@ This file is a zip archive and must temporarily be downloaded in its entirety ev
 <h3 id="word-vec">word2vec<a class="anchor" aria-label="anchor" href="#word-vec"></a></h3>
 
 
-<ul><li><p><code>GoogleNews.vectors.negative300</code>: Trained with skip-gram on Google News (~100B tokens, 3M vocab, cased, 300d). Downloaded from https://github.com/piskvorky/gensim-data</p></li>
-</ul><div class="section">
-<h4 id="conceptnet-numberbatch">ConceptNet Numberbatch<a class="anchor" aria-label="anchor" href="#conceptnet-numberbatch"></a></h4>
+<p>Note that reading word2vec bin files may be slower than other formats. If
+read time is a concern, consider setting <code>format = "csv"</code> or <code>format = "rds"</code>.</p><ul><li><p><code>GoogleNews.vectors.negative300</code>: Trained with skip-gram on Google News (~100B tokens, 3M vocab, cased, 300d). Downloaded from https://github.com/piskvorky/gensim-data</p></li>
+</ul></div>
+
+<div class="section">
+<h3 id="conceptnet-numberbatch">ConceptNet Numberbatch<a class="anchor" aria-label="anchor" href="#conceptnet-numberbatch"></a></h3>
 
 
 <p>Multilingual word embeddings trained using an ensemble that combines data from
@@ -122,9 +125,6 @@ Tokens are prefixed with language codes. For example, the English word "token" i
 labeled "/c/en/token".
 Downloaded from https://github.com/commonsense/conceptnet-numberbatch</p><ul><li><p><code>numberbatch.19.08</code>: Multilingual (9.2M vocab, uncased, 300d)</p></li>
 </ul></div>
-
-
-</div>
 
 <div class="section">
 <h3 id="fasttext">fastText<a class="anchor" aria-label="anchor" href="#fasttext"></a></h3>
