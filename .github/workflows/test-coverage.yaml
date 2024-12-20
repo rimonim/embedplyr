@@ -11,21 +11,12 @@ permissions: read-all
 
 jobs:
   test-coverage:
-    runs-on: ${{ matrix.config.os }}
-
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
     strategy:
-      fail-fast: false
       matrix:
-        config:
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      global:
-        - NOT_CRAN=true
 
     steps:
       - uses: actions/checkout@v4
