@@ -39,7 +39,7 @@ test_that("get_sims.default handles custom method functions", {
 	y_vec <- runif(3)
 	y <- list(custom_sim = y_vec)
 
-	# Define a custom similarity function
+	# custom similarity function
 	custom_method <- function(x, y) sum((x - y)^2)
 
 	result <- get_sims.default(x, y, method = custom_method)
@@ -50,6 +50,10 @@ test_that("get_sims.default handles custom method functions", {
 	# Compute expected values manually
 	expected_values <- apply(x, 1, custom_method, y = y_vec)
 	expect_equal(result$custom_sim, expected_values)
+
+	# incorrect parameters
+	expect_error(get_sims.default(x, y = list(custom_method = list(z = y_vec)), method = custom_method),
+							 "y must provide appropriate arguments for method")
 })
 
 test_that("get_sims.default returns error for invalid x input", {

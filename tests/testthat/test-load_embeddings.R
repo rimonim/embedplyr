@@ -1,3 +1,6 @@
+current_model_path <- getOption("embeddings.model.path")
+options(embeddings.model.path = tempdir())
+
 quiet <- function(x) {
 	sink(tempfile())
 	on.exit(sink())
@@ -96,7 +99,25 @@ create_word2vec_gz_file <- function(filepath, embeddings_obj = NULL) {
 	close(con)
 }
 
-# Begin tests
+# realistic tests (not for CRAN)
+test_that("load_embeddings loads from Internet", {
+	skip_on_cran()
+	skip_if_not(curl::has_internet())
+	# without save
+	glove_test <- quiet(suppressMessages(load_embeddings("glove.6B.50d", save = FALSE)))
+	red_blue <- cos_sim(predict(glove_test, "red"), predict(glove_test, "blue"))
+	red_dimension <- cos_sim(predict(glove_test, "red"), predict(glove_test, "dimension"))
+	expect_true(red_blue > red_dimension)
+	# with save and words
+	expect_warning(
+		glove_test <- quiet(suppressMessages(load_embeddings("glove.6B.50d", words = c("red", "blue", "dimension")))),
+		"Saving only a subset of words is not supported for original format"
+		)
+	expect_equal(nrow(glove_test), 3)
+	expect_true(red_blue == cos_sim(predict(glove_test, "red"), predict(glove_test, "blue")))
+})
+
+# CRAN-friendly tests
 test_that("load_embeddings reads GloVe format correctly", {
 	model_name <- "glove.test.3d"
 	temp_dir <- tempdir()
@@ -369,3 +390,5 @@ test_that("read_embeddings handles zip archives", {
 	expect_equal(dim(embeddings_loaded), c(3, 3))
 	expect_equal(rownames(embeddings_loaded), c("word1", "word2", "word3"))
 })
+
+options(embeddings.model.path = current_model_path)
