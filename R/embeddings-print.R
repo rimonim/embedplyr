@@ -22,12 +22,13 @@ format.embeddings <- function(x, ..., n = NULL, round = 2L) {
   # how many columns to show
   screen_width <- getOption("width", 80)
   colwidth <- round + 4L
+  rowname_maxwidth <- 15L
   n <- min(n %||% getOption("embeddings.print.n", 10), nrow(x))
-  longest_rowname <- max(nchar(rownames(x)[1:n]), 3L) + 2L
+  longest_rowname <- min(max(nchar(rownames(x)[1:n]), 3L), rowname_maxwidth) + 2L
   show_cols <- floor((screen_width - longest_rowname)/colwidth) - 2L
   show_cols <- min(show_cols, ncol(x))
   # subset to be shown
-  x_out <- x[1:n, 1:show_cols]
+  x_out <- x[1:n, 1:show_cols, drop = FALSE]
   # character matrix
   if (is.null(dim(x_out))) {
     x_out <- matrix(sprintf(paste0("%.",round,"f"), x_out), nrow = nrow(x))
@@ -43,6 +44,8 @@ format.embeddings <- function(x, ..., n = NULL, round = 2L) {
     x_out <- cbind(x_out, rep(paste0(c("...", rep(" ", colwidth-4L)), collapse = ""), n))
   }
   rownames(x_out) <- rownames(x)[1:n]
+  # truncate long row names
+  rownames(x_out) <- ifelse(nchar(rownames(x_out)) > rowname_maxwidth, paste0(substr(rownames(x_out), 1, rowname_maxwidth-2L), ".."), rownames(x_out))
   format(x_out, justify = "right")
 }
 
