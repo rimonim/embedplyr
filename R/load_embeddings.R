@@ -596,20 +596,22 @@ read_word2vec <- function(path, words = NULL){
 
 #' @noRd
 read_table_embeddings <- function(path, words = NULL, use_sys = TRUE, timeout = 1000){
+  # turn quoting off for glove files
+  quote <- ifelse(grepl("glove", path), "", "\"")
   # read table with token embeddings
   if (is.character(words)) {
     if (grepl("\\.zip$", path, ignore.case = TRUE)) {
       warning("Line by line file reading is not supported for zip files. Loading full file before filtering words.")
-      x <- suppressWarnings( data.table::fread(path, showProgress = TRUE) )
+      x <- suppressWarnings( data.table::fread(path, quote = quote, showProgress = TRUE) )
       x <- x[x[[1]] %in% words,]
     }else{
       x <- fread_filtered(path, words = words, use_sys = use_sys, showProgress = TRUE)
       if (nrow(x) == 0){
-        x <- data.table::fread(path, nrows = 0, showProgress = TRUE)
+        x <- data.table::fread(path, quote = quote, nrows = 0, showProgress = TRUE)
       }
     }
   }else{
-    x <- suppressWarnings( data.table::fread(path, showProgress = TRUE) )
+    x <- suppressWarnings( data.table::fread(path, quote = quote, showProgress = TRUE) )
   }
   id <- x[[1]]
 
