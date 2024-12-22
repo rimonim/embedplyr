@@ -146,7 +146,7 @@ test_that("print.embeddings handles empty embeddings", {
 
 test_that("format.embeddings handles custom row names", {
 	mat <- matrix(runif(50), nrow = 10)
-	custom_names <- paste0("custom_token_name_", 1:10)
+	custom_names <- paste0("custom_", 1:10)
 	rownames(mat) <- custom_names
 	colnames(mat) <- paste0("dim", 1:5)
 	emb <- as.embeddings(mat)
