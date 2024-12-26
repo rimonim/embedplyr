@@ -161,13 +161,13 @@ transformers.
 # function that takes character vector and outputs a data frame
 sbert_embeddings <- function(texts) {
     text::textEmbed(
-      texts,
-      model = "sentence-transformers/all-MiniLM-L12-v2", # model name
-      layers = -2,  # second to last layer (default)
-      tokens_select = "[CLS]", # use only [CLS] token
-      dim_name = FALSE,
-      keep_token_embeddings = FALSE
-  )$texts[[1]]
+        texts,
+        model = "sentence-transformers/all-MiniLM-L12-v2", # model name
+        layers = -2,  # second to last layer (default)
+        tokens_select = "[CLS]", # use only [CLS] token
+        dim_name = FALSE,
+        keep_token_embeddings = FALSE
+    )$texts[[1]]
 }
 
 valence_sbert_df <- valence_df |> 
