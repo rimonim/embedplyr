@@ -159,7 +159,8 @@ read_word2vec <- function(path, words = NULL){
 				mat[r,] <- new_vec
 			}
 		}
-		rownames(mat) <- vocab
+		mat <- mat[nzchar(vocab),]
+		rownames(mat) <- vocab[nzchar(vocab)]
 		mat <- as.embeddings(mat, rowname_repair = FALSE)
 	}else{
 		mat <- matrix(NA_real_, nrow = length(words), ncol = dimensions,
