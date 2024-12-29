@@ -69,7 +69,7 @@ read_embeddings_binary <- function(path, words = NULL, .keep_missing = FALSE, is
 		words <- words[match(seq_along(words), unlist(mget(words, envir = index)))]
 		embedding_not_found <- FALSE
 	}else{
-		words <- words[match(seq_along(words), rank(unlist(mget(words, envir = index, ifnotfound = NA))))]
+		words <- words[match(seq_along(words), rank(unlist(mget(words, envir = index, ifnotfound = NA)), na.last = "keep"))]
 		embedding_not_found <- is.na(words)
 		if (any(embedding_not_found)) {
 			warning(sprintf("%d items in `words` are not present in the embeddings object.", sum(embedding_not_found)))
