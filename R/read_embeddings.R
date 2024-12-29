@@ -49,20 +49,19 @@ is_gzipped <- function(file) {
 }
 
 #' @noRd
-read_embeddings_binary <- function(path, words = NULL, .keep_missing = FALSE) {
-	if (is_gzipped(path)) {
-		conn <- gzfile(path, "rb")
-	}else{
+read_embeddings_binary <- function(path, words = NULL, .keep_missing = FALSE, is_gz = TRUE) {
+	if (is_url(path)) {
+		conn <- curl::curl(path, "rb")
+	} else {
 		conn <- file(path, "rb")
 	}
+	stopifnot("Connection is not seekable. Try loading the embeddings from another file format." = isSeekable(conn))
 	on.exit(close(conn))
-	rows <- readBin(conn, integer(), n = 1, endian = "little")
 	dimensions <- readBin(conn, integer(), n = 1, endian = "little")
 
-	# load index from initial header (8 bytes) + written embeddings (double precision)
-	index_offset <- 8 + prod(rows, dimensions) * 8
-	seek(conn, index_offset, origin = "start")
+	# load index
 	index <- readRDS(conn)
+	emb_origin <- seek(conn)
 
 	# get all rownames (in proper order) if needed
 	if (is.null(words)) {
@@ -70,7 +69,8 @@ read_embeddings_binary <- function(path, words = NULL, .keep_missing = FALSE) {
 		words <- words[match(seq_along(words), unlist(mget(words, envir = index)))]
 		embedding_not_found <- FALSE
 	}else{
-		embedding_not_found <- !vapply(words, exists, FALSE, envir = index)
+		words <- words[match(seq_along(words), rank(unlist(mget(words, envir = index, ifnotfound = NA))))]
+		embedding_not_found <- is.na(words)
 		if (any(embedding_not_found)) {
 			warning(sprintf("%d items in `words` are not present in the embeddings object.", sum(embedding_not_found)))
 		}
@@ -82,8 +82,8 @@ read_embeddings_binary <- function(path, words = NULL, .keep_missing = FALSE) {
 
 	# load embeddings
 	for (i in seq_along(available_words)) {
-		# initial header (8 bytes) + written embeddings (double precision)
-		seek(conn, 8L + (index[[available_words[i]]] - 1L) * dimensions * 8L, origin = "start")
+		# initial header + written embeddings (double precision)
+		seek(conn, emb_origin + (index[[available_words[i]]] - 1L) * dimensions * 8L, origin = "start")
 		emb[i,] <- readBin(conn, numeric(), n = dimensions, size = NA_real_, endian = "little")
 	}
 

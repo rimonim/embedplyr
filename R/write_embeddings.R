@@ -10,15 +10,14 @@ write_embeddings <- function(x, file) {
 	stopifnot("`x` is not an embeddings object" = is.embeddings(x))
 	if (is.character(file)) conn <- file(file, "wb") else conn <- file
 	on.exit(close(conn))
-	writeBin(as.integer(nrow(x)), conn, endian = "little") # rows
 	writeBin(as.integer(ncol(x)), conn, endian = "little") # dimensions
-
-	# write embeddings
-	if (nrow(x) >= 2^25) message("Writing embeddings...")
-	writeBin(as.numeric(t(x)), conn, size = NA_real_, endian = "little")
 
 	# write the index
 	index <- attr(x, "token_index")
-	if (nrow(x) >= 2^25) message("Saving token index...")
+	if (nrow(x) >= 2^20) message("Saving token index...")
 	saveRDS(index, conn)
+
+	# write embeddings
+	if (nrow(x) >= 2^20) message("Writing embeddings...")
+	writeBin(as.numeric(t(x)), conn, size = NA_real_, endian = "little")
 }
