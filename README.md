@@ -30,6 +30,8 @@ Science for Psychology: Natural Language](http://ds4psych.com).
 - `average_embedding()` calculates the (weighted) average of multiple
   embeddings
 - `reduce_dimensionality()` reduces the dimensionality of embeddings
+- `align_embeddings()` rotates the embeddings from one model so that
+  they can be compared with those from another
 - `normalize()` and `normalize_rows()` normalize embeddings to the unit
   hypersphere
 - and more…
@@ -258,7 +260,7 @@ valence_df_2d
 #> 3 negative  1.35   0.640
 ```
 
-`reduce_dimensionality()` can also be used to apply the same rotation
+`reduce_dimensionality()` can also be used to apply the same rotation to
 other embeddings not used to find the principle components.
 
 ``` r
@@ -277,6 +279,21 @@ new_with_valence_rotation
 #> new     -2.38  0.24
 #> strange  0.09  1.18
 ```
+
+#### Align and Compare Embeddings Models
+
+Aligning separately trained embeddings can be useful for tracking
+semantic change over time or semantic differences between training
+datasets. It can also be useful for comparing texts across languages.
+`align_embeddings(x, y)` rotates the embeddings in `x` (and changes
+their dimensionality if necessary) so that they can be compared with
+those in `y`. Optionally, `matching` can be used to specify one-to-one
+matching between embeddings in the two models (e.g. a bilingual
+dictionary).
+
+Once aligned, groups of embeddings can be compared using `total_dist()`
+or `average_sim()`. These can be used to quantify the overall distance
+or similarity between two parallel embedding spaces.
 
 #### Normalize (Scale Embeddings to the Unit Hypersphere)
 
