@@ -245,3 +245,66 @@ minkowski_dist_matrix <- function(x, p = 1, tidy_output = FALSE) {
   }
   out
 }
+
+#' Parallel Similarity and Distance
+#'
+#' These functions compute parallel [similarity metrics][sim_metrics] between
+#' each row of a matrix and its corresponding row in another matrix.
+#'
+#' @rdname sim_metrics_parallel
+#' @param x a numeric matrix or embeddings object
+#' @param y a numeric matrix or embeddings object with the same dimensions as `x`
+#'
+#' @section Value:
+#' A named numeric vector of length `nrow(x)`
+#' @importFrom rlang %||%
+#' @keywords internal
+dot_prod_parallel <- function(x, y) {
+  stopifnot(
+    "x and y must have the same number of rows" = nrow(x) == nrow(y),
+    "x and y must have the same dimensions" = ncol(x) == ncol(y)
+  )
+  rowSums(x * y)
+}
+
+#' @rdname sim_metrics_parallel
+#' @keywords internal
+cos_sim_parallel <- function(x, y) {
+  normx <- sqrt(rowSums(x^2))
+  normy <- sqrt(rowSums(y^2))
+  dot_prod_parallel(x, y) / (normx * normy)
+}
+
+#' @rdname sim_metrics_parallel
+#' @keywords internal
+cos_sim_squished_parallel <- function(x, y) {
+  cos_sim_parallel(x, y)*0.5 + 0.5
+}
+
+#' @rdname sim_metrics_parallel
+#' @keywords internal
+euc_dist_parallel <- function(x, y) {
+  stopifnot(
+    "x and y must have the same number of rows" = nrow(x) == nrow(y),
+    "x and y must have the same dimensions" = ncol(x) == ncol(y)
+  )
+  sqrt(rowSums((x - y)^2))
+}
+
+#' @rdname sim_metrics_parallel
+#' @param p [p-norm](https://en.wikipedia.org/wiki/Lp_space#The_p-norm_in_finite_dimensions) used to compute the Minkowski distance
+#' @keywords internal
+minkowski_dist_parallel <- function(x, y, p = 1) {
+  stopifnot(
+    "p must be greater than or equal to 1" = p >= 1,
+    "p must be scalar" = length(p) == 1,
+    "x and y must have the same number of rows" = nrow(x) == nrow(y),
+    "x and y must have the same dimensions" = ncol(x) == ncol(y)
+  )
+  if (is.infinite(p)) {
+    return( apply(abs(x - y), 1, max) )
+  }else{
+    return( rowSums(abs(x - y)^p)^(1/p) )
+  }
+}
+

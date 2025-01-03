@@ -270,10 +270,8 @@ test_that("find_nearest handles embeddings with NA values", {
 	embeddings <- as.embeddings(embeddings_matrix)
 
 	newdata <- "token2"
-	expect_error(
-		result <- find_nearest(embeddings, newdata, top_n = 3),
-		"`object` contains NA values"
-	)
+	result <- find_nearest(embeddings, newdata, top_n = 3)
+	expect_false(any(is.na(result)))
 })
 
 test_that("find_nearest errors when newdata has different dimensionality", {

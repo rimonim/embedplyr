@@ -54,7 +54,7 @@ find_nearest <- function(object, newdata,
                          decreasing = NULL,
                          get_sims = FALSE){
   if (!inherits(object, "embeddings")) {stop("`object` is not an embeddings object")}
-  if (any(is.na(object))) stop("`object` contains NA values")
+  object <- stats::na.omit(object)
   # similarity or distance?
   if (is.character(method)) {
     method <- method[1]

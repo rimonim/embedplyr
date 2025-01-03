@@ -75,7 +75,7 @@ average_embedding <- function(x, w = NULL, method = "mean", ...){
 	if (method == "mean") return( colMeans(x, ...) )
 	if (method == "sum") return( colSums(x, ...) )
 	if (method == "median") {
-		stopifnot("package 'Gmedian' is required" = requireNamespace("Gmedian", quietly = TRUE))
+		stopifnot("Package 'Gmedian' is required" = requireNamespace("Gmedian", quietly = TRUE))
 		if (is.null(w)) {
 			out <- as.numeric( Gmedian::Gmedian(x, ...) )
 		}else{

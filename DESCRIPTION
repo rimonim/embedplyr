@@ -36,6 +36,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Config/testthat/edition: 3
 Collate: 
+    'align_embeddings.R'
     'average_embedding.R'
     'data.R'
     'embed_tokens.R'
@@ -54,6 +55,7 @@ Collate:
     'reduce_dimensionality.R'
     'sim_matrix.R'
     'textstat_embedding.R'
+    'total_dist.R'
     'vector_utilities.R'
 Depends: 
     R (>= 2.10)
