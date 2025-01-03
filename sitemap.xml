@@ -6,6 +6,7 @@
 <url><loc>https://rimonim.github.io/embedplyr/authors.html</loc></url>
 <url><loc>https://rimonim.github.io/embedplyr/index.html</loc></url>
 <url><loc>https://rimonim.github.io/embedplyr/news/index.html</loc></url>
+<url><loc>https://rimonim.github.io/embedplyr/reference/align_embeddings.html</loc></url>
 <url><loc>https://rimonim.github.io/embedplyr/reference/average_embedding.html</loc></url>
 <url><loc>https://rimonim.github.io/embedplyr/reference/build_token_index.html</loc></url>
 <url><loc>https://rimonim.github.io/embedplyr/reference/embed_tokens.html</loc></url>
@@ -30,7 +31,9 @@
 <url><loc>https://rimonim.github.io/embedplyr/reference/sim_metrics.html</loc></url>
 <url><loc>https://rimonim.github.io/embedplyr/reference/sim_metrics_mat_vec.html</loc></url>
 <url><loc>https://rimonim.github.io/embedplyr/reference/sim_metrics_matrix.html</loc></url>
+<url><loc>https://rimonim.github.io/embedplyr/reference/sim_metrics_parallel.html</loc></url>
 <url><loc>https://rimonim.github.io/embedplyr/reference/textstat_embedding.html</loc></url>
 <url><loc>https://rimonim.github.io/embedplyr/reference/token_index_add.html</loc></url>
+<url><loc>https://rimonim.github.io/embedplyr/reference/total_dist.html</loc></url>
 </urlset>
 
