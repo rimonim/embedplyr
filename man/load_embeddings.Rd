@@ -65,6 +65,23 @@ read time is a concern, consider setting \code{format = "csv"} or \code{format =
 }
 }
 
+\subsection{HistWords}{
+
+By-decade skip-gram embeddings trained on Google Books and Corpus of Historical
+American English (COHA). To specify a decade, replace \verb{[decade]} with the first
+year of that decade (e.g. \code{eng.all_sgns.1800}, \code{eng.all_sgns.1990}).
+Originally downloaded from https://nlp.stanford.edu/projects/histwords/
+\itemize{
+\item \code{coha.word_sgns.[decade]}: Trained on Corpus of Historical American English (Genre-Balanced American English, 1830s-2000s).
+\item \code{coha.lemma_sgns.[decade]}: Same as above, with lemmas rather than words.
+\item \code{eng.all_sgns.[decade]}: Trained on Google N-Grams eng-all (All English, 1800s-1990s).
+\item \code{eng.fiction.all_sgns.[decade]}: Trained on Google N-Grams eng-fiction-all (English Fiction, 1800s-1990s).
+\item \code{chi.sim.all_sgns.[decade]}: Trained on Google N-Grams chi-sim-all (Simplified Chinese, 1950-1990s).
+\item \code{fre.all_sgns.[decade]}: Trained on Google N-Grams fre-all (French, 1800s-1990s).
+\item \code{ger.all_sgns.[decade]}: Trained on Google N-Grams ger-all (German, 1800s-1990s).
+}
+}
+
 \subsection{ConceptNet Numberbatch}{
 
 Multilingual word embeddings trained using an ensemble that combines data from
@@ -79,167 +96,50 @@ Downloaded from https://github.com/commonsense/conceptnet-numberbatch
 
 \subsection{fastText}{
 
-300-dimensional word vectors for 157 languages, trained with CBOW on Common
-Crawl and Wikipedia. Downloaded from https://fasttext.cc/docs/en/crawl-vectors.html
+Downloaded from https://fasttext.cc/docs/en/crawl-vectors.html
 \itemize{
-\item \code{cc.af.300}: Afrikaans
-\item \code{cc.sq.300}: Albanian
-\item \code{cc.als.300}: Alemannic
-\item \code{cc.am.300}: Amharic
-\item \code{cc.ar.300}: Arabic
-\item \code{cc.an.300}: Aragonese
-\item \code{cc.hy.300}: Armenian
-\item \code{cc.as.300}: Assamese
-\item \code{cc.ast.300}: Asturian
-\item \code{cc.az.300}: Azerbaijani
-\item \code{cc.ba.300}: Bashkir
-\item \code{cc.eu.300}: Basque
-\item \code{cc.bar.300}: Bavarian
-\item \code{cc.be.300}: Belarusian
-\item \code{cc.bn.300}: Bengali
-\item \code{cc.bh.300}: Bihari
-\item \code{cc.bpy.300}: Bishnupriya Manipuri
-\item \code{cc.bs.300}: Bosnian
-\item \code{cc.br.300}: Breton
-\item \code{cc.bg.300}: Bulgarian
-\item \code{cc.my.300}: Burmese
-\item \code{cc.ca.300}: Catalan
-\item \code{cc.ceb.300}: Cebuano
-\item \code{cc.bcl.300}: Central Bicolano
-\item \code{cc.ce.300}: Chechen
-\item \code{cc.zh.300}: Chinese
-\item \code{cc.cv.300}: Chuvash
-\item \code{cc.co.300}: Corsican
-\item \code{cc.hr.300}: Croatian
-\item \code{cc.cs.300}: Czech
-\item \code{cc.da.300}: Danish
-\item \code{cc.dv.300}: Divehi
-\item \code{cc.nl.300}: Dutch
-\item \code{cc.pa.300}: Eastern Punjabi
-\item \code{cc.arz.300}: Egyptian Arabic
-\item \code{cc.eml.300}: Emilian-Romagnol
-\item \code{cc.en.300}: English
-\item \code{cc.myv.300}: Erzya
-\item \code{cc.eo.300}: Esperanto
-\item \code{cc.et.300}: Estonian
-\item \code{cc.hif.300}: Fiji Hindi
-\item \code{cc.fi.300}: Finnish
-\item \code{cc.fr.300}: French
-\item \code{cc.gl.300}: Galician
-\item \code{cc.ka.300}: Georgian
-\item \code{cc.de.300}: German
-\item \code{cc.gom.300}: Goan Konkani
-\item \code{cc.el.300}: Greek
-\item \code{cc.gu.300}: Gujarati
-\item \code{cc.ht.300}: Haitian
-\item \code{cc.he.300}: Hebrew
-\item \code{cc.mrj.300}: Hill Mari
-\item \code{cc.hi.300}: Hindi
-\item \code{cc.hu.300}: Hungarian
-\item \code{cc.is.300}: Icelandic
-\item \code{cc.io.300}: Ido
-\item \code{cc.ilo.300}: Ilokano
-\item \code{cc.id.300}: Indonesian
-\item \code{cc.ia.300}: Interlingua
-\item \code{cc.ga.300}: Irish
-\item \code{cc.it.300}: Italian
-\item \code{cc.ja.300}: Japanese
-\item \code{cc.jv.300}: Javanese
-\item \code{cc.kn.300}: Kannada
-\item \code{cc.pam.300}: Kapampangan
-\item \code{cc.kk.300}: Kazakh
-\item \code{cc.km.300}: Khmer
-\item \code{cc.ky.300}: Kirghiz
-\item \code{cc.ko.300}: Korean
-\item \code{cc.ku.300}: Kurdish (Kurmanji)
-\item \code{cc.ckb.300}: Kurdish (Sorani)
-\item \code{cc.la.300}: Latin
-\item \code{cc.lv.300}: Latvian
-\item \code{cc.li.300}: Limburgish
-\item \code{cc.lt.300}: Lithuanian
-\item \code{cc.lmo.300}: Lombard
-\item \code{cc.nds.300}: Low Saxon
-\item \code{cc.lb.300}: Luxembourgish
-\item \code{cc.mk.300}: Macedonian
-\item \code{cc.mai.300}: Maithili
-\item \code{cc.mg.300}: Malagasy
-\item \code{cc.ms.300}: Malay
-\item \code{cc.ml.300}: Malayalam
-\item \code{cc.mt.300}: Maltese
-\item \code{cc.gv.300}: Manx
-\item \code{cc.mr.300}: Marathi
-\item \code{cc.mzn.300}: Mazandarani
-\item \code{cc.mhr.300}: Meadow Mari
-\item \code{cc.min.300}: Minangkabau
-\item \code{cc.xmf.300}: Mingrelian
-\item \code{cc.mwl.300}: Mirandese
-\item \code{cc.mn.300}: Mongolian
-\item \code{cc.nah.300}: Nahuatl
-\item \code{cc.nap.300}: Neapolitan
-\item \code{cc.ne.300}: Nepali
-\item \code{cc.new.300}: Newar
-\item \code{cc.frr.300}: North Frisian
-\item \code{cc.nso.300}: Northern Sotho
-\item \code{cc.no.300}: Norwegian (Bokmål)
-\item \code{cc.nn.300}: Norwegian (Nynorsk)
-\item \code{cc.oc.300}: Occitan
-\item \code{cc.or.300}: Oriya
-\item \code{cc.os.300}: Ossetian
-\item \code{cc.pfl.300}: Palatinate German
-\item \code{cc.ps.300}: Pashto
-\item \code{cc.fa.300}: Persian
-\item \code{cc.pms.300}: Piedmontese
-\item \code{cc.pl.300}: Polish
-\item \code{cc.pt.300}: Portuguese
-\item \code{cc.qu.300}: Quechua
-\item \code{cc.ro.300}: Romanian
-\item \code{cc.rm.300}: Romansh
-\item \code{cc.ru.300}: Russian
-\item \code{cc.sah.300}: Sakha
-\item \code{cc.sa.300}: Sanskrit
-\item \code{cc.sc.300}: Sardinian
-\item \code{cc.sco.300}: Scots
-\item \code{cc.gd.300}: Scottish Gaelic
-\item \code{cc.sr.300}: Serbian
-\item \code{cc.sh.300}: Serbo-Croatian
-\item \code{cc.scn.300}: Sicilian
-\item \code{cc.sd.300}: Sindhi
-\item \code{cc.si.300}: Sinhalese
-\item \code{cc.sk.300}: Slovak
-\item \code{cc.sl.300}: Slovenian
-\item \code{cc.so.300}: Somali
-\item \code{cc.azb.300}: Southern Azerbaijani
-\item \code{cc.es.300}: Spanish
-\item \code{cc.su.30}: Sundanese
-\item \code{cc.sw.300}: Swahili
-\item \code{cc.sv.300}: Swedish
-\item \code{cc.tl.300}: Tagalog
-\item \code{cc.tg.300}: Tajik
-\item \code{cc.ta.300}: Tamil
-\item \code{cc.tt.300}: Tatar
-\item \code{cc.te.300}: Telugu
-\item \code{cc.th.300}: Thai
-\item \code{cc.bo.300}: Tibetan
-\item \code{cc.tr.300}: Turkish
-\item \code{cc.tk.300}: Turkmen
-\item \code{cc.uk.300}: Ukrainian
-\item \code{cc.hsb.300}: Upper Sorbian
-\item \code{cc.ur.300}: Urdu
-\item \code{cc.ug.300}: Uyghur
-\item \code{cc.uz.300}: Uzbek
-\item \code{cc.vec.300}: Venetian
-\item \code{cc.vi.300}: Vietnamese
-\item \code{cc.vo.300}: Volapük
-\item \code{cc.wa.300}: Walloon
-\item \code{cc.war.300}: Waray
-\item \code{cc.cy.300}: Welsh
-\item \code{cc.vls.300}: West Flemish
-\item \code{cc.fy.300}: West Frisian
-\item \code{cc.pnb.300}: Western Punjabi
-\item \code{cc.yi.300}: Yiddish
-\item \code{cc.yo.300}: Yoruba
-\item \code{cc.diq.300}: Zazaki
-\item \code{cc.zea.300}: Zeelandic
+\item \verb{cc.[language].300}: 300-dimensional word vectors for 157 languages,
+trained with CBOW on Common Crawl and Wikipedia. To specify a language,
+replace \verb{[language]} with one of the following language codes:
+\code{af} (Afrikaans), \code{sq} (Albanian), \code{als} (Alemannic), \code{am} (Amharic), \code{ar}
+(Arabic), \code{an} (Aragonese), \code{hy} (Armenian), \code{as} (Assamese), \code{ast}
+(Asturian), \code{az} (Azerbaijani), \code{ba} (Bashkir), \code{eu} (Basque), \code{bar}
+(Bavarian), \code{be} (Belarusian), \code{bn} (Bengali), \code{bh} (Bihari), \code{bpy}
+(Bishnupriya Manipuri), \code{bs} (Bosnian), \code{br} (Breton), \code{bg} (Bulgarian),
+\code{my} (Burmese), \code{ca} (Catalan), \code{ceb} (Cebuano), \code{bcl} (Central Bicolano),
+\code{ce} (Chechen), \code{zh} (Chinese), \code{cv} (Chuvash), \code{co} (Corsican), \code{hr}
+(Croatian), \code{cs} (Czech), \code{da} (Danish), \code{dv} (Divehi), \code{nl} (Dutch), \code{pa}
+(Eastern Punjabi), \code{arz} (Egyptian Arabic), \code{eml} (Emilian-Romagnol), \code{en}
+(English), \code{myv} (Erzya), \code{eo} (Esperanto), \code{et} (Estonian), \code{hif}
+(Fiji Hindi), \code{fi} (Finnish), \code{fr} (French), \code{gl} (Galician), \code{ka}
+(Georgian), \code{de} (German), \code{gom} (Goan Konkani), \code{el} (Greek), \code{gu}
+(Gujarati), \code{ht} (Haitian), \code{he} (Hebrew), \code{mrj} (Hill Mari), \code{hi} (Hindi),
+\code{hu} (Hungarian), \code{is} (Icelandic), \code{io} (Ido), \code{ilo} (Ilokano), \code{id}
+(Indonesian), \code{ai} (Interlingua), \code{ga} (Irish), \code{it} (Italian), \code{ja}
+(Japanese), \code{jv} (Javanese), \code{kn} (Kannada), \code{pam} (Kapampangan), \code{kk}
+(Kazakh), \code{km} (Khmer), \code{ky} (Kirghiz), \code{ko} (Korean), \code{ku}
+(Kurdish: Kurmanji), \code{ckb} (Kurdish: Sorani), \code{la} (Latin), \code{lv} (Latvian),
+\code{li} (Limburgish), \code{lt} (Lithuanian), \code{lmo} (Lombard), \code{nds} (Low Saxon),
+\code{lb} (Luxembourgish), \code{mk} (Macedonian), \code{mai} (Maithili), \code{mg} (Malagasy),
+\code{ms} (Malay), \code{ml} (Malayalam), \code{mt} (Maltese), \code{gv} (Manx), \code{mr} (Marathi),
+\code{mzn} (Mazandarani), \code{mhr} (Meadow Mari), \code{min} (Minangkabau), \code{xmf}
+(Mingrelian), \code{mwl} (Mirandese), \code{mn} (Mongolian), \code{nah} (Nahuatl), \code{nap}
+(Neapolitan), \code{ne} (Nepali), \code{new} (Newar), \code{frr} (North Frisian), \code{nso}
+(Northern Sotho), \code{no} (Norwegian: Bokmål), \code{nn} (Norwegian: Nynorsk), \code{oc}
+(Occitan), \code{or} (Oriya), \code{os} (Ossetian), \code{pfl} (Palatinate German), \code{ps}
+(Pashto), \code{fa} (Persian), \code{pms} (Piedmontese), \code{pl} (Polish), \code{pt}
+(Portuguese), \code{qu} (Quechua), \code{ro} (Romanian), \code{rm} (Romansh), \code{ru}
+(Russian), \code{sah} (Sakha), \code{sa} (Sanskrit), \code{sc} (Sardinian), \code{sco} (Scots),
+\code{gd} (Scottish Gaelic), \code{sr} (Serbian), \code{sh} (Serbo-Croatian), \code{scn}
+(Sicilian), \code{sd} (Sindhi), \code{si} (Sinhalese), \code{sk} (Slovak), \code{sl}
+(Slovenian), \code{so} (Somali), \code{azb} (Southern Azerbaijani), \code{es} (Spanish),
+\code{su} (Sundanese), \code{sw} (Swahili), \code{sv} (Swedish), \code{tl} (Tagalog), \code{tg}
+(Tajik), \code{ta} (Tamil), \code{tt} (Tatar), \code{te} (Telugu), \code{th} (Thai), \code{bo}
+(Tibetan), \code{tr} (Turkish), \code{tk} (Turkmen), \code{uk} (Ukrainian), \code{hsb}
+(Upper Sorbian), \code{ur} (Urdu), \code{ug} (Uyghur), \code{uz} (Uzbek), \code{vec} (Venetian),
+\code{vi} (Vietnamese), \code{vo} (Volapük), \code{wa} (Walloon), \code{war} (Waray), \code{cy}
+(Welsh), \code{vls} (West Flemish), \code{fy} (West Frisian), \code{pnb} (Western Punjabi),
+\code{yi} (Yiddish), \code{yu} (Yoruba), \code{diq} (Zazaki), \code{zea} (Zeelandic)
 }
 }
 }
@@ -250,6 +150,8 @@ An embeddings object (a numeric matrix with tokens as rownames)
 
 \references{
 Bojanowski, P., Grave, E., Joulin, A., and Mikolov, T. (2016). Enriching Word Vectors with Subword Information. arXiv preprint. https://arxiv.org/abs/1607.04606
+
+Hamilton, W. L., Leskovec, J., and Jurafsky, D. (2016). Diachronic Word Embeddings Reveal Statistical Laws of Semantic Change. In Proceedings of the 54th Annual Meeting of the ACL. https://aclanthology.org/P16-1141/
 
 Mikolov, T., Chen, K., Corrado, G., and Dean, J. (2013). Efficient Estimation of Word Representations in Vector Space. In Proceedings of Workshop at ICLR. https://arxiv.org/pdf/1301.3781
 

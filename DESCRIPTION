@@ -52,6 +52,7 @@ Collate:
     'load_embeddings.R'
     'magnitude.R'
     'normalize.R'
+    'read_embeddings.R'
     'reduce_dimensionality.R'
     'sim_matrix.R'
     'textstat_embedding.R'

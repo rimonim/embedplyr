@@ -127,7 +127,8 @@ test_that("load_embeddings reads GloVe format correctly", {
 	create_glove_file(temp_file)
 
 	# Mock supported_models to point to our local file
-	local_mocked_bindings(supported_models = c(glove.test.3d = temp_file))
+	local_mocked_bindings(supported_models = c(glove.test.3d = temp_file),
+												supported_model_names = "glove.test.3d")
 
 	# Run load_embeddings
 	embeddings_loaded <- suppressMessages( load_embeddings(model_name, dir = temp_dir, save = FALSE) )
@@ -146,7 +147,8 @@ test_that("load_embeddings reads word2vec binary format correctly", {
 	create_word2vec_bin_file(temp_file)
 
 	# Mock supported_models to point to our local file
-	local_mocked_bindings(supported_models = c(word2vec.test.3d = temp_file))
+	local_mocked_bindings(supported_models = c(word2vec.test.3d = temp_file),
+												supported_model_names = "word2vec.test.3d")
 
 	# Run load_embeddings
 	embeddings_loaded <- suppressMessages(quiet( load_embeddings(model_name, dir = temp_dir, save = FALSE) ))
@@ -187,7 +189,8 @@ test_that("load_embeddings filters words correctly when 'words' parameter is use
 	create_glove_file(temp_file)
 
 	# Mock supported_models to point to our local file
-	local_mocked_bindings(supported_models = c(glove.test.3d = temp_file))
+	local_mocked_bindings(supported_models = c(glove.test.3d = temp_file),
+												supported_model_names = "glove.test.3d")
 
 	words <- c("word1", "word3")
 
@@ -208,7 +211,8 @@ test_that("load_embeddings handles unknown file formats", {
 	writeLines("some random content", temp_file)
 
 	# Mock supported_models to point to our local file
-	local_mocked_bindings(supported_models = c(unknown.format = temp_file))
+	local_mocked_bindings(supported_models = c(unknown.format = temp_file),
+												supported_model_names = "unknown.format")
 
 	expect_error(
 		suppressMessages( load_embeddings(model_name, dir = temp_dir, save = FALSE) ),
@@ -249,7 +253,8 @@ test_that("load_embeddings reads from and writes to RDS", {
 	create_word2vec_bin_file(temp_file)
 
 	# Mock supported_models to point to our local file
-	local_mocked_bindings(supported_models = c(word2vec.test.3d = temp_file))
+	local_mocked_bindings(supported_models = c(word2vec.test.3d = temp_file),
+												supported_model_names = "word2vec.test.3d")
 
 	# Run load_embeddings
 	embeddings_loaded <- suppressWarnings(suppressMessages(quiet( load_embeddings(model_name, dir = temp_dir, format = "rds") )))
@@ -281,7 +286,8 @@ test_that("load_embeddings turns use_sys off for numberbatch files", {
 	create_glove_file(temp_file)
 
 	# Mock supported_models to point to our local file
-	local_mocked_bindings(supported_models = c(numberbatch.file = temp_file))
+	local_mocked_bindings(supported_models = c(numberbatch.file = temp_file),
+												supported_model_names = "numberbatch.file")
 
 	words <- c("word1", "word3")
 
@@ -308,7 +314,8 @@ test_that("load_embeddings uses informative header when use_sys = FALSE", {
 	create_fasttext_file(temp_file)
 
 	# Mock supported_models to point to our local file
-	local_mocked_bindings(supported_models = c(numberbatch.file = temp_file))
+	local_mocked_bindings(supported_models = c(numberbatch.file = temp_file),
+												supported_model_names = "numberbatch.file")
 
 	words <- c("word1", "word3")
 	# read_embeddings
@@ -334,7 +341,8 @@ test_that("load_embeddings handles gzipped files when use_sys = FALSE", {
 	create_glove_gz_file(temp_file)
 
 	# Mock supported_models to point to our local file
-	local_mocked_bindings(supported_models = c(numberbatch.file = temp_file))
+	local_mocked_bindings(supported_models = c(numberbatch.file = temp_file),
+												supported_model_names = "numberbatch.file")
 
 	# Run load_embeddings
 	embeddings_loaded <- suppressMessages( load_embeddings(model_name, dir = temp_dir, save = FALSE) )

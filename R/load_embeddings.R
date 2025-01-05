@@ -1,177 +1,3 @@
-#' @noRd
-supported_models <- c(
-  glove.42B.300d = "https://huggingface.co/stanfordnlp/glove/resolve/main/glove.42B.300d.zip",
-  glove.840B.300d = "https://huggingface.co/stanfordnlp/glove/resolve/main/glove.840B.300d.zip",
-  glove.6B.50d = "https://github.com/piskvorky/gensim-data/releases/download/glove-wiki-gigaword-50/glove-wiki-gigaword-50.gz",
-  glove.6B.100d = "https://github.com/piskvorky/gensim-data/releases/download/glove-wiki-gigaword-100/glove-wiki-gigaword-100.gz",
-  glove.6B.200d = "https://github.com/piskvorky/gensim-data/releases/download/glove-wiki-gigaword-200/glove-wiki-gigaword-200.gz",
-  glove.6B.300d = "https://github.com/piskvorky/gensim-data/releases/download/glove-wiki-gigaword-300/glove-wiki-gigaword-300.gz",
-  glove.twitter.27B.25d = "https://github.com/piskvorky/gensim-data/releases/download/glove-twitter-25/glove-twitter-25.gz",
-  glove.twitter.27B.50d = "https://github.com/piskvorky/gensim-data/releases/download/glove-twitter-50/glove-twitter-50.gz",
-  glove.twitter.27B.100d = "https://github.com/piskvorky/gensim-data/releases/download/glove-twitter-100/glove-twitter-100.gz",
-  glove.twitter.27B.200d = "https://github.com/piskvorky/gensim-data/releases/download/glove-twitter-200/glove-twitter-200.gz",
-  GoogleNews.vectors.negative300 = "https://github.com/piskvorky/gensim-data/releases/download/word2vec-google-news-300/word2vec-google-news-300.gz",
-  numberbatch.19.08 = "https://conceptnet.s3.amazonaws.com/downloads/2019/numberbatch/numberbatch-19.08.txt.gz",
-  cc.af.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.af.300.vec.gz", # Afrikaans
-  cc.sq.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sq.300.vec.gz", # Albanian
-  cc.als.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.als.300.vec.gz", # Alemannic
-  cc.am.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.am.300.vec.gz", # Amharic
-  cc.ar.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ar.300.vec.gz", # Arabic
-  cc.an.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.an.300.vec.gz", # Aragonese
-  cc.hy.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.hy.300.vec.gz", # Armenian
-  cc.as.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.as.300.vec.gz", # Assamese
-  cc.ast.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ast.300.vec.gz", # Asturian
-  cc.az.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.az.300.vec.gz", # Azerbaijani
-  cc.ba.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ba.300.vec.gz", # Bashkir
-  cc.eu.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.eu.300.vec.gz", # Basque
-  cc.bar.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.bar.300.vec.gz", # Bavarian
-  cc.be.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.be.300.vec.gz", # Belarusian
-  cc.bn.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.bn.300.vec.gz", # Bengali
-  cc.bh.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.bh.300.vec.gz", # Bihari
-  cc.bpy.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.bpy.300.vec.gz", # Bishnupriya Manipuri
-  cc.bs.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.bs.300.vec.gz", # Bosnian
-  cc.br.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.br.300.vec.gz", # Breton
-  cc.bg.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.bg.300.vec.gz", # Bulgarian
-  cc.my.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.my.300.vec.gz", # Burmese
-  cc.ca.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ca.300.vec.gz", # Catalan
-  cc.ceb.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ceb.300.vec.gz", # Cebuano
-  cc.bcl.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.bcl.300.vec.gz", # Central Bicolano
-  cc.ce.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ce.300.vec.gz", # Chechen
-  cc.zh.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.zh.300.vec.gz", # Chinese
-  cc.cv.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.cv.300.vec.gz", # Chuvash
-  cc.co.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.co.300.vec.gz", # Corsican
-  cc.hr.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.hr.300.vec.gz", # Croatian
-  cc.cs.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.cs.300.vec.gz", # Czech
-  cc.da.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.da.300.vec.gz", # Danish
-  cc.dv.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.dv.300.vec.gz", # Divehi
-  cc.nl.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.nl.300.vec.gz", # Dutch
-  cc.pa.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.pa.300.vec.gz", # Eastern Punjabi
-  cc.arz.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.arz.300.vec.gz", # Egyptian Arabic
-  cc.eml.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.eml.300.vec.gz", # Emilian-Romagnol
-  cc.en.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.vec.gz", # English
-  cc.myv.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.myv.300.vec.gz", # Erzya
-  cc.eo.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.eo.300.vec.gz", # Esperanto
-  cc.et.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.et.300.vec.gz", # Estonian
-  cc.hif.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.hif.300.vec.gz", # Fiji Hindi
-  cc.fi.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fi.300.vec.gz", # Finnish
-  cc.fr.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fr.300.vec.gz", # French
-  cc.gl.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.gl.300.vec.gz", # Galician
-  cc.ka.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ka.300.vec.gz", # Georgian
-  cc.de.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.de.300.vec.gz", # German
-  cc.gom.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.gom.300.vec.gz", # Goan Konkani
-  cc.el.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.el.300.vec.gz", # Greek
-  cc.gu.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.gu.300.vec.gz", # Gujarati
-  cc.ht.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ht.300.vec.gz", # Haitian
-  cc.he.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.he.300.vec.gz", # Hebrew
-  cc.mrj.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.mrj.300.vec.gz", # Hill Mari
-  cc.hi.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.hi.300.vec.gz", # Hindi
-  cc.hu.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.hu.300.vec.gz", # Hungarian
-  cc.is.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.is.300.vec.gz", # Icelandic
-  cc.io.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.io.300.vec.gz", # Ido
-  cc.ilo.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ilo.300.vec.gz", # Ilokano
-  cc.id.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.id.300.vec.gz", # Indonesian
-  cc.ia.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ia.300.vec.gz", # Interlingua
-  cc.ga.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ga.300.vec.gz", # Irish
-  cc.it.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.it.300.vec.gz", # Italian
-  cc.ja.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ja.300.vec.gz", # Japanese
-  cc.jv.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.jv.300.vec.gz", # Javanese
-  cc.kn.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.kn.300.vec.gz", # Kannada
-  cc.pam.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.pam.300.vec.gz", # Kapampangan
-  cc.kk.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.kk.300.vec.gz", # Kazakh
-  cc.km.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.km.300.vec.gz", # Khmer
-  cc.ky.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ky.300.vec.gz", # Kirghiz
-  cc.ko.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ko.300.vec.gz", # Korean
-  cc.ku.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ku.300.vec.gz", # Kurdish (Kurmanji)
-  cc.ckb.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ckb.300.vec.gz", # Kurdish (Sorani)
-  cc.la.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.la.300.vec.gz", # Latin
-  cc.lv.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.lv.300.vec.gz", # Latvian
-  cc.li.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.li.300.vec.gz", # Limburgish
-  cc.lt.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.lt.300.vec.gz", # Lithuanian
-  cc.lmo.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.lmo.300.vec.gz", # Lombard
-  cc.nds.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.nds.300.vec.gz", # Low Saxon
-  cc.lb.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.lb.300.vec.gz", # Luxembourgish
-  cc.mk.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.mk.300.vec.gz", # Macedonian
-  cc.mai.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.mai.300.vec.gz", # Maithili
-  cc.mg.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.mg.300.vec.gz", # Malagasy
-  cc.ms.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ms.300.vec.gz", # Malay
-  cc.ml.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ml.300.vec.gz", # Malayalam
-  cc.mt.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.mt.300.vec.gz", # Maltese
-  cc.gv.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.gv.300.vec.gz", # Manx
-  cc.mr.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.mr.300.vec.gz", # Marathi
-  cc.mzn.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.mzn.300.vec.gz", # Mazandarani
-  cc.mhr.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.mhr.300.vec.gz", # Meadow Mari
-  cc.min.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.min.300.vec.gz", # Minangkabau
-  cc.xmf.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.xmf.300.vec.gz", # Mingrelian
-  cc.mwl.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.mwl.300.vec.gz", # Mirandese
-  cc.mn.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.mn.300.vec.gz", # Mongolian
-  cc.nah.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.nah.300.vec.gz", # Nahuatl
-  cc.nap.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.nap.300.vec.gz", # Neapolitan
-  cc.ne.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ne.300.vec.gz", # Nepali
-  cc.new.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.new.300.vec.gz", # Newar
-  cc.frr.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.frr.300.vec.gz", # North Frisian
-  cc.nso.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.nso.300.vec.gz", # Northern Sotho
-  cc.no.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.no.300.vec.gz", # Norwegian (Bokmål)
-  cc.nn.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.nn.300.vec.gz", # Norwegian (Nynorsk)
-  cc.oc.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.oc.300.vec.gz", # Occitan
-  cc.or.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.or.300.vec.gz", # Oriya
-  cc.os.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.os.300.vec.gz", # Ossetian
-  cc.pfl.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.pfl.300.vec.gz", # Palatinate German
-  cc.ps.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ps.300.vec.gz", # Pashto
-  cc.fa.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fa.300.vec.gz", # Persian
-  cc.pms.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.pms.300.vec.gz", # Piedmontese
-  cc.pl.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.pl.300.vec.gz", # Polish
-  cc.pt.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.pt.300.vec.gz", # Portuguese
-  cc.qu.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.qu.300.vec.gz", # Quechua
-  cc.ro.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ro.300.vec.gz", # Romanian
-  cc.rm.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.rm.300.vec.gz", # Romansh
-  cc.ru.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ru.300.vec.gz", # Russian
-  cc.sah.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sah.300.vec.gz", # Sakha
-  cc.sa.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sa.300.vec.gz", # Sanskrit
-  cc.sc.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sc.300.vec.gz", # Sardinian
-  cc.sco.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sco.300.vec.gz", # Scots
-  cc.gd.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.gd.300.vec.gz", # Scottish Gaelic
-  cc.sr.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sr.300.vec.gz", # Serbian
-  cc.sh.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sh.300.vec.gz", # Serbo-Croatian
-  cc.scn.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.scn.300.vec.gz", # Sicilian
-  cc.sd.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sd.300.vec.gz", # Sindhi
-  cc.si.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.si.300.vec.gz", # Sinhalese
-  cc.sk.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sk.300.vec.gz", # Slovak
-  cc.sl.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sl.300.vec.gz", # Slovenian
-  cc.so.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.so.300.vec.gz", # Somali
-  cc.azb.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.azb.300.vec.gz", # Southern Azerbaijani
-  cc.es.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.es.300.vec.gz", # Spanish
-  cc.su.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.su.300.vec.gz", # Sundanese
-  cc.sw.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sw.300.vec.gz", # Swahili
-  cc.sv.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.sv.300.vec.gz", # Swedish
-  cc.tl.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.tl.300.vec.gz", # Tagalog
-  cc.tg.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.tg.300.vec.gz", # Tajik
-  cc.ta.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ta.300.vec.gz", # Tamil
-  cc.tt.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.tt.300.vec.gz", # Tatar
-  cc.te.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.te.300.vec.gz", # Telugu
-  cc.th.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.th.300.vec.gz", # Thai
-  cc.bo.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.bo.300.vec.gz", # Tibetan
-  cc.tr.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.tr.300.vec.gz", # Turkish
-  cc.tk.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.tk.300.vec.gz", # Turkmen
-  cc.uk.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.uk.300.vec.gz", # Ukrainian
-  cc.hsb.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.hsb.300.vec.gz", # Upper Sorbian
-  cc.ur.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ur.300.vec.gz", # Urdu
-  cc.ug.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ug.300.vec.gz", # Uyghur
-  cc.uz.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.uz.300.vec.gz", # Uzbek
-  cc.vec.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.vec.300.vec.gz", # Venetian
-  cc.vi.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.vi.300.vec.gz", # Vietnamese
-  cc.vo.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.vo.300.vec.gz", # Volapük
-  cc.wa.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.wa.300.vec.gz", # Walloon
-  cc.war.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.war.300.vec.gz", # Waray
-  cc.cy.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.cy.300.vec.gz", # Welsh
-  cc.vls.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.vls.300.vec.gz", # West Flemish
-  cc.fy.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fy.300.vec.gz", # West Frisian
-  cc.pnb.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.pnb.300.vec.gz", # Western Punjabi
-  cc.yi.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.yi.300.vec.gz", # Yiddish
-  cc.yo.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.yo.300.vec.gz", # Yoruba
-  cc.diq.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.diq.300.vec.gz", # Zazaki
-  cc.zea.300 = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.zea.300.vec.gz" # Zeelandic
-)
-
 #' Load Pretrained GloVe, word2vec, and fastText Embeddings
 #'
 #' Loads pretrained word embeddings. If the specified model has already been
@@ -215,6 +41,20 @@ supported_models <- c(
 #' \itemize{
 #'   \item `GoogleNews.vectors.negative300`: Trained with skip-gram on Google News (~100B tokens, 3M vocab, cased, 300d). Downloaded from https://github.com/piskvorky/gensim-data
 #' }
+#' ## HistWords
+#' By-decade skip-gram embeddings trained on Google Books and Corpus of Historical
+#' American English (COHA). To specify a decade, replace `[decade]` with the first
+#' year of that decade (e.g. `eng.all_sgns.1800`, `eng.all_sgns.1990`).
+#' Originally downloaded from https://nlp.stanford.edu/projects/histwords/
+#' \itemize{
+#'   \item `coha.word_sgns.[decade]`: Trained on Corpus of Historical American English (Genre-Balanced American English, 1830s-2000s).
+#'   \item `coha.lemma_sgns.[decade]`: Same as above, with lemmas rather than words.
+#'   \item `eng.all_sgns.[decade]`: Trained on Google N-Grams eng-all (All English, 1800s-1990s).
+#'   \item `eng.fiction.all_sgns.[decade]`: Trained on Google N-Grams eng-fiction-all (English Fiction, 1800s-1990s).
+#'   \item `chi.sim.all_sgns.[decade]`: Trained on Google N-Grams chi-sim-all (Simplified Chinese, 1950-1990s).
+#'   \item `fre.all_sgns.[decade]`: Trained on Google N-Grams fre-all (French, 1800s-1990s).
+#'   \item `ger.all_sgns.[decade]`: Trained on Google N-Grams ger-all (German, 1800s-1990s).
+#' }
 #' ## ConceptNet Numberbatch
 #' Multilingual word embeddings trained using an ensemble that combines data from
 #' word2vec, GloVe, OpenSubtitles, and the ConceptNet common sense knowledge database.
@@ -225,167 +65,50 @@ supported_models <- c(
 #'   \item `numberbatch.19.08`: Multilingual (9.2M vocab, uncased, 300d)
 #' }
 #' ## fastText
-#' 300-dimensional word vectors for 157 languages, trained with CBOW on Common
-#' Crawl and Wikipedia. Downloaded from https://fasttext.cc/docs/en/crawl-vectors.html
+#' Downloaded from https://fasttext.cc/docs/en/crawl-vectors.html
 #' \itemize{
-#'   \item `cc.af.300`: Afrikaans
-#'   \item `cc.sq.300`: Albanian
-#'   \item `cc.als.300`: Alemannic
-#'   \item `cc.am.300`: Amharic
-#'   \item `cc.ar.300`: Arabic
-#'   \item `cc.an.300`: Aragonese
-#'   \item `cc.hy.300`: Armenian
-#'   \item `cc.as.300`: Assamese
-#'   \item `cc.ast.300`: Asturian
-#'   \item `cc.az.300`: Azerbaijani
-#'   \item `cc.ba.300`: Bashkir
-#'   \item `cc.eu.300`: Basque
-#'   \item `cc.bar.300`: Bavarian
-#'   \item `cc.be.300`: Belarusian
-#'   \item `cc.bn.300`: Bengali
-#'   \item `cc.bh.300`: Bihari
-#'   \item `cc.bpy.300`: Bishnupriya Manipuri
-#'   \item `cc.bs.300`: Bosnian
-#'   \item `cc.br.300`: Breton
-#'   \item `cc.bg.300`: Bulgarian
-#'   \item `cc.my.300`: Burmese
-#'   \item `cc.ca.300`: Catalan
-#'   \item `cc.ceb.300`: Cebuano
-#'   \item `cc.bcl.300`: Central Bicolano
-#'   \item `cc.ce.300`: Chechen
-#'   \item `cc.zh.300`: Chinese
-#'   \item `cc.cv.300`: Chuvash
-#'   \item `cc.co.300`: Corsican
-#'   \item `cc.hr.300`: Croatian
-#'   \item `cc.cs.300`: Czech
-#'   \item `cc.da.300`: Danish
-#'   \item `cc.dv.300`: Divehi
-#'   \item `cc.nl.300`: Dutch
-#'   \item `cc.pa.300`: Eastern Punjabi
-#'   \item `cc.arz.300`: Egyptian Arabic
-#'   \item `cc.eml.300`: Emilian-Romagnol
-#'   \item `cc.en.300`: English
-#'   \item `cc.myv.300`: Erzya
-#'   \item `cc.eo.300`: Esperanto
-#'   \item `cc.et.300`: Estonian
-#'   \item `cc.hif.300`: Fiji Hindi
-#'   \item `cc.fi.300`: Finnish
-#'   \item `cc.fr.300`: French
-#'   \item `cc.gl.300`: Galician
-#'   \item `cc.ka.300`: Georgian
-#'   \item `cc.de.300`: German
-#'   \item `cc.gom.300`: Goan Konkani
-#'   \item `cc.el.300`: Greek
-#'   \item `cc.gu.300`: Gujarati
-#'   \item `cc.ht.300`: Haitian
-#'   \item `cc.he.300`: Hebrew
-#'   \item `cc.mrj.300`: Hill Mari
-#'   \item `cc.hi.300`: Hindi
-#'   \item `cc.hu.300`: Hungarian
-#'   \item `cc.is.300`: Icelandic
-#'   \item `cc.io.300`: Ido
-#'   \item `cc.ilo.300`: Ilokano
-#'   \item `cc.id.300`: Indonesian
-#'   \item `cc.ia.300`: Interlingua
-#'   \item `cc.ga.300`: Irish
-#'   \item `cc.it.300`: Italian
-#'   \item `cc.ja.300`: Japanese
-#'   \item `cc.jv.300`: Javanese
-#'   \item `cc.kn.300`: Kannada
-#'   \item `cc.pam.300`: Kapampangan
-#'   \item `cc.kk.300`: Kazakh
-#'   \item `cc.km.300`: Khmer
-#'   \item `cc.ky.300`: Kirghiz
-#'   \item `cc.ko.300`: Korean
-#'   \item `cc.ku.300`: Kurdish (Kurmanji)
-#'   \item `cc.ckb.300`: Kurdish (Sorani)
-#'   \item `cc.la.300`: Latin
-#'   \item `cc.lv.300`: Latvian
-#'   \item `cc.li.300`: Limburgish
-#'   \item `cc.lt.300`: Lithuanian
-#'   \item `cc.lmo.300`: Lombard
-#'   \item `cc.nds.300`: Low Saxon
-#'   \item `cc.lb.300`: Luxembourgish
-#'   \item `cc.mk.300`: Macedonian
-#'   \item `cc.mai.300`: Maithili
-#'   \item `cc.mg.300`: Malagasy
-#'   \item `cc.ms.300`: Malay
-#'   \item `cc.ml.300`: Malayalam
-#'   \item `cc.mt.300`: Maltese
-#'   \item `cc.gv.300`: Manx
-#'   \item `cc.mr.300`: Marathi
-#'   \item `cc.mzn.300`: Mazandarani
-#'   \item `cc.mhr.300`: Meadow Mari
-#'   \item `cc.min.300`: Minangkabau
-#'   \item `cc.xmf.300`: Mingrelian
-#'   \item `cc.mwl.300`: Mirandese
-#'   \item `cc.mn.300`: Mongolian
-#'   \item `cc.nah.300`: Nahuatl
-#'   \item `cc.nap.300`: Neapolitan
-#'   \item `cc.ne.300`: Nepali
-#'   \item `cc.new.300`: Newar
-#'   \item `cc.frr.300`: North Frisian
-#'   \item `cc.nso.300`: Northern Sotho
-#'   \item `cc.no.300`: Norwegian (Bokmål)
-#'   \item `cc.nn.300`: Norwegian (Nynorsk)
-#'   \item `cc.oc.300`: Occitan
-#'   \item `cc.or.300`: Oriya
-#'   \item `cc.os.300`: Ossetian
-#'   \item `cc.pfl.300`: Palatinate German
-#'   \item `cc.ps.300`: Pashto
-#'   \item `cc.fa.300`: Persian
-#'   \item `cc.pms.300`: Piedmontese
-#'   \item `cc.pl.300`: Polish
-#'   \item `cc.pt.300`: Portuguese
-#'   \item `cc.qu.300`: Quechua
-#'   \item `cc.ro.300`: Romanian
-#'   \item `cc.rm.300`: Romansh
-#'   \item `cc.ru.300`: Russian
-#'   \item `cc.sah.300`: Sakha
-#'   \item `cc.sa.300`: Sanskrit
-#'   \item `cc.sc.300`: Sardinian
-#'   \item `cc.sco.300`: Scots
-#'   \item `cc.gd.300`: Scottish Gaelic
-#'   \item `cc.sr.300`: Serbian
-#'   \item `cc.sh.300`: Serbo-Croatian
-#'   \item `cc.scn.300`: Sicilian
-#'   \item `cc.sd.300`: Sindhi
-#'   \item `cc.si.300`: Sinhalese
-#'   \item `cc.sk.300`: Slovak
-#'   \item `cc.sl.300`: Slovenian
-#'   \item `cc.so.300`: Somali
-#'   \item `cc.azb.300`: Southern Azerbaijani
-#'   \item `cc.es.300`: Spanish
-#'   \item `cc.su.30`: Sundanese
-#'   \item `cc.sw.300`: Swahili
-#'   \item `cc.sv.300`: Swedish
-#'   \item `cc.tl.300`: Tagalog
-#'   \item `cc.tg.300`: Tajik
-#'   \item `cc.ta.300`: Tamil
-#'   \item `cc.tt.300`: Tatar
-#'   \item `cc.te.300`: Telugu
-#'   \item `cc.th.300`: Thai
-#'   \item `cc.bo.300`: Tibetan
-#'   \item `cc.tr.300`: Turkish
-#'   \item `cc.tk.300`: Turkmen
-#'   \item `cc.uk.300`: Ukrainian
-#'   \item `cc.hsb.300`: Upper Sorbian
-#'   \item `cc.ur.300`: Urdu
-#'   \item `cc.ug.300`: Uyghur
-#'   \item `cc.uz.300`: Uzbek
-#'   \item `cc.vec.300`: Venetian
-#'   \item `cc.vi.300`: Vietnamese
-#'   \item `cc.vo.300`: Volapük
-#'   \item `cc.wa.300`: Walloon
-#'   \item `cc.war.300`: Waray
-#'   \item `cc.cy.300`: Welsh
-#'   \item `cc.vls.300`: West Flemish
-#'   \item `cc.fy.300`: West Frisian
-#'   \item `cc.pnb.300`: Western Punjabi
-#'   \item `cc.yi.300`: Yiddish
-#'   \item `cc.yo.300`: Yoruba
-#'   \item `cc.diq.300`: Zazaki
-#'   \item `cc.zea.300`: Zeelandic
+#'   \item `cc.[language].300`: 300-dimensional word vectors for 157 languages,
+#'   trained with CBOW on Common Crawl and Wikipedia. To specify a language,
+#'   replace `[language]` with one of the following language codes:
+#'   `af` (Afrikaans), `sq` (Albanian), `als` (Alemannic), `am` (Amharic), `ar`
+#'   (Arabic), `an` (Aragonese), `hy` (Armenian), `as` (Assamese), `ast`
+#'   (Asturian), `az` (Azerbaijani), `ba` (Bashkir), `eu` (Basque), `bar`
+#'   (Bavarian), `be` (Belarusian), `bn` (Bengali), `bh` (Bihari), `bpy`
+#'   (Bishnupriya Manipuri), `bs` (Bosnian), `br` (Breton), `bg` (Bulgarian),
+#'   `my` (Burmese), `ca` (Catalan), `ceb` (Cebuano), `bcl` (Central Bicolano),
+#'   `ce` (Chechen), `zh` (Chinese), `cv` (Chuvash), `co` (Corsican), `hr`
+#'   (Croatian), `cs` (Czech), `da` (Danish), `dv` (Divehi), `nl` (Dutch), `pa`
+#'   (Eastern Punjabi), `arz` (Egyptian Arabic), `eml` (Emilian-Romagnol), `en`
+#'   (English), `myv` (Erzya), `eo` (Esperanto), `et` (Estonian), `hif`
+#'   (Fiji Hindi), `fi` (Finnish), `fr` (French), `gl` (Galician), `ka`
+#'   (Georgian), `de` (German), `gom` (Goan Konkani), `el` (Greek), `gu`
+#'   (Gujarati), `ht` (Haitian), `he` (Hebrew), `mrj` (Hill Mari), `hi` (Hindi),
+#'   `hu` (Hungarian), `is` (Icelandic), `io` (Ido), `ilo` (Ilokano), `id`
+#'   (Indonesian), `ai` (Interlingua), `ga` (Irish), `it` (Italian), `ja`
+#'   (Japanese), `jv` (Javanese), `kn` (Kannada), `pam` (Kapampangan), `kk`
+#'   (Kazakh), `km` (Khmer), `ky` (Kirghiz), `ko` (Korean), `ku`
+#'   (Kurdish: Kurmanji), `ckb` (Kurdish: Sorani), `la` (Latin), `lv` (Latvian),
+#'   `li` (Limburgish), `lt` (Lithuanian), `lmo` (Lombard), `nds` (Low Saxon),
+#'   `lb` (Luxembourgish), `mk` (Macedonian), `mai` (Maithili), `mg` (Malagasy),
+#'   `ms` (Malay), `ml` (Malayalam), `mt` (Maltese), `gv` (Manx), `mr` (Marathi),
+#'   `mzn` (Mazandarani), `mhr` (Meadow Mari), `min` (Minangkabau), `xmf`
+#'   (Mingrelian), `mwl` (Mirandese), `mn` (Mongolian), `nah` (Nahuatl), `nap`
+#'   (Neapolitan), `ne` (Nepali), `new` (Newar), `frr` (North Frisian), `nso`
+#'   (Northern Sotho), `no` (Norwegian: Bokmål), `nn` (Norwegian: Nynorsk), `oc`
+#'   (Occitan), `or` (Oriya), `os` (Ossetian), `pfl` (Palatinate German), `ps`
+#'   (Pashto), `fa` (Persian), `pms` (Piedmontese), `pl` (Polish), `pt`
+#'   (Portuguese), `qu` (Quechua), `ro` (Romanian), `rm` (Romansh), `ru`
+#'   (Russian), `sah` (Sakha), `sa` (Sanskrit), `sc` (Sardinian), `sco` (Scots),
+#'   `gd` (Scottish Gaelic), `sr` (Serbian), `sh` (Serbo-Croatian), `scn`
+#'   (Sicilian), `sd` (Sindhi), `si` (Sinhalese), `sk` (Slovak), `sl`
+#'   (Slovenian), `so` (Somali), `azb` (Southern Azerbaijani), `es` (Spanish),
+#'   `su` (Sundanese), `sw` (Swahili), `sv` (Swedish), `tl` (Tagalog), `tg`
+#'   (Tajik), `ta` (Tamil), `tt` (Tatar), `te` (Telugu), `th` (Thai), `bo`
+#'   (Tibetan), `tr` (Turkish), `tk` (Turkmen), `uk` (Ukrainian), `hsb`
+#'   (Upper Sorbian), `ur` (Urdu), `ug` (Uyghur), `uz` (Uzbek), `vec` (Venetian),
+#'   `vi` (Vietnamese), `vo` (Volapük), `wa` (Walloon), `war` (Waray), `cy`
+#'   (Welsh), `vls` (West Flemish), `fy` (West Frisian), `pnb` (Western Punjabi),
+#'   `yi` (Yiddish), `yu` (Yoruba), `diq` (Zazaki), `zea` (Zeelandic)
 #' }
 #'
 #' @section Value:
@@ -393,6 +116,8 @@ supported_models <- c(
 #'
 #' @references
 #' Bojanowski, P., Grave, E., Joulin, A., and Mikolov, T. (2016). Enriching Word Vectors with Subword Information. arXiv preprint. https://arxiv.org/abs/1607.04606
+#'
+#' Hamilton, W. L., Leskovec, J., and Jurafsky, D. (2016). Diachronic Word Embeddings Reveal Statistical Laws of Semantic Change. In Proceedings of the 54th Annual Meeting of the ACL. https://aclanthology.org/P16-1141/
 #'
 #' Mikolov, T., Chen, K., Corrado, G., and Dean, J. (2013). Efficient Estimation of Word Representations in Vector Space. In Proceedings of Workshop at ICLR. https://arxiv.org/pdf/1301.3781
 #'
@@ -403,7 +128,7 @@ supported_models <- c(
 #' @importFrom rlang %||%
 #' @export
 load_embeddings <- function(model, dir = NULL, words = NULL, save = TRUE, format = "original"){
-  stopifnot("Unrecognized model. Please specify a supported model." = model %in% names(supported_models))
+  stopifnot("Unrecognized model. Please specify a supported model." = model %in% supported_model_names)
   dir <- dir %||% getOption("embeddings.model.path", ".")
   # Check if model has already been downloaded
   model_path <- list.files(dir, model, full.names = TRUE)
@@ -419,7 +144,16 @@ load_embeddings <- function(model, dir = NULL, words = NULL, save = TRUE, format
   save_last <- save && (format != "original") && (new_download || !new_download & format != saved_format)
   # Download if needed
   if (new_download) {
-    download_link <- supported_models[[model]]
+    histwords_models <- c("coha.word_sgns.", "coha.lemma_sgns.", "eng.all_sgns.", "eng.fiction.all_sgns.", "chi.sim.all_sgns.", "fre.all_sgns.", "ger.all_sgns.")
+    if ((model_repo <- substring(model, 1L, 3L)) == "cc.") {
+      download_link <- supported_models[[model_repo]]
+      download_link <- paste0(download_link, model, ".vec.gz")
+    }else if ((model_repo <- substring(model, 1L, nchar(model) - 4L)) %in% histwords_models) {
+      download_link <- supported_models[[model_repo]]
+      download_link <- paste0(download_link, model, ".rds")
+    }else{
+      download_link <- supported_models[[model]]
+    }
     if (save_last || !save) {
       message("Reading file from the Internet...")
       out <- read_embeddings(download_link, words = words)
@@ -458,364 +192,108 @@ load_embeddings <- function(model, dir = NULL, words = NULL, save = TRUE, format
   out
 }
 
-#' Read Embeddings From a Text or Binary File
-#'
-#' Reads GloVe text format, fastText text format, word2vec binary format,
-#' and most tabular formats (csv, tsv, etc.)
-#'
-#' @param path a file path or url
-#' @param words optional list of words for which to retrieve embeddings.
-#'
-#' @details
-#' If using a custom tabular format, the file must have tokens in the first
-#' column and numbers in all other columns.
-#'
-#' @section Value:
-#' An embeddings object (a numeric matrix with tokens as rownames)
-
-#' @export
-read_embeddings <- function(path, words = NULL) {
-  path_format <- substring(path, regexpr("\\.([[:alnum:]]+)$", path) + 1L)
-  # word2vec binary format
-  if (path_format == "bin" || grepl("\\.bin\\.", path) || grepl("word2vec", path)) {
-    out <- tryCatch(
-      read_word2vec(path, words = words),
-      error = function(e) stop(
-        conditionMessage(e),
-        "\nThis file was assumed based on its name to be written in word2vec bin format. ",
-        "This assumption may have been mistaken. "
-        )
-      )
-  }else{
-    if (grepl("numberbatch", path)) use_sys <- FALSE else use_sys <- TRUE
-    out <- read_table_embeddings(path, words = words, use_sys = use_sys)
-  }
-  out
-}
-
-# check if a file is gzipped
 #' @noRd
-is_gzipped <- function(file) {
-  if (is_url(file)) {
-    # For URLs, check if the URL ends with .gz or .gzip
-    return(grepl("\\.gz(ip)?$", file, ignore.case = TRUE))
-  } else {
-    # For local files, check the file signature for gzip magic numbers
-    con <- file(file, "rb")
-    magic <- readBin(con, "raw", n = 2)
-    close(con)
-    return(identical(magic, as.raw(c(0x1f, 0x8b))))
-  }
-}
+supported_models <- c(
+  glove.42B.300d = "https://huggingface.co/stanfordnlp/glove/resolve/main/glove.42B.300d.zip",
+  glove.840B.300d = "https://huggingface.co/stanfordnlp/glove/resolve/main/glove.840B.300d.zip",
+  glove.6B.50d = "https://github.com/piskvorky/gensim-data/releases/download/glove-wiki-gigaword-50/glove-wiki-gigaword-50.gz",
+  glove.6B.100d = "https://github.com/piskvorky/gensim-data/releases/download/glove-wiki-gigaword-100/glove-wiki-gigaword-100.gz",
+  glove.6B.200d = "https://github.com/piskvorky/gensim-data/releases/download/glove-wiki-gigaword-200/glove-wiki-gigaword-200.gz",
+  glove.6B.300d = "https://github.com/piskvorky/gensim-data/releases/download/glove-wiki-gigaword-300/glove-wiki-gigaword-300.gz",
+  glove.twitter.27B.25d = "https://github.com/piskvorky/gensim-data/releases/download/glove-twitter-25/glove-twitter-25.gz",
+  glove.twitter.27B.50d = "https://github.com/piskvorky/gensim-data/releases/download/glove-twitter-50/glove-twitter-50.gz",
+  glove.twitter.27B.100d = "https://github.com/piskvorky/gensim-data/releases/download/glove-twitter-100/glove-twitter-100.gz",
+  glove.twitter.27B.200d = "https://github.com/piskvorky/gensim-data/releases/download/glove-twitter-200/glove-twitter-200.gz",
+  GoogleNews.vectors.negative300 = "https://github.com/piskvorky/gensim-data/releases/download/word2vec-google-news-300/word2vec-google-news-300.gz",
+  coha.word_sgns. = "https://huggingface.co/embedplyr/coha.word_sgns/resolve/main/",
+  coha.lemma_sgns. = "https://huggingface.co/embedplyr/coha.lemma_sgns/resolve/main/",
+  eng.all_sgns. = "https://huggingface.co/embedplyr/eng.all_sgns/resolve/main/",
+  eng.fiction.all_sgns. = "https://huggingface.co/embedplyr/eng.fiction.all_sgns/resolve/main/",
+  chi.sim.all_sgns. = "https://huggingface.co/embedplyr/chi.sim.all_sgns/resolve/main/",
+  fre.all_sgns. = "https://huggingface.co/embedplyr/fre.all_sgns/resolve/main/",
+  ger.all_sgns. = "https://huggingface.co/embedplyr/ger.all_sgns/resolve/main/",
+  numberbatch.19.08 = "https://conceptnet.s3.amazonaws.com/downloads/2019/numberbatch/numberbatch-19.08.txt.gz",
+  cc. = "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/"
+)
 
 #' @noRd
-read_word2vec_word <- function(f, max_len = 50) {
-  chars <- character(max_len)
-  # read characters until whitespace or max_len
-  for (i in seq_len(max_len)) {
-    ch <- suppressWarnings( readChar(f, nchars = 1, useBytes = TRUE) )
-    if (ch == " " || ch == "" || ch == "\n" || ch == "\t") break
-    chars[i] <- ch
-  }
-  # collapse characters into string
-  paste0(chars[1:i], collapse = "")
-}
-
-
-#' @noRd
-read_word2vec <- function(path, words = NULL){
-  # handle for HTTP requests
-  h <- curl::new_handle()
-  curl::handle_setopt(h, timeout = 10000);
-  curl::handle_setheaders(h, "User-Agent" = "embedplyr (https://github.com/rimonim/embedplyr)")
-  # open binary file in read mode
-  is_gz <- is_gzipped(path)
-  if (is_url(path)) {
-    conn <- curl::curl(path, "rb")
-    if (is_gz) {
-      conn <- gzcon(conn)
-    }
-  } else {
-    conn <- tryCatch({
-      if (is_gz) {
-        gzfile(path, "rb")
-      } else {
-        file(path, "rb")
-      }
-    }, error = function(e) {
-      stop("Error opening file: ", conditionMessage(e))
-    })
-  }
-  if (!isOpen(conn)) stop("Input file not found")
-  on.exit(close(conn))
-  # read header
-  vocab_size <- as.numeric(read_word2vec_word(conn))
-  dimensions <- as.numeric(read_word2vec_word(conn))
-  # read word embeddings
-  if (vocab_size >= 10000) {
-    pb <- utils::txtProgressBar(0, vocab_size, style = 3)
-    on.exit(close(pb), add = TRUE)
-  }
-  if (is.null(words)) {
-    vocab <- character(vocab_size)
-    mat <- matrix(0, nrow = vocab_size, ncol = dimensions)
-    for (r in seq_len(vocab_size)) {
-      if (r %% 10000 == 0) utils::setTxtProgressBar(pb, r)
-      new_word <- read_word2vec_word(conn)
-      new_vec <- readBin(conn, what = "numeric", size = 4, n = dimensions, endian = "little")
-      if (nzchar(new_word)) {
-        vocab[r] <- new_word
-        mat[r,] <- new_vec
-      }
-    }
-    rownames(mat) <- vocab
-    mat <- as.embeddings(mat, rowname_repair = FALSE)
-  }else{
-    mat <- matrix(NA_real_, nrow = length(words), ncol = dimensions,
-                  dimnames = list(words))
-    token_index <- new.env(hash = TRUE, parent = emptyenv())
-    for (i in seq_along(words)) token_index[[words[i]]] <- i
-    w <- 1L
-    for (r in seq_len(vocab_size)) {
-      if (r %% 10000 == 0) utils::setTxtProgressBar(pb, r)
-      new_word <- read_word2vec_word(conn)
-      new_vec <- readBin(conn, what = "numeric", size = 4, n = dimensions, endian = "little")
-      if (nzchar(new_word) && exists(new_word, envir = token_index)) {
-        mat[get(new_word, envir = token_index),] <- new_vec
-        w <- w + 1L
-        if (w == length(words)) {
-          if (vocab_size >= 10000) utils::setTxtProgressBar(pb, vocab_size)
-          break
-        }
-      }
-    }
-    mat <- as.embeddings(mat, rowname_repair = FALSE)
-  }
-  mat
-}
-
-#' @noRd
-read_table_embeddings <- function(path, words = NULL, use_sys = TRUE, timeout = 1000){
-  # turn quoting off for glove files
-  quote <- ifelse(grepl("glove", path), "", "\"")
-  # read table with token embeddings
-  if (is.character(words)) {
-    if (grepl("\\.zip$", path, ignore.case = TRUE)) {
-      warning("Line by line file reading is not supported for zip files. Loading full file before filtering words.")
-      x <- suppressWarnings( data.table::fread(path, quote = quote, showProgress = TRUE) )
-      x <- x[x[[1]] %in% words,]
-    }else{
-      x <- fread_filtered(path, words = words, use_sys = use_sys, showProgress = TRUE)
-      if (nrow(x) == 0){
-        x <- data.table::fread(path, quote = quote, nrows = 0, showProgress = TRUE)
-      }
-    }
-  }else{
-    x <- suppressWarnings( data.table::fread(path, quote = quote, showProgress = TRUE) )
-  }
-  id <- x[[1]]
-
-  # remove duplicates
-  duplicates <- duplicated(id)
-  if (any(duplicates)) {
-    warning("Tokens are not unique. Removing duplicates.")
-    x <- x[!duplicates,]
-    id <- x[[1]]
-  }
-  # coerce to numeric matrix
-  x <- x[,-1]
-  if (!all(vapply(x, is.numeric, TRUE))) {
-    stop("Input is not numeric")
-  }
-  x <- as.matrix(x)
-  # set row and column names
-  rownames(x) <- id
-  if (all(colnames(x)[-1] == paste0("V",3:(ncol(x)+1L)))) colnames(x) <- NULL
-  # update class
-  return(as.embeddings(x))
-}
-
-# check if a string is a URL
-#' @noRd
-is_url <- function(x) {
-  grepl("^(http|https|ftp)://", x)
-}
-
-# read tabular from file or url, ignoring lines that don't start with a word in `words`
-#' @noRd
-fread_filtered <- function(file, words, use_sys = TRUE, ..., timeout = 1000) {
-  # check system
-  on_windows <- .Platform$OS.type == "windows"
-
-  # check for the required system commands
-  sys_commands_available <- if (on_windows) {
-  	all(nzchar(Sys.which(c("curl", "findstr"))))
-  }else{
-  	all(nzchar(Sys.which(c("curl", "gunzip", "awk"))))
-  }
-
-  # is file gzipped?
-  is_gz <- is_gzipped(file)
-  # is file url
-  is_url <- is_url(file)
-  # expand file path
-  file <- path.expand(file)
-  if (use_sys && sys_commands_available) {
-  	wordfile <- tempfile()
-  	on.exit(unlink(wordfile), add = TRUE)
-  	if (on_windows) {
-  		file_format <- substring(file, regexpr("\\.([[:alnum:]]+)$", file) + 1L)
-  		delim <- if (file_format == "csv") "," else if (file_format == "tsv") "\t" else " "
-  		if (is_url) {
-  			if (is_gz) {
-  				# gz files must be downloaded in order to be unzipped
-  				tmpFile = tempfile(fileext = paste0(".", file_format), tmpdir = tempdir())
-  				utils::download.file(file, tmpFile, mode = "wb")
-  				file <- tmpFile
-  				on.exit(unlink(tmpFile), add = TRUE)
-  			}
-  		}else{
-  			file <- normalizePath(file, winslash = "\\", mustWork = FALSE)
-  		}
-  		# unzip file if necessary
-  		if (is_gz) {
-  			if (!requireNamespace("R.utils", quietly = TRUE)) stop("read_embeddings() requires 'R.utils' package to read gzipped files. Please install 'R.utils' using 'install.packages('R.utils')'.")
-  			R.utils::decompressFile(file, decompFile <- tempfile(tmpdir = tempdir()),
-  															ext = NULL, FUN = gzfile, remove = FALSE)
-  			file <- decompFile
-  			on.exit(unlink(decompFile), add = TRUE)
-  		}
-  		# write words to temporary file
-  		writeLines(paste0("^", words, delim), wordfile)
-  		# write shell command
-  		if (is_url(file)) {
-  			cmd <- paste0(
-  				"curl -L -s ", shQuote(file), " | ",
-  				"findstr /r /G:", shQuote(wordfile)
-  			)
-  		} else {
-  			cmd <- paste0("findstr /r /G:", shQuote(wordfile), " ", shQuote(file))
-  		}
-  	}else{
-  		awk_script <- "NR==FNR{words[$1]=1;next} words[$1]"
-  		# write words to temporary file
-  		writeLines(words, wordfile)
-  		# write shell command
-  		if (is_url(file)) {
-  			if (is_gz) {
-  				cmd <- paste(
-  					"curl -L -s", shQuote(file), "|",
-  					"gunzip -c |",
-  					"awk", shQuote(awk_script),
-  					shQuote(wordfile), "-"
-  				)
-  			} else {
-  				cmd <- paste(
-  					"curl -L -s", shQuote(file), "|",
-  					"awk", shQuote(awk_script),
-  					shQuote(wordfile), "-"
-  				)
-  			}
-  		} else {
-  			# Local file
-  			if (is_gz) {
-  				cmd <- paste(
-  					"gunzip -c", shQuote(file), "|",
-  					"awk", shQuote(awk_script),
-  					shQuote(wordfile), "-"
-  				)
-  			} else {
-  				cmd <- paste(
-  					"awk", shQuote(awk_script),
-  					shQuote(wordfile), shQuote(file)
-  				)
-  			}
-  		}
-  	}
-
-    # Read data and finish up
-    data <- data.table::fread(cmd = cmd, ...)
-    unlink(wordfile)
-    return(data)
-  } else {
-    # R-only version
-    # handle for HTTP requests
-    h <- curl::new_handle()
-    curl::handle_setopt(h, timeout = 10000);
-    curl::handle_setheaders(h, "User-Agent" = "embedplyr (https://github.com/rimonim/embedplyr)")
-    # open connection
-    if (is_url(file)) {
-      conn <- tryCatch({
-        if (is_gz) {
-          gzcon(curl::curl(file, "rb", handle = h))
-        } else {
-          curl::curl(file, "rt", handle = h)
-        }
-      }, error = function(e) {
-        stop("Error opening URL: ", conditionMessage(e))
-      })
-    } else {
-      conn <- tryCatch({
-        if (is_gz) {
-          gzfile(file, "rt")
-        } else {
-          file(file, "rt")
-        }
-      }, error = function(e) {
-        stop("Error opening file: ", conditionMessage(e))
-      })
-    }
-    on.exit(close(conn))
-
-    # hash table for matching words
-    token_index <- new.env(hash = TRUE, parent = emptyenv())
-    for (i in seq_along(words)) token_index[[words[i]]] <- i
-
-    # process lines one at a time
-    filtered_lines <- character(length(words))
-    w <- 1
-    message("Processing file...")
-    line <- readLines(conn, n = 1, warn = FALSE)
-    if (!is.na(numlines <- suppressWarnings(as.numeric(strsplit(line, " ")[[1]]))[1])) {
-      # number of rows is known from space delimited header
-      if (numlines >= 10000) {
-        pb <- utils::txtProgressBar(0, numlines, style = 3)
-        on.exit(close(pb), add = TRUE)
-      }
-      for (i in seq_len(numlines)) {
-        line <- readLines(conn, n = 1, warn = FALSE)
-        if (exists(sub(" .*", "", line), envir = token_index)) {
-          filtered_lines[w] <- line
-          if (w == length(words)) {
-            if (numlines >= 10000) utils::setTxtProgressBar(pb, numlines)
-            break
-          }
-          w <- w + 1
-        }
-        if (i %% 10000 == 0) utils::setTxtProgressBar(pb, i)
-      }
-    }else{
-      if (exists(sub(" .*", "", line), envir = token_index)) {
-        filtered_lines[w] <- line
-        w <- w + 1L
-      }
-      while (length(line <- readLines(conn, n = 1, warn = FALSE)) > 0) {
-        if (exists(sub(" .*", "", line), envir = token_index)) {
-          filtered_lines[w] <- line
-          w <- w + 1
-        }
-      }
-    }
-
-    # check if any lines were matched
-    if (length(filtered_lines) == 0 || all(grepl("^\\s*$", filtered_lines))) {
-      warning("No embeddings found for items in `words`")
-      return(data.table::data.table())
-    }
-
-    # convert filtered lines to a data.table
-    data <- data.table::fread(text = filtered_lines, header = FALSE, ...)
-
-    return(data)
-  }
-}
+supported_model_names <- c(
+  "glove.42B.300d", "glove.840B.300d", "glove.6B.50d", "glove.6B.100d",
+  "glove.6B.200d", "glove.6B.300d", "glove.twitter.27B.25d", "glove.twitter.27B.50d",
+  "glove.twitter.27B.100d", "glove.twitter.27B.200d", "GoogleNews.vectors.negative300",
+  "coha.word_sgns.1830", "coha.word_sgns.1840", "coha.word_sgns.1850",
+  "coha.word_sgns.1860", "coha.word_sgns.1870", "coha.word_sgns.1880",
+  "coha.word_sgns.1890", "coha.word_sgns.1900", "coha.word_sgns.1910",
+  "coha.word_sgns.1920", "coha.word_sgns.1930", "coha.word_sgns.1940",
+  "coha.word_sgns.1950", "coha.word_sgns.1960", "coha.word_sgns.1970",
+  "coha.word_sgns.1980", "coha.word_sgns.1990", "coha.word_sgns.2000",
+  "coha.lemma_sgns.1830", "coha.lemma_sgns.1840", "coha.lemma_sgns.1850",
+  "coha.lemma_sgns.1860", "coha.lemma_sgns.1870", "coha.lemma_sgns.1880",
+  "coha.lemma_sgns.1890", "coha.lemma_sgns.1900", "coha.lemma_sgns.1910",
+  "coha.lemma_sgns.1920", "coha.lemma_sgns.1930", "coha.lemma_sgns.1940",
+  "coha.lemma_sgns.1950", "coha.lemma_sgns.1960", "coha.lemma_sgns.1970",
+  "coha.lemma_sgns.1980", "coha.lemma_sgns.1990", "coha.lemma_sgns.2000",
+  "eng.all_sgns.1800", "eng.all_sgns.1810", "eng.all_sgns.1820",
+  "eng.all_sgns.1830", "eng.all_sgns.1840", "eng.all_sgns.1850",
+  "eng.all_sgns.1860", "eng.all_sgns.1870", "eng.all_sgns.1880",
+  "eng.all_sgns.1890", "eng.all_sgns.1900", "eng.all_sgns.1910",
+  "eng.all_sgns.1920", "eng.all_sgns.1930", "eng.all_sgns.1940",
+  "eng.all_sgns.1950", "eng.all_sgns.1960", "eng.all_sgns.1970",
+  "eng.all_sgns.1980", "eng.all_sgns.1990",
+  "eng.fiction.all_sgns.1800", "eng.fiction.all_sgns.1810", "eng.fiction.all_sgns.1820",
+  "eng.fiction.all_sgns.1830", "eng.fiction.all_sgns.1840", "eng.fiction.all_sgns.1850",
+  "eng.fiction.all_sgns.1860", "eng.fiction.all_sgns.1870", "eng.fiction.all_sgns.1880",
+  "eng.fiction.all_sgns.1890", "eng.fiction.all_sgns.1900", "eng.fiction.all_sgns.1910",
+  "eng.fiction.all_sgns.1920", "eng.fiction.all_sgns.1930", "eng.fiction.all_sgns.1940",
+  "eng.fiction.all_sgns.1950", "eng.fiction.all_sgns.1960", "eng.fiction.all_sgns.1970",
+  "eng.fiction.all_sgns.1980", "eng.fiction.all_sgns.1990",
+  "chi.sim.all_sgns.1950", "chi.sim.all_sgns.1960", "chi.sim.all_sgns.1970",
+  "chi.sim.all_sgns.1980", "chi.sim.all_sgns.1990",
+  "fre.all_sgns.1800", "fre.all_sgns.1810", "fre.all_sgns.1820",
+  "fre.all_sgns.1830", "fre.all_sgns.1840", "fre.all_sgns.1850",
+  "fre.all_sgns.1860", "fre.all_sgns.1870", "fre.all_sgns.1880",
+  "fre.all_sgns.1890", "fre.all_sgns.1900", "fre.all_sgns.1910",
+  "fre.all_sgns.1920", "fre.all_sgns.1930", "fre.all_sgns.1940",
+  "fre.all_sgns.1950", "fre.all_sgns.1960", "fre.all_sgns.1970",
+  "fre.all_sgns.1980", "fre.all_sgns.1990",
+  "ger.all_sgns.1800", "ger.all_sgns.1810", "ger.all_sgns.1820",
+  "ger.all_sgns.1830", "ger.all_sgns.1840", "ger.all_sgns.1850",
+  "ger.all_sgns.1860", "ger.all_sgns.1870", "ger.all_sgns.1880",
+  "ger.all_sgns.1890", "ger.all_sgns.1900", "ger.all_sgns.1910",
+  "ger.all_sgns.1920", "ger.all_sgns.1930", "ger.all_sgns.1940",
+  "ger.all_sgns.1950", "ger.all_sgns.1960", "ger.all_sgns.1970",
+  "ger.all_sgns.1980", "ger.all_sgns.1990",
+  "numberbatch.19.08",
+  "cc.af.300", "cc.sq.300", "cc.als.300", "cc.am.300", "cc.ar.300",
+  "cc.an.300", "cc.hy.300", "cc.as.300", "cc.ast.300", "cc.az.300",
+  "cc.ba.300", "cc.eu.300", "cc.bar.300", "cc.be.300", "cc.bn.300",
+  "cc.bh.300", "cc.bpy.300", "cc.bs.300", "cc.br.300", "cc.bg.300",
+  "cc.my.300", "cc.ca.300", "cc.ceb.300", "cc.bcl.300", "cc.ce.300",
+  "cc.zh.300", "cc.cv.300", "cc.co.300", "cc.hr.300", "cc.cs.300",
+  "cc.da.300", "cc.dv.300", "cc.nl.300", "cc.pa.300", "cc.arz.300",
+  "cc.eml.300", "cc.en.300", "cc.myv.300", "cc.eo.300", "cc.et.300",
+  "cc.hif.300", "cc.fi.300", "cc.fr.300", "cc.gl.300", "cc.ka.300",
+  "cc.de.300", "cc.gom.300", "cc.el.300", "cc.gu.300", "cc.ht.300",
+  "cc.he.300", "cc.mrj.300", "cc.hi.300", "cc.hu.300", "cc.is.300",
+  "cc.io.300", "cc.ilo.300", "cc.id.300", "cc.ia.300", "cc.ga.300",
+  "cc.it.300", "cc.ja.300", "cc.jv.300", "cc.kn.300", "cc.pam.300",
+  "cc.kk.300", "cc.km.300", "cc.ky.300", "cc.ko.300", "cc.ku.300",
+  "cc.ckb.300", "cc.la.300", "cc.lv.300", "cc.li.300", "cc.lt.300",
+  "cc.lmo.300", "cc.nds.300", "cc.lb.300", "cc.mk.300", "cc.mai.300",
+  "cc.mg.300", "cc.ms.300", "cc.ml.300", "cc.mt.300", "cc.gv.300",
+  "cc.mr.300", "cc.mzn.300", "cc.mhr.300", "cc.min.300", "cc.xmf.300",
+  "cc.mwl.300", "cc.mn.300", "cc.nah.300", "cc.nap.300", "cc.ne.300",
+  "cc.new.300", "cc.frr.300", "cc.nso.300", "cc.no.300", "cc.nn.300",
+  "cc.oc.300", "cc.or.300", "cc.os.300", "cc.pfl.300", "cc.ps.300",
+  "cc.fa.300", "cc.pms.300", "cc.pl.300", "cc.pt.300", "cc.qu.300",
+  "cc.ro.300", "cc.rm.300", "cc.ru.300", "cc.sah.300", "cc.sa.300",
+  "cc.sc.300", "cc.sco.300", "cc.gd.300", "cc.sr.300", "cc.sh.300",
+  "cc.scn.300", "cc.sd.300", "cc.si.300", "cc.sk.300", "cc.sl.300",
+  "cc.so.300", "cc.azb.300", "cc.es.300", "cc.su.300", "cc.sw.300",
+  "cc.sv.300", "cc.tl.300", "cc.tg.300", "cc.ta.300", "cc.tt.300",
+  "cc.te.300", "cc.th.300", "cc.bo.300", "cc.tr.300", "cc.tk.300",
+  "cc.uk.300", "cc.hsb.300", "cc.ur.300", "cc.ug.300", "cc.uz.300",
+  "cc.vec.300", "cc.vi.300", "cc.vo.300", "cc.wa.300", "cc.war.300",
+  "cc.cy.300", "cc.vls.300", "cc.fy.300", "cc.pnb.300", "cc.yi.300",
+  "cc.yo.300", "cc.diq.300", "cc.zea.300"
+  )
