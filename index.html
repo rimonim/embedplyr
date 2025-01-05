@@ -71,7 +71,7 @@
 <p>embedplyr enables common operations with word and text embeddings within a ‘tidyverse’ and/or ‘quanteda’ workflow, as demonstrated in <a href="http://ds4psych.com" class="external-link">Data Science for Psychology: Natural Language</a>.</p>
 <ul>
 <li>
-<code><a href="reference/load_embeddings.html">load_embeddings()</a></code> loads pretrained <a href="https://nlp.stanford.edu/projects/glove/" class="external-link">GloVe</a>, <a href="https://code.google.com/archive/p/word2vec/" class="external-link">word2vec</a>, <a href="https://github.com/commonsense/conceptnet-numberbatch" class="external-link">ConceptNet Numberbatch</a>, and <a href="https://fasttext.cc" class="external-link">fastText</a> word embedding models from Internet sources or from your working directory</li>
+<code><a href="reference/load_embeddings.html">load_embeddings()</a></code> loads pretrained <a href="https://nlp.stanford.edu/projects/glove/" class="external-link">GloVe</a>, <a href="https://code.google.com/archive/p/word2vec/" class="external-link">word2vec</a>, <a href="https://nlp.stanford.edu/projects/histwords/" class="external-link">HistWords</a>, <a href="https://github.com/commonsense/conceptnet-numberbatch" class="external-link">ConceptNet Numberbatch</a>, and <a href="https://fasttext.cc" class="external-link">fastText</a> word embedding models from Internet sources or from your working directory</li>
 <li>
 <code><a href="reference/embed_tokens.html">embed_tokens()</a></code> returns the embedding for each token in a set of texts</li>
 <li>
@@ -82,6 +82,8 @@
 <code><a href="reference/average_embedding.html">average_embedding()</a></code> calculates the (weighted) average of multiple embeddings</li>
 <li>
 <code><a href="reference/reduce_dimensionality.html">reduce_dimensionality()</a></code> reduces the dimensionality of embeddings</li>
+<li>
+<code><a href="reference/align_embeddings.html">align_embeddings()</a></code> rotates the embeddings from one model so that they can be compared with those from another</li>
 <li>
 <code><a href="reference/normalize.html">normalize()</a></code> and <code><a href="reference/normalize.html">normalize_rows()</a></code> normalize embeddings to the unit hypersphere</li>
 <li>and more…</li>
@@ -174,7 +176,7 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># function that takes character vector and outputs a data frame</span></span>
 <span><span class="va">sbert_embeddings</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">texts</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">text</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/text/man/textEmbed.html" class="external-link">textEmbed</a></span><span class="op">(</span></span>
+<span>    <span class="fu">text</span><span class="fu">::</span><span class="fu"><a href="https://r-text.org/reference/textEmbed.html" class="external-link">textEmbed</a></span><span class="op">(</span></span>
 <span>        <span class="va">texts</span>,</span>
 <span>        model <span class="op">=</span> <span class="st">"sentence-transformers/all-MiniLM-L12-v2"</span>, <span class="co"># model name</span></span>
 <span>        layers <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>,  <span class="co"># second to last layer (default)</span></span>
@@ -262,7 +264,7 @@
 <span><span class="co">#&gt; 1 positive -1.47   0.494</span></span>
 <span><span class="co">#&gt; 2 neutral   0.121 -1.13 </span></span>
 <span><span class="co">#&gt; 3 negative  1.35   0.640</span></span></code></pre></div>
-<p><code><a href="reference/reduce_dimensionality.html">reduce_dimensionality()</a></code> can also be used to apply the same rotation other embeddings not used to find the principle components.</p>
+<p><code><a href="reference/reduce_dimensionality.html">reduce_dimensionality()</a></code> can also be used to apply the same rotation to other embeddings not used to find the principle components.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">new_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"new"</span>, <span class="st">"strange"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -278,6 +280,12 @@
 <span><span class="co">#&gt;         PC1   PC2  </span></span>
 <span><span class="co">#&gt; new     -2.38  0.24</span></span>
 <span><span class="co">#&gt; strange  0.09  1.18</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="align-and-compare-embeddings-models">Align and Compare Embeddings Models<a class="anchor" aria-label="anchor" href="#align-and-compare-embeddings-models"></a>
+</h4>
+<p>Aligning separately trained embeddings can be useful for tracking semantic change over time or semantic differences between training datasets. It can also be useful for comparing texts across languages. <code>align_embeddings(x, y)</code> rotates the embeddings in <code>x</code> (and changes their dimensionality if necessary) so that they can be compared with those in <code>y</code>. Optionally, <code>matching</code> can be used to specify one-to-one matching between embeddings in the two models (e.g. a bilingual dictionary).</p>
+<p>Once aligned, groups of embeddings can be compared using <code><a href="reference/total_dist.html">total_dist()</a></code> or <code><a href="reference/total_dist.html">average_sim()</a></code>. These can be used to quantify the overall distance or similarity between two parallel embedding spaces.</p>
 </div>
 <div class="section level4">
 <h4 id="normalize-scale-embeddings-to-the-unit-hypersphere">Normalize (Scale Embeddings to the Unit Hypersphere)<a class="anchor" aria-label="anchor" href="#normalize-scale-embeddings-to-the-unit-hypersphere"></a>

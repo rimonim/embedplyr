@@ -117,6 +117,22 @@ read time is a concern, consider setting <code>format = "csv"</code> or <code>fo
 </ul></div>
 
 <div class="section">
+<h3 id="histwords">HistWords<a class="anchor" aria-label="anchor" href="#histwords"></a></h3>
+
+
+<p>By-decade skip-gram embeddings trained on Google Books and Corpus of Historical
+American English (COHA). To specify a decade, replace <code>[decade]</code> with the first
+year of that decade (e.g. <code>eng.all_sgns.1800</code>, <code>eng.all_sgns.1990</code>).
+Originally downloaded from https://nlp.stanford.edu/projects/histwords/</p><ul><li><p><code>coha.word_sgns.[decade]</code>: Trained on Corpus of Historical American English (Genre-Balanced American English, 1830s-2000s).</p></li>
+<li><p><code>coha.lemma_sgns.[decade]</code>: Same as above, with lemmas rather than words.</p></li>
+<li><p><code>eng.all_sgns.[decade]</code>: Trained on Google N-Grams eng-all (All English, 1800s-1990s).</p></li>
+<li><p><code>eng.fiction.all_sgns.[decade]</code>: Trained on Google N-Grams eng-fiction-all (English Fiction, 1800s-1990s).</p></li>
+<li><p><code>chi.sim.all_sgns.[decade]</code>: Trained on Google N-Grams chi-sim-all (Simplified Chinese, 1950-1990s).</p></li>
+<li><p><code>fre.all_sgns.[decade]</code>: Trained on Google N-Grams fre-all (French, 1800s-1990s).</p></li>
+<li><p><code>ger.all_sgns.[decade]</code>: Trained on Google N-Grams ger-all (German, 1800s-1990s).</p></li>
+</ul></div>
+
+<div class="section">
 <h3 id="conceptnet-numberbatch">ConceptNet Numberbatch<a class="anchor" aria-label="anchor" href="#conceptnet-numberbatch"></a></h3>
 
 
@@ -131,165 +147,48 @@ Downloaded from https://github.com/commonsense/conceptnet-numberbatch</p><ul><li
 <h3 id="fasttext">fastText<a class="anchor" aria-label="anchor" href="#fasttext"></a></h3>
 
 
-<p>300-dimensional word vectors for 157 languages, trained with CBOW on Common
-Crawl and Wikipedia. Downloaded from https://fasttext.cc/docs/en/crawl-vectors.html</p><ul><li><p><code>cc.af.300</code>: Afrikaans</p></li>
-<li><p><code>cc.sq.300</code>: Albanian</p></li>
-<li><p><code>cc.als.300</code>: Alemannic</p></li>
-<li><p><code>cc.am.300</code>: Amharic</p></li>
-<li><p><code>cc.ar.300</code>: Arabic</p></li>
-<li><p><code>cc.an.300</code>: Aragonese</p></li>
-<li><p><code>cc.hy.300</code>: Armenian</p></li>
-<li><p><code>cc.as.300</code>: Assamese</p></li>
-<li><p><code>cc.ast.300</code>: Asturian</p></li>
-<li><p><code>cc.az.300</code>: Azerbaijani</p></li>
-<li><p><code>cc.ba.300</code>: Bashkir</p></li>
-<li><p><code>cc.eu.300</code>: Basque</p></li>
-<li><p><code>cc.bar.300</code>: Bavarian</p></li>
-<li><p><code>cc.be.300</code>: Belarusian</p></li>
-<li><p><code>cc.bn.300</code>: Bengali</p></li>
-<li><p><code>cc.bh.300</code>: Bihari</p></li>
-<li><p><code>cc.bpy.300</code>: Bishnupriya Manipuri</p></li>
-<li><p><code>cc.bs.300</code>: Bosnian</p></li>
-<li><p><code>cc.br.300</code>: Breton</p></li>
-<li><p><code>cc.bg.300</code>: Bulgarian</p></li>
-<li><p><code>cc.my.300</code>: Burmese</p></li>
-<li><p><code>cc.ca.300</code>: Catalan</p></li>
-<li><p><code>cc.ceb.300</code>: Cebuano</p></li>
-<li><p><code>cc.bcl.300</code>: Central Bicolano</p></li>
-<li><p><code>cc.ce.300</code>: Chechen</p></li>
-<li><p><code>cc.zh.300</code>: Chinese</p></li>
-<li><p><code>cc.cv.300</code>: Chuvash</p></li>
-<li><p><code>cc.co.300</code>: Corsican</p></li>
-<li><p><code>cc.hr.300</code>: Croatian</p></li>
-<li><p><code>cc.cs.300</code>: Czech</p></li>
-<li><p><code>cc.da.300</code>: Danish</p></li>
-<li><p><code>cc.dv.300</code>: Divehi</p></li>
-<li><p><code>cc.nl.300</code>: Dutch</p></li>
-<li><p><code>cc.pa.300</code>: Eastern Punjabi</p></li>
-<li><p><code>cc.arz.300</code>: Egyptian Arabic</p></li>
-<li><p><code>cc.eml.300</code>: Emilian-Romagnol</p></li>
-<li><p><code>cc.en.300</code>: English</p></li>
-<li><p><code>cc.myv.300</code>: Erzya</p></li>
-<li><p><code>cc.eo.300</code>: Esperanto</p></li>
-<li><p><code>cc.et.300</code>: Estonian</p></li>
-<li><p><code>cc.hif.300</code>: Fiji Hindi</p></li>
-<li><p><code>cc.fi.300</code>: Finnish</p></li>
-<li><p><code>cc.fr.300</code>: French</p></li>
-<li><p><code>cc.gl.300</code>: Galician</p></li>
-<li><p><code>cc.ka.300</code>: Georgian</p></li>
-<li><p><code>cc.de.300</code>: German</p></li>
-<li><p><code>cc.gom.300</code>: Goan Konkani</p></li>
-<li><p><code>cc.el.300</code>: Greek</p></li>
-<li><p><code>cc.gu.300</code>: Gujarati</p></li>
-<li><p><code>cc.ht.300</code>: Haitian</p></li>
-<li><p><code>cc.he.300</code>: Hebrew</p></li>
-<li><p><code>cc.mrj.300</code>: Hill Mari</p></li>
-<li><p><code>cc.hi.300</code>: Hindi</p></li>
-<li><p><code>cc.hu.300</code>: Hungarian</p></li>
-<li><p><code>cc.is.300</code>: Icelandic</p></li>
-<li><p><code>cc.io.300</code>: Ido</p></li>
-<li><p><code>cc.ilo.300</code>: Ilokano</p></li>
-<li><p><code>cc.id.300</code>: Indonesian</p></li>
-<li><p><code>cc.ia.300</code>: Interlingua</p></li>
-<li><p><code>cc.ga.300</code>: Irish</p></li>
-<li><p><code>cc.it.300</code>: Italian</p></li>
-<li><p><code>cc.ja.300</code>: Japanese</p></li>
-<li><p><code>cc.jv.300</code>: Javanese</p></li>
-<li><p><code>cc.kn.300</code>: Kannada</p></li>
-<li><p><code>cc.pam.300</code>: Kapampangan</p></li>
-<li><p><code>cc.kk.300</code>: Kazakh</p></li>
-<li><p><code>cc.km.300</code>: Khmer</p></li>
-<li><p><code>cc.ky.300</code>: Kirghiz</p></li>
-<li><p><code>cc.ko.300</code>: Korean</p></li>
-<li><p><code>cc.ku.300</code>: Kurdish (Kurmanji)</p></li>
-<li><p><code>cc.ckb.300</code>: Kurdish (Sorani)</p></li>
-<li><p><code>cc.la.300</code>: Latin</p></li>
-<li><p><code>cc.lv.300</code>: Latvian</p></li>
-<li><p><code>cc.li.300</code>: Limburgish</p></li>
-<li><p><code>cc.lt.300</code>: Lithuanian</p></li>
-<li><p><code>cc.lmo.300</code>: Lombard</p></li>
-<li><p><code>cc.nds.300</code>: Low Saxon</p></li>
-<li><p><code>cc.lb.300</code>: Luxembourgish</p></li>
-<li><p><code>cc.mk.300</code>: Macedonian</p></li>
-<li><p><code>cc.mai.300</code>: Maithili</p></li>
-<li><p><code>cc.mg.300</code>: Malagasy</p></li>
-<li><p><code>cc.ms.300</code>: Malay</p></li>
-<li><p><code>cc.ml.300</code>: Malayalam</p></li>
-<li><p><code>cc.mt.300</code>: Maltese</p></li>
-<li><p><code>cc.gv.300</code>: Manx</p></li>
-<li><p><code>cc.mr.300</code>: Marathi</p></li>
-<li><p><code>cc.mzn.300</code>: Mazandarani</p></li>
-<li><p><code>cc.mhr.300</code>: Meadow Mari</p></li>
-<li><p><code>cc.min.300</code>: Minangkabau</p></li>
-<li><p><code>cc.xmf.300</code>: Mingrelian</p></li>
-<li><p><code>cc.mwl.300</code>: Mirandese</p></li>
-<li><p><code>cc.mn.300</code>: Mongolian</p></li>
-<li><p><code>cc.nah.300</code>: Nahuatl</p></li>
-<li><p><code>cc.nap.300</code>: Neapolitan</p></li>
-<li><p><code>cc.ne.300</code>: Nepali</p></li>
-<li><p><code>cc.new.300</code>: Newar</p></li>
-<li><p><code>cc.frr.300</code>: North Frisian</p></li>
-<li><p><code>cc.nso.300</code>: Northern Sotho</p></li>
-<li><p><code>cc.no.300</code>: Norwegian (Bokmål)</p></li>
-<li><p><code>cc.nn.300</code>: Norwegian (Nynorsk)</p></li>
-<li><p><code>cc.oc.300</code>: Occitan</p></li>
-<li><p><code>cc.or.300</code>: Oriya</p></li>
-<li><p><code>cc.os.300</code>: Ossetian</p></li>
-<li><p><code>cc.pfl.300</code>: Palatinate German</p></li>
-<li><p><code>cc.ps.300</code>: Pashto</p></li>
-<li><p><code>cc.fa.300</code>: Persian</p></li>
-<li><p><code>cc.pms.300</code>: Piedmontese</p></li>
-<li><p><code>cc.pl.300</code>: Polish</p></li>
-<li><p><code>cc.pt.300</code>: Portuguese</p></li>
-<li><p><code>cc.qu.300</code>: Quechua</p></li>
-<li><p><code>cc.ro.300</code>: Romanian</p></li>
-<li><p><code>cc.rm.300</code>: Romansh</p></li>
-<li><p><code>cc.ru.300</code>: Russian</p></li>
-<li><p><code>cc.sah.300</code>: Sakha</p></li>
-<li><p><code>cc.sa.300</code>: Sanskrit</p></li>
-<li><p><code>cc.sc.300</code>: Sardinian</p></li>
-<li><p><code>cc.sco.300</code>: Scots</p></li>
-<li><p><code>cc.gd.300</code>: Scottish Gaelic</p></li>
-<li><p><code>cc.sr.300</code>: Serbian</p></li>
-<li><p><code>cc.sh.300</code>: Serbo-Croatian</p></li>
-<li><p><code>cc.scn.300</code>: Sicilian</p></li>
-<li><p><code>cc.sd.300</code>: Sindhi</p></li>
-<li><p><code>cc.si.300</code>: Sinhalese</p></li>
-<li><p><code>cc.sk.300</code>: Slovak</p></li>
-<li><p><code>cc.sl.300</code>: Slovenian</p></li>
-<li><p><code>cc.so.300</code>: Somali</p></li>
-<li><p><code>cc.azb.300</code>: Southern Azerbaijani</p></li>
-<li><p><code>cc.es.300</code>: Spanish</p></li>
-<li><p><code>cc.su.30</code>: Sundanese</p></li>
-<li><p><code>cc.sw.300</code>: Swahili</p></li>
-<li><p><code>cc.sv.300</code>: Swedish</p></li>
-<li><p><code>cc.tl.300</code>: Tagalog</p></li>
-<li><p><code>cc.tg.300</code>: Tajik</p></li>
-<li><p><code>cc.ta.300</code>: Tamil</p></li>
-<li><p><code>cc.tt.300</code>: Tatar</p></li>
-<li><p><code>cc.te.300</code>: Telugu</p></li>
-<li><p><code>cc.th.300</code>: Thai</p></li>
-<li><p><code>cc.bo.300</code>: Tibetan</p></li>
-<li><p><code>cc.tr.300</code>: Turkish</p></li>
-<li><p><code>cc.tk.300</code>: Turkmen</p></li>
-<li><p><code>cc.uk.300</code>: Ukrainian</p></li>
-<li><p><code>cc.hsb.300</code>: Upper Sorbian</p></li>
-<li><p><code>cc.ur.300</code>: Urdu</p></li>
-<li><p><code>cc.ug.300</code>: Uyghur</p></li>
-<li><p><code>cc.uz.300</code>: Uzbek</p></li>
-<li><p><code>cc.vec.300</code>: Venetian</p></li>
-<li><p><code>cc.vi.300</code>: Vietnamese</p></li>
-<li><p><code>cc.vo.300</code>: Volapük</p></li>
-<li><p><code>cc.wa.300</code>: Walloon</p></li>
-<li><p><code>cc.war.300</code>: Waray</p></li>
-<li><p><code>cc.cy.300</code>: Welsh</p></li>
-<li><p><code>cc.vls.300</code>: West Flemish</p></li>
-<li><p><code>cc.fy.300</code>: West Frisian</p></li>
-<li><p><code>cc.pnb.300</code>: Western Punjabi</p></li>
-<li><p><code>cc.yi.300</code>: Yiddish</p></li>
-<li><p><code>cc.yo.300</code>: Yoruba</p></li>
-<li><p><code>cc.diq.300</code>: Zazaki</p></li>
-<li><p><code>cc.zea.300</code>: Zeelandic</p></li>
+<p>Downloaded from https://fasttext.cc/docs/en/crawl-vectors.html</p><ul><li><p><code>cc.[language].300</code>: 300-dimensional word vectors for 157 languages,
+trained with CBOW on Common Crawl and Wikipedia. To specify a language,
+replace <code>[language]</code> with one of the following language codes:
+<code>af</code> (Afrikaans), <code>sq</code> (Albanian), <code>als</code> (Alemannic), <code>am</code> (Amharic), <code>ar</code>
+(Arabic), <code>an</code> (Aragonese), <code>hy</code> (Armenian), <code>as</code> (Assamese), <code>ast</code>
+(Asturian), <code>az</code> (Azerbaijani), <code>ba</code> (Bashkir), <code>eu</code> (Basque), <code>bar</code>
+(Bavarian), <code>be</code> (Belarusian), <code>bn</code> (Bengali), <code>bh</code> (Bihari), <code>bpy</code>
+(Bishnupriya Manipuri), <code>bs</code> (Bosnian), <code>br</code> (Breton), <code>bg</code> (Bulgarian),
+<code>my</code> (Burmese), <code>ca</code> (Catalan), <code>ceb</code> (Cebuano), <code>bcl</code> (Central Bicolano),
+<code>ce</code> (Chechen), <code>zh</code> (Chinese), <code>cv</code> (Chuvash), <code>co</code> (Corsican), <code>hr</code>
+(Croatian), <code>cs</code> (Czech), <code>da</code> (Danish), <code>dv</code> (Divehi), <code>nl</code> (Dutch), <code>pa</code>
+(Eastern Punjabi), <code>arz</code> (Egyptian Arabic), <code>eml</code> (Emilian-Romagnol), <code>en</code>
+(English), <code>myv</code> (Erzya), <code>eo</code> (Esperanto), <code>et</code> (Estonian), <code>hif</code>
+(Fiji Hindi), <code>fi</code> (Finnish), <code>fr</code> (French), <code>gl</code> (Galician), <code>ka</code>
+(Georgian), <code>de</code> (German), <code>gom</code> (Goan Konkani), <code>el</code> (Greek), <code>gu</code>
+(Gujarati), <code>ht</code> (Haitian), <code>he</code> (Hebrew), <code>mrj</code> (Hill Mari), <code>hi</code> (Hindi),
+<code>hu</code> (Hungarian), <code>is</code> (Icelandic), <code>io</code> (Ido), <code>ilo</code> (Ilokano), <code>id</code>
+(Indonesian), <code>ai</code> (Interlingua), <code>ga</code> (Irish), <code>it</code> (Italian), <code>ja</code>
+(Japanese), <code>jv</code> (Javanese), <code>kn</code> (Kannada), <code>pam</code> (Kapampangan), <code>kk</code>
+(Kazakh), <code>km</code> (Khmer), <code>ky</code> (Kirghiz), <code>ko</code> (Korean), <code>ku</code>
+(Kurdish: Kurmanji), <code>ckb</code> (Kurdish: Sorani), <code>la</code> (Latin), <code>lv</code> (Latvian),
+<code>li</code> (Limburgish), <code>lt</code> (Lithuanian), <code>lmo</code> (Lombard), <code>nds</code> (Low Saxon),
+<code>lb</code> (Luxembourgish), <code>mk</code> (Macedonian), <code>mai</code> (Maithili), <code>mg</code> (Malagasy),
+<code>ms</code> (Malay), <code>ml</code> (Malayalam), <code>mt</code> (Maltese), <code>gv</code> (Manx), <code>mr</code> (Marathi),
+<code>mzn</code> (Mazandarani), <code>mhr</code> (Meadow Mari), <code>min</code> (Minangkabau), <code>xmf</code>
+(Mingrelian), <code>mwl</code> (Mirandese), <code>mn</code> (Mongolian), <code>nah</code> (Nahuatl), <code>nap</code>
+(Neapolitan), <code>ne</code> (Nepali), <code>new</code> (Newar), <code>frr</code> (North Frisian), <code>nso</code>
+(Northern Sotho), <code>no</code> (Norwegian: Bokmål), <code>nn</code> (Norwegian: Nynorsk), <code>oc</code>
+(Occitan), <code>or</code> (Oriya), <code>os</code> (Ossetian), <code>pfl</code> (Palatinate German), <code>ps</code>
+(Pashto), <code>fa</code> (Persian), <code>pms</code> (Piedmontese), <code>pl</code> (Polish), <code>pt</code>
+(Portuguese), <code>qu</code> (Quechua), <code>ro</code> (Romanian), <code>rm</code> (Romansh), <code>ru</code>
+(Russian), <code>sah</code> (Sakha), <code>sa</code> (Sanskrit), <code>sc</code> (Sardinian), <code>sco</code> (Scots),
+<code>gd</code> (Scottish Gaelic), <code>sr</code> (Serbian), <code>sh</code> (Serbo-Croatian), <code>scn</code>
+(Sicilian), <code>sd</code> (Sindhi), <code>si</code> (Sinhalese), <code>sk</code> (Slovak), <code>sl</code>
+(Slovenian), <code>so</code> (Somali), <code>azb</code> (Southern Azerbaijani), <code>es</code> (Spanish),
+<code>su</code> (Sundanese), <code>sw</code> (Swahili), <code>sv</code> (Swedish), <code>tl</code> (Tagalog), <code>tg</code>
+(Tajik), <code>ta</code> (Tamil), <code>tt</code> (Tatar), <code>te</code> (Telugu), <code>th</code> (Thai), <code>bo</code>
+(Tibetan), <code>tr</code> (Turkish), <code>tk</code> (Turkmen), <code>uk</code> (Ukrainian), <code>hsb</code>
+(Upper Sorbian), <code>ur</code> (Urdu), <code>ug</code> (Uyghur), <code>uz</code> (Uzbek), <code>vec</code> (Venetian),
+<code>vi</code> (Vietnamese), <code>vo</code> (Volapük), <code>wa</code> (Walloon), <code>war</code> (Waray), <code>cy</code>
+(Welsh), <code>vls</code> (West Flemish), <code>fy</code> (West Frisian), <code>pnb</code> (Western Punjabi),
+<code>yi</code> (Yiddish), <code>yu</code> (Yoruba), <code>diq</code> (Zazaki), <code>zea</code> (Zeelandic)</p></li>
 </ul></div>
 
     </div>
@@ -302,6 +201,7 @@ Crawl and Wikipedia. Downloaded from https://fasttext.cc/docs/en/crawl-vectors.h
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Bojanowski, P., Grave, E., Joulin, A., and Mikolov, T. (2016). Enriching Word Vectors with Subword Information. arXiv preprint. https://arxiv.org/abs/1607.04606</p>
+<p>Hamilton, W. L., Leskovec, J., and Jurafsky, D. (2016). Diachronic Word Embeddings Reveal Statistical Laws of Semantic Change. In Proceedings of the 54th Annual Meeting of the ACL. https://aclanthology.org/P16-1141/</p>
 <p>Mikolov, T., Chen, K., Corrado, G., and Dean, J. (2013). Efficient Estimation of Word Representations in Vector Space. In Proceedings of Workshop at ICLR. https://arxiv.org/pdf/1301.3781</p>
 <p>Pennington, J., Socher, R., and Manning, C. D. (2014). GloVe: Global Vectors for Word Representation. https://nlp.stanford.edu/projects/glove/</p>
 <p>Speer, R., Chin, J., and Havasi, C. (2017). ConceptNet 5.5: An Open Multilingual Graph of General Knowledge. In proceedings of AAAI 2017. http://aaai.org/ocs/index.php/AAAI/AAAI17/paper/view/14972</p>
