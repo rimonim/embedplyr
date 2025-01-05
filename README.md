@@ -59,18 +59,34 @@ decontextualized models like
 contextualized models like BERT or others made available through the
 ‘[text](https://r-text.org)’ package.
 
+``` r
+library(embedplyr)
+```
+
 ### Loading Pretrained Embeddings
 
 embedplyr won’t help you train new embedding models, but it can load
 embeddings from a file or download them from online. This is especially
 useful for pretrained word embedding models like GloVe, word2vec, and
-fastText. Dozens of these models can be conveniently downloaded from
+fastText. Hundreds of these models can be conveniently downloaded from
 online sources with `load_embeddings()`.
 
-``` r
-library(embedplyr)
+One particularly useful feature of `load_embeddings()` is the optional
+`words` parameter, which allows the user to specify a subset of words to
+load from the model. This allows users to work with large models, which
+are often too large to load into an interactive environment in their
+entirety. For example, a user may specify the set of unique tokens in
+their corpus of interest, and load only these from the model.
 
+``` r
+# load 25d GloVe model trained on Twitter
 glove_twitter_25d <- load_embeddings("glove.twitter.27B.25d")
+
+# load words from 300d model trained on Google Books English Fiction 1800-1810
+eng.fiction.all_sgns.1800 <- load_embeddings(
+    "eng.fiction.all_sgns.1800",
+    words = c("word", "token", "lemma")
+    )
 ```
 
 The outcome is an embeddings object. An embeddings object is just a
@@ -98,7 +114,7 @@ find_nearest(glove_twitter_25d, "dog", 5L, method = "cosine")
 ```
 
 Whereas indexing a regular matrix by rownames gets slower as the number
-of rows increases, embedingplyr’s hash table indexing means that token
+of rows increases, embedplyr’s hash table indexing means that token
 embeddings can be retrieved in milliseconds even from models with
 millions of rows.
 
@@ -157,8 +173,8 @@ valence_embeddings_df
 
 `embed_docs()` can also be used to generate other types of embeddings.
 For example, we can use the ‘[text](https://r-text.org)’ package to
-generate embeddings using any model available from Huggingface
-transformers.
+generate embeddings using any model available from Hugging Face
+Transformers.
 
 ``` r
 # function that takes character vector and outputs a data frame
