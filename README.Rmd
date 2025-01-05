@@ -25,7 +25,7 @@ options(embeddings.model.path = "~/Documents/data/embeddings")
 
 embedplyr enables common operations with word and text embeddings within a 'tidyverse' and/or 'quanteda' workflow, as demonstrated in [Data Science for Psychology: Natural Language](http://ds4psych.com). 
 
-* `load_embeddings()` loads pretrained [GloVe](https://nlp.stanford.edu/projects/glove/), [word2vec](https://code.google.com/archive/p/word2vec/), [ConceptNet Numberbatch](https://github.com/commonsense/conceptnet-numberbatch), and [fastText](https://fasttext.cc) word embedding models from Internet sources or from your working directory
+* `load_embeddings()` loads pretrained [GloVe](https://nlp.stanford.edu/projects/glove/), [word2vec](https://code.google.com/archive/p/word2vec/), [HistWords](https://nlp.stanford.edu/projects/histwords/), [ConceptNet Numberbatch](https://github.com/commonsense/conceptnet-numberbatch), and [fastText](https://fasttext.cc) word embedding models from Internet sources or from your working directory
 * `embed_tokens()` returns the embedding for each token in a set of texts
 * `embed_docs()` generates text embeddings for a set of documents
 * `get_sims()` calculates row-wise similarity metrics between a set of embeddings and a given reference

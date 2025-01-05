@@ -18,7 +18,8 @@ Science for Psychology: Natural Language](http://ds4psych.com).
 
 - `load_embeddings()` loads pretrained
   [GloVe](https://nlp.stanford.edu/projects/glove/),
-  [word2vec](https://code.google.com/archive/p/word2vec/), [ConceptNet
+  [word2vec](https://code.google.com/archive/p/word2vec/),
+  [HistWords](https://nlp.stanford.edu/projects/histwords/), [ConceptNet
   Numberbatch](https://github.com/commonsense/conceptnet-numberbatch),
   and [fastText](https://fasttext.cc) word embedding models from
   Internet sources or from your working directory
