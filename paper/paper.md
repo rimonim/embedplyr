@@ -17,7 +17,9 @@ affiliations:
 date: 10 January 2025
 year: 2025
 bibliography: paper.bib
-output: rticles::joss_article
+output:
+  html_document:
+    df_print: paged
 csl: apa.csl
 journal: JOSS
 ---
