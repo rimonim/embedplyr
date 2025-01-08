@@ -1,6 +1,6 @@
 #' Pairwise Similarity or Distance Matrix
 #'
-#' Calculate a matrix of similarity or scores between the rows of the input.
+#' Calculate a matrix of similarity scores between the rows of the input.
 #'
 #' @param x an embeddings object, matrix, or dataframe with one embedding per row
 #' @param cols tidyselect - columns that contain numeric embedding values
@@ -60,6 +60,7 @@ sim_matrix_list <- list(
 #' @importFrom rlang %||%
 #' @export
 sim_matrix.default <- function(x, method = c("cosine", "cosine_squished", "euclidean", "minkowski", "dot_prod", "anchored"), ..., tidy_output = FALSE) {
+	if (inherits(x, "list")) return(lapply(x, sim_matrix))
 	if (!inherits(x, "matrix")) stop("x must be an embeddings object or numeric matrix")
 	if (is.character(method)) {
 		method_name <- method[1]
