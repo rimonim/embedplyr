@@ -361,3 +361,5 @@ text |>
 # Licensing and Availability
 
 **embedplyr** is licensed under the GNU General Public License (v3.0). All of its source code is stored publicly on Github (https://github.com/rimonim/embedplyr), with a corresponding issue tracker.
+
+# References
