@@ -177,20 +177,12 @@ generate embeddings using any model available from Hugging Face
 Transformers.
 
 ``` r
-# function that takes character vector and outputs a data frame
-sbert_embeddings <- function(texts) {
-    text::textEmbed(
-        texts,
-        model = "sentence-transformers/all-MiniLM-L12-v2", # model name
-        layers = -2,  # second to last layer (default)
-        tokens_select = "[CLS]", # use only [CLS] token
-        dim_name = FALSE,
-        keep_token_embeddings = FALSE
-    )$texts[[1]]
-}
-
+# add embeddings to data frame
 valence_sbert_df <- valence_df |> 
-    embed_docs("text", sbert_embeddings, id_col = "id", .keep_all = TRUE)
+    embed_docs(
+        "text", text::textEmbed, id_col = "id", .keep_all = TRUE,
+        model = "sentence-transformers/all-MiniLM-L12-v2"
+        )
 ```
 
 To quantify how good and how intense the texts are, we can compare them

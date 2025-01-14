@@ -70,7 +70,7 @@ Whereas indexing a regular matrix by rownames gets slower as the number of rows 
 
 Given a tidy dataframe of texts, `embed_docs()` will generate embeddings by averaging the embeddings of tokens in each text [see @ethayarajh2019; @teitelbaum2024, chap. 18]. By default, `embed_docs()` uses a simple unweighted mean, but many other averaging methods are available.
 
-The following example embeds three texts, which for the sake of the example I will consider to have been written by a participant diagnosed with depression, one diagnosed with anxiety, and one control. 
+The following example embeds three texts, which for the sake of the example will can considered to have been written by one participant diagnosed with depression, one diagnosed with anxiety, and one control. 
 
 ```{r, warning=FALSE, message=FALSE}
 library(dplyr)
@@ -91,11 +91,11 @@ psych_embeddings_df <- psych_df |>
 
 ## Embed Dictionaries
 
-I use Distributed Dictionary Representation (DDR) as a showcase for **embedplyr**'s functionality. DDR enables the application of validated psychometric lexicons [e.g. @boyd2022] to rich, embedding-based semantic representation [@garten2018]. This is achieved by retrieving pretrained word embeddings for each word in the dictionary, and averaging them to create a single vector---the DDR. The dictionary construct can then be measured by comparing text embeddings to the DDR.
+Distributed Dictionary Representation (DDR) enables the application of validated psychometric lexicons [e.g. @boyd2022] to rich, embedding-based semantic representation [@garten2018]. This is achieved by retrieving pretrained word embeddings for each word in the dictionary, and averaging them to create a single vector---the DDR. The dictionary construct can then be measured by comparing text embeddings to the DDR.
 
 DDR is ideal for studies of abstract constructs like emotions, that refer to the general gist of a text rather than particular words. The rich representation of word embeddings allows DDR to capture even the subtlest associations between words and constructs, and to precisely reflect the *extent* to which each word is associated with each construct. It can do this even for texts that do not contain any dictionary words. Because embeddings are continuous and calibrated by design to the probabilities of word use in language, DDR also avoids difficult statistical problems that arise due to the strange distributions of word counts [see @teitelbaum2024, chap. 16].
 
-In the following example, I construct DDRs for high and low anxiety. For the sake of the example, I use made-up dictionaries. Once embeddings are produced for each word in the dictionary, they are averaged using `average_embedding()`. By default this is a simple mean, but `average_embedding()` also supports the geometric median [@cardot2022], weighted geometric median, and weighted mean, including weighting by word frequency or smooth inverse frequency [@arora2017].
+In the following example, DDRs are constructed for high and low anxiety using example dictionaries. Once embeddings are produced for each word in the dictionary, they are averaged using `average_embedding()`. By default this is a simple mean, but `average_embedding()` also supports the geometric median [@cardot2022], weighted geometric median, and weighted mean, including weighting by word frequency or smooth inverse frequency [@arora2017].
 
 ```{r, warning=FALSE}
 # positive and negative construct dictionaries
@@ -115,7 +115,7 @@ low_anx_DDR <- average_embedding(low_anx_dict_embeddings)
 
 ## Calculate Similarity Metrics
 
-To complete the DDR analysis, I compare the embeddings of each the corpus texts to that of the DDR. This could be done by computing cosine similarity between each text and `high_anx_DDR` (`"cosine"` is the default method for `get_sims()`). In this case however, I use an anchored vector to quantify the extent to which these texts reflect high anxiety _as opposed to low anxiety_. `method = "anchored"` gives the position of each embedding on the spectrum between two anchor points, where vectors aligned with `pos` are given a score of 1 and those aligned with `neg` are given a score of 0. This approach is also known as semantic projection [@grand2022]. 
+To complete the DDR analysis initiated above, the embeddings of each the corpus texts are compared to that of the DDR. This could be done by computing cosine similarity between each text and `high_anx_DDR` (`"cosine"` is the default method for `get_sims()`). In this case however, an anchored vector is used to quantify the extent to which these texts reflect high anxiety _as opposed to low anxiety_. `method = "anchored"` gives the position of each embedding on the spectrum between two anchor points, where vectors aligned with `pos` are given a score of 1 and those aligned with `neg` are given a score of 0. This approach is also known as semantic projection [@grand2022]. 
 
 ```{r}
 anxiety_scores_df <- psych_embeddings_df |> 
@@ -131,7 +131,7 @@ Note that `get_sims()` requires only a dataframe, tibble, or embeddings object w
 
 ## Other Functions
 
-### Loading Other Embeddings
+### Read Embeddings From File
 
 Embeddings can come from many sources. Accordingly, **embedplyr** provides versatile tools to read embeddings from a variety of different formats. For example, @meng2019 provide spherical text embeddings pretrained on Wikipedia, formatted as text files. After downloading one of these files, it can be loaded using `read_embeddings()`. `read_embeddings()` can read GloVe text format, fastText text format, word2vec binary format, and most tabular formats (csv, tsv, etc.).
 
@@ -148,7 +148,10 @@ In addition to embedding documents by averaging static word embeddings, `embed_d
 ```{r, eval=FALSE}
 # add embeddings to data frame
 valence_sbert_df <- valence_df |> 
-	embed_docs("text", text::textEmbed, id_col = "id", .keep_all = TRUE)
+	embed_docs(
+		"text", text::textEmbed, id_col = "id", .keep_all = TRUE,
+		model = "sentence-transformers/all-MiniLM-L12-v2"
+		)
 ```
 
 ### Quanteda Compatibility

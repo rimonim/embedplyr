@@ -1,8 +1,8 @@
 #' Load Pretrained GloVe, word2vec, and fastText Embeddings
 #'
 #' Loads pretrained word embeddings. If the specified model has already been
-#' downloaded, it is read from file with [read_embeddings()]. If not, the model
-#' is retrieved from online sources and, by default, saved.
+#' downloaded, it is read from file with a call to [read_embeddings()]. If not,
+#' the model is retrieved from online sources and, by default, saved.
 #'
 #' @param model the name of a supported model
 #' @param dir directory in which the model is or should be saved when `save = TRUE`.
