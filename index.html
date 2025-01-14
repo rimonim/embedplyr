@@ -182,20 +182,12 @@
 <span><span class="co">#&gt; #   dim_23 &lt;dbl&gt;, dim_24 &lt;dbl&gt;, dim_25 &lt;dbl&gt;</span></span></code></pre></div>
 <p><code><a href="reference/textstat_embedding.html">embed_docs()</a></code> can also be used to generate other types of embeddings. For example, we can use the ‘<a href="https://r-text.org" class="external-link">text</a>’ package to generate embeddings using any model available from Hugging Face Transformers.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># function that takes character vector and outputs a data frame</span></span>
-<span><span class="va">sbert_embeddings</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">texts</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">text</span><span class="fu">::</span><span class="fu"><a href="https://r-text.org/reference/textEmbed.html" class="external-link">textEmbed</a></span><span class="op">(</span></span>
-<span>        <span class="va">texts</span>,</span>
-<span>        model <span class="op">=</span> <span class="st">"sentence-transformers/all-MiniLM-L12-v2"</span>, <span class="co"># model name</span></span>
-<span>        layers <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>,  <span class="co"># second to last layer (default)</span></span>
-<span>        tokens_select <span class="op">=</span> <span class="st">"[CLS]"</span>, <span class="co"># use only [CLS] token</span></span>
-<span>        dim_name <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>        keep_token_embeddings <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span>    <span class="op">)</span><span class="op">$</span><span class="va">texts</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="op">}</span></span>
-<span></span>
+<code class="sourceCode R"><span><span class="co"># add embeddings to data frame</span></span>
 <span><span class="va">valence_sbert_df</span> <span class="op">&lt;-</span> <span class="va">valence_df</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="reference/textstat_embedding.html">embed_docs</a></span><span class="op">(</span><span class="st">"text"</span>, <span class="va">sbert_embeddings</span>, id_col <span class="op">=</span> <span class="st">"id"</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="reference/textstat_embedding.html">embed_docs</a></span><span class="op">(</span></span>
+<span>        <span class="st">"text"</span>, <span class="fu">text</span><span class="fu">::</span><span class="va"><a href="https://r-text.org/reference/textEmbed.html" class="external-link">textEmbed</a></span>, id_col <span class="op">=</span> <span class="st">"id"</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>        model <span class="op">=</span> <span class="st">"sentence-transformers/all-MiniLM-L12-v2"</span></span>
+<span>        <span class="op">)</span></span></code></pre></div>
 <p>To quantify how good and how intense the texts are, we can compare them to the embeddings for “good” and “intense” using <code><a href="reference/get_sims.html">get_sims()</a></code>. Note that this step requires only a dataframe, tibble, or embeddings object with numeric columns; the embeddings can come from any source.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">good_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="st">"good"</span><span class="op">)</span></span>
