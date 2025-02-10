@@ -11,10 +11,19 @@ total_dist(
   matching = NULL,
   method = c("euclidean", "minkowski", "cosine", "cosine_squished", "dot_prod"),
   average = FALSE,
+  se = FALSE,
   ...
 )
 
-average_sim(x, y, matching = NULL, method = "cosine", average = TRUE, ...)
+average_sim(
+  x,
+  y,
+  matching = NULL,
+  method = "cosine",
+  average = TRUE,
+  se = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{an embeddings object}
@@ -31,6 +40,8 @@ similar to those listed in \link[=sim_metrics]{Similarity and Distance Metrics}}
 
 \item{average}{logical. Should the rowwise distances be averaged as opposed
 to summed?}
+
+\item{se}{logical. If true, return the standard error as an attribute.}
 
 \item{...}{additional parameters to be passed to method function}
 }

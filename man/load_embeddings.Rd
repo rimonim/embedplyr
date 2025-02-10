@@ -30,8 +30,8 @@ Other options are \code{"csv"} or \code{"rds"}.}
 }
 \description{
 Loads pretrained word embeddings. If the specified model has already been
-downloaded, it is read from file with \code{\link[=read_embeddings]{read_embeddings()}}. If not, the model
-is retrieved from online sources and, by default, saved.
+downloaded, it is read from file with a call to \code{\link[=read_embeddings]{read_embeddings()}}. If not,
+the model is retrieved from online sources and, by default, saved.
 }
 \details{
 The following are supported models for download. Note that some models are very large.

@@ -32,7 +32,7 @@ object. If \code{TRUE}, output a tibble with columns \code{doc_id_1}, \code{doc_
 the similarity or distance metric.}
 }
 \description{
-Calculate a matrix of similarity or scores between the rows of the input.
+Calculate a matrix of similarity scores between the rows of the input.
 }
 \details{
 \subsection{Available Methods}{
