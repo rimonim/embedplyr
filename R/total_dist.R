@@ -18,6 +18,7 @@ sim_parallel_list <- list(
 #' similar to those listed in [Similarity and Distance Metrics][sim_metrics]
 #' @param average logical. Should the rowwise distances be averaged as opposed
 #' to summed?
+#' @param se logical. If true, return the standard error as an attribute.
 #' @param ... additional parameters to be passed to method function
 #'
 #' @details
@@ -36,7 +37,7 @@ sim_parallel_list <- list(
 #' @export
 total_dist <- function(x, y, matching = NULL,
 											 method = c("euclidean", "minkowski", "cosine", "cosine_squished", "dot_prod"),
-											 average = FALSE, ...) {
+											 average = FALSE, se = FALSE, ...) {
 	stopifnot("x and y must have the same number of dimensions" = ncol(x) == ncol(y))
 	# match rows
 	if (!is.null(matching)) {
@@ -65,13 +66,27 @@ total_dist <- function(x, y, matching = NULL,
 	}else{
 		stop("`method` must be one of: ", paste(names(sim_parallel_list), collapse = ", "), " or a custom function.")
 	}
-	if (average) return(mean(distances, na.rm = TRUE)) else return(sum(distances, na.rm = TRUE))
+	if (average) {
+		out <- mean(distances, na.rm = TRUE)
+		if (se) {
+			std_error <- sd(distances, na.rm = TRUE)/sqrt(length(distances))
+			attr(out, "se") <- std_error
+		}
+		return(out)
+	} else {
+		out <- sum(distances, na.rm = TRUE)
+		if (se) {
+			std_error <- sd(distances, na.rm = TRUE)*sqrt(length(distances))
+			attr(out, "se") <- std_error
+		}
+		return(out)
+	}
 }
 
 #' @rdname total_dist
 #' @export
 average_sim <- function(x, y, matching = NULL,
 												method = "cosine",
-												average = TRUE, ...) {
-	total_dist(x, y, matching = matching, method = method, average = average, ...)
+												average = TRUE, se = FALSE, ...) {
+	total_dist(x, y, matching = matching, method = method, average = average, se = se, ...)
 }
