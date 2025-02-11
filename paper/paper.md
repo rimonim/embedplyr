@@ -17,16 +17,14 @@ affiliations:
 date: 10 January 2025
 year: 2025
 bibliography: paper.bib
-output:
-  html_document:
-    df_print: paged
+output: rticles::joss_article
 csl: apa.csl
 journal: JOSS
 ---
 
 
 
-# Aims of the Package
+# Statement of Need
 
 Dense vector embeddings are the fundamental building block of modern natural language processing [@lauriola2022]. The ability to represent the meaning of texts as a continuous, high dimensional space underlies the recent successes of large language models (LLMs). Embeddings have also revolutionized research methods and inspired new theoretical frameworks in linguistics, psychology, sociology, and neuroscience [see e.g. @duran2019; @feuerriegel2025; @grand2022; @hamilton2018; @kjell2023; @kozlowski2019; @schrimpf2021]. As text embeddings become ubiquitous in the social and behavioral sciences, the need for flexible, easy-to-learn tools increases. Answering this need, **embedplyr** (pronounced "embe-DEE-plier") enables common operations with word and text embeddings within a **tidyverse** [@wickham2019] and/or **quanteda** [@benoit2018] workflow, as demonstrated in @teitelbaum2024. **embedplyr** is designed to facilitate the use of word and text embeddings in common data manipulation and text analysis workflows, without introducing new syntax or unfamiliar data structures to R users.
 
@@ -38,7 +36,7 @@ Existing tools for working with embeddings in R are generally specific to partic
 
 **embedplyr** does not include tools for training new embedding models, but it can load embeddings from a file or download them from online. This is especially useful for pretrained word embedding models like GloVe [@pennington2014], word2vec [@mikolov2013a; @mikolov2013b], HistWords [@hamilton2018], and fastText [@bojanowski2017a]. Hundreds of these models can be conveniently downloaded from online sources with `load_embeddings()`, forgoing the need to search for model files online and juggle incompatible file types. 
 
-One particularly useful feature of `load_embeddings()` is the optional `words` parameter, which allows the user to specify a subset of words to load from the model. This allows users to work with large models, which are often too large to load into an interactive environment in their entirety. For example, a user may specify the set of unique tokens in their corpus of interest, and load only these from the model.
+One particularly useful feature of `load_embeddings()` is the optional `words` parameter, which allows the user to specify a subset of words to load from the model. This allows users to work with large models, which are often too large to load into an interactive environment in their entirety. 
 
 
 ```r
@@ -96,7 +94,7 @@ Whereas indexing a regular matrix by rownames gets slower as the number of rows 
 
 Given a tidy dataframe of texts, `embed_docs()` will generate embeddings by averaging the embeddings of tokens in each text [see @ethayarajh2019; @teitelbaum2024, chap. 18]. By default, `embed_docs()` uses a simple unweighted mean, but many other averaging methods are available.
 
-The following example embeds three texts, which for the sake of the example I will consider to have been written by a participant diagnosed with depression, one diagnosed with anxiety, and one control. 
+The following example embeds three texts, which for the sake of the example will can considered to have been written by one participant diagnosed with depression, one diagnosed with anxiety, and one control. 
 
 
 ```r
@@ -118,11 +116,9 @@ psych_embeddings_df <- psych_df |>
 
 ## Embed Dictionaries
 
-I use Distributed Dictionary Representation (DDR) as a showcase for **embedplyr**'s functionality. DDR enables the application of validated psychometric lexicons [e.g. @boyd2022] to rich, embedding-based semantic representation [@garten2018]. This is achieved by retrieving pretrained word embeddings for each word in the dictionary, and averaging them to create a single vector---the DDR. The dictionary construct can then be measured by comparing text embeddings to the DDR.
+Distributed Dictionary Representation (DDR) enables the application of validated psychometric lexicons [e.g. @boyd2022] to rich, embedding-based semantic representation [@garten2018]. This is achieved by retrieving pretrained word embeddings for each word in the dictionary, and averaging them to create a single vector---the DDR. The dictionary construct can then be measured by comparing text embeddings to the DDR.
 
-DDR is ideal for studies of abstract constructs like emotions, that refer to the general gist of a text rather than particular words. The rich representation of word embeddings allows DDR to capture even the subtlest associations between words and constructs, and to precisely reflect the *extent* to which each word is associated with each construct. It can do this even for texts that do not contain any dictionary words. Because embeddings are continuous and calibrated by design to the probabilities of word use in language, DDR also avoids difficult statistical problems that arise due to the strange distributions of word counts [see @teitelbaum2024, chap. 16].
-
-In the following example, I construct DDRs for high and low anxiety. For the sake of the example, I use made-up dictionaries. Once embeddings are produced for each word in the dictionary, they are averaged using `average_embedding()`. By default this is a simple mean, but `average_embedding()` also supports the geometric median [@cardot2022], weighted geometric median, and weighted mean, including weighting by word frequency or smooth inverse frequency [@arora2017].
+In the following example, DDRs are constructed for high and low anxiety using example dictionaries. Once embeddings are produced for each word in the dictionary, they are averaged using `average_embedding()`. By default this is a simple mean, but `average_embedding()` also supports the geometric median [@cardot2022], weighted geometric median, and weighted mean, including weighting by word frequency or smooth inverse frequency [@arora2017].
 
 
 ```r
@@ -143,7 +139,7 @@ low_anx_DDR <- average_embedding(low_anx_dict_embeddings)
 
 ## Calculate Similarity Metrics
 
-To complete the DDR analysis, I compare the embeddings of each the corpus texts to that of the DDR. This could be done by computing cosine similarity between each text and `high_anx_DDR` (`"cosine"` is the default method for `get_sims()`). In this case however, I use an anchored vector to quantify the extent to which these texts reflect high anxiety _as opposed to low anxiety_. `method = "anchored"` gives the position of each embedding on the spectrum between two anchor points, where vectors aligned with `pos` are given a score of 1 and those aligned with `neg` are given a score of 0. This approach is also known as semantic projection [@grand2022]. 
+To complete the DDR analysis initiated above, the embeddings of each the corpus texts are compared to that of the DDR. This could be done by computing cosine similarity between each text and `high_anx_DDR` (`"cosine"` is the default method for `get_sims()`). In this case however, an anchored vector is used to quantify the extent to which these texts reflect high anxiety _as opposed to low anxiety_. `method = "anchored"` gives the position of each embedding on the spectrum between two anchor points, where vectors aligned with `pos` are given a score of 1 and those aligned with `neg` are given a score of 0. This approach is also known as semantic projection [@grand2022]. 
 
 
 ```r
@@ -167,199 +163,6 @@ anxiety_scores_df
 
 Note that `get_sims()` requires only a dataframe, tibble, or embeddings object with numeric columns; the embeddings can come from any source. 
 
-## Other Functions
-
-### Loading Other Embeddings
-
-Embeddings can come from many sources. Accordingly, **embedplyr** provides versatile tools to read embeddings from a variety of different formats. For example, @meng2019 provide spherical text embeddings pretrained on Wikipedia, formatted as text files. After downloading one of these files, it can be loaded using `read_embeddings()`. `read_embeddings()` can read GloVe text format, fastText text format, word2vec binary format, and most tabular formats (csv, tsv, etc.).
-
-
-```r
-spherical_mod <- read_embeddings("~/Downloads/jose_50d.txt")
-```
-
-Various R data types can also be converted to embeddings objects using `as.embeddings()`.
-
-### Arbitrary Embedding Functions
-
-In addition to embedding documents by averaging static word embeddings, `embed_docs()` can be used to wrap arbitrary embedding functions. For example, the **text** package [@kjell2023] can be used to generate embeddings using any model available from Hugging Face Transformers [@wolf2020]. This ability to wrap arbitrary functions is useful for analyses which require multiple corpora to be embedded in the same manner.
-
-
-```r
-# add embeddings to data frame
-valence_sbert_df <- valence_df |> 
-	embed_docs("text", text::textEmbed, id_col = "id", .keep_all = TRUE)
-```
-
-### Quanteda Compatibility
-
-The examples above used a **tidyverse** approach with tibbles as the primary data structure, but **embedplyr** functions can be used similarly within a **quanteda** workflow. In the example below, I reproduce the text embedding shown above using `textstat_embedding()` (following **quanteda** naming standards) as opposed to `embed_docs()`.
-
-
-```r
-library(quanteda)
-
-# corpus
-psych_embeddings_corp <- corpus(psych_embeddings_df, docid_field = "id")
-
-# dfm
-psych_embeddings_dfm <- psych_embeddings_corp |> 
-	tokens() |> 
-	dfm()
-
-# compute embeddings
-psych_embeddings_df <- psych_embeddings_dfm |> 
-	textstat_embedding(glove_twitter_25d)
-```
-
-### Similarity Metrics
-
-Functions for similarity and distance metrics are as simple as possible; each one takes in vectors and outputs a scalar. In addition to cosine similarity, Euclidean distance, and dot product, **embedplyr** functions also support projection to anchored vectors [@grand2022], as shown in the examples above.
-
-
-```r
-dot_product <- dot_prod(vec1, vec2)
-cosine_similarity <- cos_sim(vec1, vec2)
-euclidean_distance <- euc_dist(vec1, vec2)
-semantic_projection <- anchored_sim(vec1, pos = vec2, neg = vec3)
-```
-
-### Reduce Dimensionality
-
-It is sometimes useful to reduce the dimensionality of embeddings. This is done with `reduce_dimensionality()`, which by default performs PCA without column normalization. Reducing the dimensionality to two or three dimensions can be useful for visualization.
-
-
-```r
-valence_df_2d <- psych_embeddings_df |> 
-	reduce_dimensionality(dim_1:dim_25, 2)
-valence_df_2d
-```
-
-```
-## # A tibble: 3 x 3
-##   doc_id        PC1    PC2
-## * <chr>       <dbl>  <dbl>
-## 1 control     0.111  0.636
-## 2 depression -0.782 -0.245
-## 3 anxiety     0.671 -0.391
-```
-
-`reduce_dimensionality()` can also be used to apply the same rotation to other embeddings not used to find the principle components. 
-
-
-```r
-new_embeddings <- predict(glove_twitter_25d, c("new", "strange"))
-
-# get rotation with `output_rotation = TRUE`
-valence_rotation_2d <- psych_embeddings_df |> 
-	reduce_dimensionality(dim_1:dim_25, 2, output_rotation = TRUE)
-
-# apply the same rotation to new embeddings
-new_with_valence_rotation <- new_embeddings |> 
-	reduce_dimensionality(custom_rotation = valence_rotation_2d)
-new_with_valence_rotation
-```
-
-```
-## # 2-dimensional embeddings with 2 rows
-```
-
-```
-##         PC1   PC2  
-## new      0.73 -0.34
-## strange  0.43 -1.50
-```
-
-### Align and Compare Embeddings Models
-
-Aligning separately trained embeddings can be useful for tracking semantic change over time or semantic differences between training datasets. It can also be useful for comparing texts across languages. `align_embeddings(x, y)` rotates the embeddings in `x` (and changes their dimensionality if necessary) so that they can be compared with those in `y` [@schonemann1966]. Optionally, `matching` can be used to specify one-to-one matching between  embeddings in the two models (e.g. a bilingual dictionary).
-
-Once aligned, groups of embeddings can be compared using `total_dist()` or `average_sim()`. These can be used to quantify the overall distance or similarity between two parallel embedding spaces.
-
-### Normalize (Scale Embeddings to the Unit Hypersphere)
-
-`normalize()` and `normalize_rows()` scale embeddings such that their magnitude is 1, while their angle from the origin is unchanged.
-
-
-```r
-normalize(1:10)
-```
-
-```
-##  [1] 0.05096472 0.10192944 0.15289416 0.20385888 0.25482360 0.30578831
-##  [7] 0.35675303 0.40771775 0.45868247 0.50964719
-```
-
-```r
-normalize(moral_embeddings)
-```
-
-```
-## # 25-dimensional embeddings with 2 rows
-```
-
-```
-##      dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9 dim..      
-## good -0.09  0.10 -0.02 -0.00 -0.02  0.10  0.36  0.03 -0.09 -0.04 ...  
-## bad   0.08  0.00  0.01 -0.00  0.05  0.13  0.31 -0.02 -0.05  0.02 ...
-```
-
-```r
-psych_embeddings_normalized <- psych_embeddings_df |>
-	normalize_rows(dim_1:dim_25)
-```
-
-### Magnitude
-
-The magnitude, norm, or length of a vector is its Euclidean distance from the origin.
-
-
-```r
-magnitude(1:10)
-```
-
-```
-## [1] 19.62142
-```
-
-```r
-magnitude(moral_embeddings)
-```
-
-```
-##     good      bad 
-## 6.005552 5.355951
-```
-
-### Similarity Matrix
-
-Given an embeddings object or data frame of embeddings, `sim_matrix()` calculates a matrix of similarity scores between the rows of the input. This can be useful for analyzing distributional properties of groups of documents [see e.g. @markus2024] or of groups of tokens [see e.g. @choi2024].
-
-
-```r
-text <- c("lions and tigers and bears", "curious green ideas")
-
-text |> 
-	embed_tokens(glove_twitter_25d, output_embeddings = TRUE) |> 
-	sim_matrix(method = "euclidean")
-```
-
-```
-## $text1
-##            lions       and    tigers       and
-## and    0.6551348                              
-## tigers 0.9412290 0.5718049                    
-## and    0.6551348 1.0000000 0.5718049          
-## bears  0.9272744 0.7349675 0.9095890 0.7349675
-## 
-## $text2
-##         curious     green
-## green 0.5011005          
-## ideas 0.5823782 0.5410122
-```
-
 # Licensing and Availability
 
 **embedplyr** is licensed under the GNU General Public License (v3.0). All of its source code is stored publicly on Github (https://github.com/rimonim/embedplyr), with a corresponding issue tracker.
-
-# References
