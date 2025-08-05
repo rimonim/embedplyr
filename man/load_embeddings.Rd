@@ -26,7 +26,8 @@ already exist there?}
 
 \item{format}{the format in which the model should be saved if it does not
 exist already. \code{"original"} (the default) saves the file as is.
-Other options are \code{"csv"} or \code{"rds"}.}
+Other options are \code{"csv"} or \code{"rds"}. Note that \code{format = "original"} will
+always save the full file, even if \code{words} is specified.}
 }
 \description{
 Loads pretrained word embeddings. If the specified model has already been

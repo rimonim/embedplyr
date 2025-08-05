@@ -13,7 +13,8 @@
 #' already exist there?
 #' @param format the format in which the model should be saved if it does not
 #' exist already. `"original"` (the default) saves the file as is.
-#' Other options are `"csv"` or `"rds"`.
+#' Other options are `"csv"` or `"rds"`. Note that `format = "original"` will
+#' always save the full file, even if `words` is specified.
 #'
 #' @details
 #' The following are supported models for download. Note that some models are very large.
@@ -165,7 +166,7 @@ load_embeddings <- function(model, dir = NULL, words = NULL, save = TRUE, format
       if (model == "numberbatch.19.08") download_format <- "txt.gz"
       if (substring(model, 1L, 2L) == "cc") download_format <- "vec.gz"
       model_path <- file.path(dir, paste0(model, ".", download_format))
-      if (save && format == "original" && is.character(words)) warning("Saving only a subset of words is not supported for original format. Saving full model file.")
+      if (save && format == "original" && is.character(words)) warning("Saving only a subset of words is not supported for original format. Saving full model file. To save only a subset of words, set `format` to 'csv' or 'rds'.")
       utils::download.file(download_link, model_path, mode = "wb")
     }
   }
