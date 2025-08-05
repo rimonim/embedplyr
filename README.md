@@ -116,7 +116,8 @@ find_nearest(glove_twitter_25d, "dog", 5L, method = "cosine")
 Whereas indexing a regular matrix by rownames gets slower as the number
 of rows increases, embedplyr’s hash table indexing means that token
 embeddings can be retrieved in milliseconds even from models with
-millions of rows.
+millions of rows (see the [performance
+vignette](vignettes/performance.html)).
 
 ### Similarity Metrics
 

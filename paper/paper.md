@@ -88,7 +88,7 @@ find_nearest(glove_twitter_25d, "dog", 5L, method = "cosine")
 ## monkey -0.96 -0.38  0.49  0.66  0.21 -0.09  1.28 -0.11  0.27  0.42 ...
 ```
 
-Whereas indexing a regular matrix by rownames gets slower as the number of rows increases, **embedplyr**'s hash table indexing means that token embeddings can be retrieved in milliseconds even from models with millions of rows.
+Whereas indexing a regular matrix by rownames gets slower as the number of rows increases, **embedplyr**'s hash table indexing means that token embeddings can be retrieved in milliseconds even from models with millions of rows (see the [performance vignette](vignettes/performance.html)).
 
 ## Embed Texts of Interest
 
