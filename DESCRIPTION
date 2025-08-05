@@ -33,7 +33,7 @@ Enhances:
     tidytext
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 Collate: 
     'align_embeddings.R'

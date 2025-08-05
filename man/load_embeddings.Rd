@@ -35,24 +35,25 @@ the model is retrieved from online sources and, by default, saved.
 }
 \details{
 The following are supported models for download. Note that some models are very large.
+Listed file sizes are those of the full file to be downloaded.
 If you know in advance which word embeddings you will need (e.g. the set of unique
 tokens in your corpus), consider specifying this with the \code{words} parameter to save
 memory and processing time.
 \subsection{GloVe}{
 
 \itemize{
-\item \code{glove.42B.300d}: Common Crawl (42B tokens, 1.9M vocab, uncased, 300d). Downloaded from https://huggingface.co/stanfordnlp/glove.
+\item \code{glove.42B.300d}: Common Crawl (42B tokens, 1.9M vocab, uncased, 300d, 1.88 GB). Downloaded from https://huggingface.co/stanfordnlp/glove.
 This file is a zip archive and must temporarily be downloaded in its entirety even when \code{words} is specified.
-\item \code{glove.840B.300d}: Common Crawl (840B tokens, 2.2M vocab, cased, 300d). Downloaded from https://huggingface.co/stanfordnlp/glove.
+\item \code{glove.840B.300d}: Common Crawl (840B tokens, 2.2M vocab, cased, 300d, 2.18 GB). Downloaded from https://huggingface.co/stanfordnlp/glove.
 This file is a zip archive and must temporarily be downloaded in its entirety even when \code{words} is specified.
-\item \code{glove.6B.50d}: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 50d). Downloaded from https://github.com/piskvorky/gensim-data
-\item \code{glove.6B.100d}: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 100d). Downloaded from https://github.com/piskvorky/gensim-data
-\item \code{glove.6B.200d}: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 200d). Downloaded from https://github.com/piskvorky/gensim-data
-\item \code{glove.6B.300d}: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 300d). Downloaded from https://github.com/piskvorky/gensim-data
-\item \code{glove.twitter.27B.25d}: Twitter (2B tweets, 27B tokens, 1.2M vocab, uncased, 25d). Downloaded from https://github.com/piskvorky/gensim-data
-\item \code{glove.twitter.27B.50d}: Twitter (2B tweets, 27B tokens, 1.2M vocab, uncased, 50d). Downloaded from https://github.com/piskvorky/gensim-data
-\item \code{glove.twitter.27B.100d}: Twitter (2B tweets, 27B tokens, 1.2M vocab, uncased, 100d). Downloaded from https://github.com/piskvorky/gensim-data
-\item \code{glove.twitter.27B.200d}: Twitter (2B tweets, 27B tokens, 1.2M vocab, uncased, 200d). Downloaded from https://github.com/piskvorky/gensim-data
+\item \code{glove.6B.50d}: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 50d, 862 MB). Downloaded from https://github.com/piskvorky/gensim-data
+\item \code{glove.6B.100d}: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 100d, 862 MB). Downloaded from https://github.com/piskvorky/gensim-data
+\item \code{glove.6B.200d}: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 200d, 862 MB). Downloaded from https://github.com/piskvorky/gensim-data
+\item \code{glove.6B.300d}: Wikipedia 2014 + Gigaword 5 (6B tokens, 400K vocab, uncased, 300d, 862 MB). Downloaded from https://github.com/piskvorky/gensim-data
+\item \code{glove.twitter.27B.25d}: Twitter (2B tweets, 27B tokens, 1.2M vocab, uncased, 25d, 1.52 GB). Downloaded from https://github.com/piskvorky/gensim-data
+\item \code{glove.twitter.27B.50d}: Twitter (2B tweets, 27B tokens, 1.2M vocab, uncased, 50d, 1.52 GB). Downloaded from https://github.com/piskvorky/gensim-data
+\item \code{glove.twitter.27B.100d}: Twitter (2B tweets, 27B tokens, 1.2M vocab, uncased, 100d, 1.52 GB). Downloaded from https://github.com/piskvorky/gensim-data
+\item \code{glove.twitter.27B.200d}: Twitter (2B tweets, 27B tokens, 1.2M vocab, uncased, 200d, 1.52 GB). Downloaded from https://github.com/piskvorky/gensim-data
 }
 }
 
@@ -61,7 +62,7 @@ This file is a zip archive and must temporarily be downloaded in its entirety ev
 Note that reading word2vec bin files may be slower than other formats. If
 read time is a concern, consider setting \code{format = "csv"} or \code{format = "rds"}.
 \itemize{
-\item \code{GoogleNews.vectors.negative300}: Trained with skip-gram on Google News (~100B tokens, 3M vocab, cased, 300d). Downloaded from https://github.com/piskvorky/gensim-data
+\item \code{GoogleNews.vectors.negative300}: Trained with skip-gram on Google News (~100B tokens, 3M vocab, cased, 300d, 1.66 GB). Downloaded from https://github.com/piskvorky/gensim-data
 }
 }
 
@@ -72,13 +73,13 @@ American English (COHA). To specify a decade, replace \verb{[decade]} with the f
 year of that decade (e.g. \code{eng.all_sgns.1800}, \code{eng.all_sgns.1990}).
 Originally downloaded from https://nlp.stanford.edu/projects/histwords/
 \itemize{
-\item \code{coha.word_sgns.[decade]}: Trained on Corpus of Historical American English (Genre-Balanced American English, 1830s-2000s).
-\item \code{coha.lemma_sgns.[decade]}: Same as above, with lemmas rather than words.
-\item \code{eng.all_sgns.[decade]}: Trained on Google N-Grams eng-all (All English, 1800s-1990s).
-\item \code{eng.fiction.all_sgns.[decade]}: Trained on Google N-Grams eng-fiction-all (English Fiction, 1800s-1990s).
-\item \code{chi.sim.all_sgns.[decade]}: Trained on Google N-Grams chi-sim-all (Simplified Chinese, 1950-1990s).
-\item \code{fre.all_sgns.[decade]}: Trained on Google N-Grams fre-all (French, 1800s-1990s).
-\item \code{ger.all_sgns.[decade]}: Trained on Google N-Grams ger-all (German, 1800s-1990s).
+\item \code{coha.word_sgns.[decade]}: Trained on Corpus of Historical American English (Genre-Balanced American English, 1830s-2000s, 3-35 MB).
+\item \code{coha.lemma_sgns.[decade]}: Same as above, with lemmas rather than words (3-28 MB).
+\item \code{eng.all_sgns.[decade]}: Trained on Google N-Grams eng-all (All English, 1800s-1990s, 31-164 MB).
+\item \code{eng.fiction.all_sgns.[decade]}: Trained on Google N-Grams eng-fiction-all (English Fiction, 1800s-1990s, 3-56 MB).
+\item \code{chi.sim.all_sgns.[decade]}: Trained on Google N-Grams chi-sim-all (Simplified Chinese, 1950-1990s, 3-33 MB).
+\item \code{fre.all_sgns.[decade]}: Trained on Google N-Grams fre-all (French, 1800s-1990s, 26-62 MB).
+\item \code{ger.all_sgns.[decade]}: Trained on Google N-Grams ger-all (German, 1800s-1990s, 3-46 MB).
 }
 }
 
@@ -90,13 +91,13 @@ Tokens are prefixed with language codes. For example, the English word "token" i
 labeled "/c/en/token".
 Downloaded from https://github.com/commonsense/conceptnet-numberbatch
 \itemize{
-\item \code{numberbatch.19.08}: Multilingual (9.2M vocab, uncased, 300d)
+\item \code{numberbatch.19.08}: Multilingual (9.2M vocab, uncased, 300d, 3.19 GB)
 }
 }
 
 \subsection{fastText}{
 
-Downloaded from https://fasttext.cc/docs/en/crawl-vectors.html
+50-1500 MB. Downloaded from https://fasttext.cc/docs/en/crawl-vectors.html
 \itemize{
 \item \verb{cc.[language].300}: 300-dimensional word vectors for 157 languages,
 trained with CBOW on Common Crawl and Wikipedia. To specify a language,
