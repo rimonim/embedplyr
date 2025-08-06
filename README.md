@@ -299,7 +299,7 @@ datasets. It can also be useful for comparing texts across languages.
 their dimensionality if necessary) so that they can be compared with
 those in `y`. Optionally, `matching` can be used to specify one-to-one
 matching between embeddings in the two models (e.g. a bilingual
-dictionary).
+dictionary). See `align_embeddings()` for full documentation.
 
 Once aligned, groups of embeddings can be compared using `total_dist()`
 or `average_sim()`. These can be used to quantify the overall distance

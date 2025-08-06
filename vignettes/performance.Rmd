@@ -23,7 +23,7 @@ library(ggplot2)
 Whereas indexing a regular matrix by rownames gets slower as the number of rows increases, embedplyr's hash table indexing means that token embeddings can be retrieved in roughly constant time. The following test uses `glove.twitter.27B.25d`, which has 1.2 million rows (by no means the largest model available).
 
 ```{r}
-glove_embeddings <- load_embeddings("glove.twitter.27B.25d")
+glove_embeddings <- load_embeddings("glove.twitter.27B.25d", save = FALSE)
 glove_matrix <- as.matrix(glove_embeddings)
 ```
 

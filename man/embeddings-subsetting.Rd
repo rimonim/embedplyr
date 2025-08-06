@@ -35,7 +35,7 @@ of matrices, with one exception: If a character item in \code{i} matches multipl
 rownames in \code{x}, the \emph{last} match will be returned.
 }
 \details{
-The difference between \code{embeddings[i,]} and \code{predict(embeddings, i)} is that
+The difference between \code{embeddings[i,]} and \code{\link[=predict.embeddings]{predict(embeddings, i)}} is that
 the former will throw an error when items of \code{i} are not valid indices, whereas
 the latter will handle it gracefully (at the cost of a few more milliseconds
 if \code{i} is long).
