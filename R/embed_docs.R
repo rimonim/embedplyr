@@ -33,7 +33,7 @@
 #'
 #' @seealso [embed_tokens()]
 #'
-#' @aliases embed_docs
+#' @aliases textstat_embedding
 #' @examples
 #' texts <- c("this says one thing", "and this says another")
 #' texts_embeddings <- embed_docs(texts, glove_twitter_25d)
@@ -52,54 +52,11 @@
 #' texts_embeddings
 
 #' @export
-textstat_embedding <- function(dfm, model, w = NULL, method = "mean", output_embeddings = FALSE){
-  if(!inherits(model, "embeddings")) stop("`model` must be an embeddings object")
-  if (!(method %in% c("mean", "median", "sum"))) stop("'", method, "' is not a recognized averaging method")
-  feats <- quanteda::featnames(dfm)
-  # weights
-  if (!is.null(w)) {
-    w <- make_embedding_weights(rownames(model), w)
-    dfm <- suppressWarnings( quanteda::dfm_weight(dfm, weights = w) )
-  }
-  # find word embeddings
-  feat_embeddings <- predict.embeddings(model, feats, .keep_missing = TRUE)
-
-  if (method == "median") {
-    out_list <- lapply(seq_len(nrow(dfm)), function(r){
-      w <- as.numeric(dfm[r,])
-      names(w) <- feats
-      w
-      })
-    out_list <- lapply(out_list, function(w){
-      stopifnot("package 'Gmedian' is required" = requireNamespace("Gmedian", quietly = TRUE))
-      out <- Gmedian::Weiszfeld(model[feats,], w = w)$median
-      colnames(out) <- colnames(model)
-      out
-      })
-    out_mat <- do.call(rbind, out_list)
-    rownames(out_mat) <- rownames(dfm)
-  }else{
-    # ignore tokens with no embedding
-    feat_embeddings[is.na(feat_embeddings)] <- 0
-    # average word embeddings of each document
-    out_mat <- (dfm %*% feat_embeddings)
-    if (method == "mean") out_mat <- out_mat/rowSums(dfm)
-    out_mat <- as.matrix(out_mat)
-  }
-  if (!output_embeddings) {
-    tibble::as_tibble(out_mat, rownames = "doc_id")
-  }else{
-    as.embeddings(out_mat)
-  }
-}
-
-#' @rdname textstat_embedding
-#' @export
 embed_docs <- function(x, ...) {
   UseMethod("embed_docs")
 }
 
-#' @rdname textstat_embedding
+#' @rdname embed_docs
 #' @importFrom rlang %||%
 #' @export
 embed_docs.default <- function(x, model, w = NULL, method = "mean", ...,
@@ -126,7 +83,7 @@ embed_docs.default <- function(x, model, w = NULL, method = "mean", ...,
 
 #' @importFrom rlang :=
 #' @importFrom rlang %||%
-#' @rdname textstat_embedding
+#' @rdname embed_docs
 #' @method embed_docs data.frame
 #' @export
 embed_docs.data.frame <- function(x, text_col, model, id_col = NULL,
@@ -143,5 +100,48 @@ embed_docs.data.frame <- function(x, text_col, model, id_col = NULL,
   }else{
     names(out)[1] <- id_col %||% "doc_id"
     out
+  }
+}
+
+#' @rdname embed_docs
+#' @export
+textstat_embedding <- function(dfm, model, w = NULL, method = "mean", output_embeddings = FALSE){
+  if(!inherits(model, "embeddings")) stop("`model` must be an embeddings object")
+  if (!(method %in% c("mean", "median", "sum"))) stop("'", method, "' is not a recognized averaging method")
+  feats <- quanteda::featnames(dfm)
+  # weights
+  if (!is.null(w)) {
+    w <- make_embedding_weights(rownames(model), w)
+    dfm <- suppressWarnings( quanteda::dfm_weight(dfm, weights = w) )
+  }
+  # find word embeddings
+  feat_embeddings <- predict.embeddings(model, feats, .keep_missing = TRUE)
+
+  if (method == "median") {
+    out_list <- lapply(seq_len(nrow(dfm)), function(r){
+      w <- as.numeric(dfm[r,])
+      names(w) <- feats
+      w
+    })
+    out_list <- lapply(out_list, function(w){
+      stopifnot("package 'Gmedian' is required" = requireNamespace("Gmedian", quietly = TRUE))
+      out <- Gmedian::Weiszfeld(model[feats,], w = w)$median
+      colnames(out) <- colnames(model)
+      out
+    })
+    out_mat <- do.call(rbind, out_list)
+    rownames(out_mat) <- rownames(dfm)
+  }else{
+    # ignore tokens with no embedding
+    feat_embeddings[is.na(feat_embeddings)] <- 0
+    # average word embeddings of each document
+    out_mat <- (dfm %*% feat_embeddings)
+    if (method == "mean") out_mat <- out_mat/rowSums(dfm)
+    out_mat <- as.matrix(out_mat)
+  }
+  if (!output_embeddings) {
+    tibble::as_tibble(out_mat, rownames = "doc_id")
+  }else{
+    as.embeddings(out_mat)
   }
 }
