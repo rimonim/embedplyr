@@ -71,8 +71,12 @@ find_nearest <- function(object, newdata,
     all_tokens <- newdata
     embedding_not_found <- !(newdata %in% rownames(object))
     if (any(embedding_not_found)) {
-      if(all(embedding_not_found)){stop("None of the items in `newdata` are tokens in the embeddings object")}
-      warning(sprintf("%d items in `newdata` are not present in the embeddings object.", sum(embedding_not_found)))
+      if(all(embedding_not_found)){
+        warning("None of the items in `newdata` are tokens in the embeddings object")
+        return(NA)
+      }else{
+        warning(sprintf("%d items in `newdata` are not present in the embeddings object.", sum(embedding_not_found)))
+      }
     }
     missing_tokens <- newdata[embedding_not_found]
     available_tokens <- newdata[!embedding_not_found]

@@ -53,7 +53,7 @@ If \code{TRUE}, they will be returned as \code{NA}.}
 \item{.keep_all}{logical. Keep all columns from input? Ignored if \code{output_embeddings = TRUE}.}
 }
 \description{
-Given a character vector or 'quanteda' object (tokens, dfm, or corpus)  and a
+Given a character vector or 'quanteda' object (\link[quanteda:tokens]{tokens}, \link[quanteda:dfm]{dfm}, or \link[quanteda:corpus]{corpus})  and a
 word embeddings model in the form of an \link{embeddings} object, \code{\link[=embed_tokens]{embed_tokens()}}
 returns the embedding for each token.
 }

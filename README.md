@@ -116,7 +116,8 @@ find_nearest(glove_twitter_25d, "dog", 5L, method = "cosine")
 Whereas indexing a regular matrix by rownames gets slower as the number
 of rows increases, embedplyr’s hash table indexing means that token
 embeddings can be retrieved in milliseconds even from models with
-millions of rows.
+millions of rows (see the [performance
+vignette](vignettes/performance.html)).
 
 ### Similarity Metrics
 
@@ -298,7 +299,7 @@ datasets. It can also be useful for comparing texts across languages.
 their dimensionality if necessary) so that they can be compared with
 those in `y`. Optionally, `matching` can be used to specify one-to-one
 matching between embeddings in the two models (e.g. a bilingual
-dictionary).
+dictionary). See `align_embeddings()` for full documentation.
 
 Once aligned, groups of embeddings can be compared using `total_dist()`
 or `average_sim()`. These can be used to quantify the overall distance
