@@ -1,6 +1,6 @@
 #' Get Embeddings of Tokens in a Text or Corpus
 #'
-#' Given a character vector or 'quanteda' object (tokens, dfm, or corpus)  and a
+#' Given a character vector or 'quanteda' object ([tokens][quanteda::tokens], [dfm][quanteda::dfm], or [corpus][quanteda::corpus])  and a
 #' word embeddings model in the form of an [embeddings] object, [embed_tokens()]
 #' returns the embedding for each token.
 #'

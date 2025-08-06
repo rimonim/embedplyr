@@ -1,10 +1,10 @@
 #' Get Text Embeddings by Averaging Word Embeddings
 #'
-#' `textstat_embedding()` takes a 'quanteda' dfm. `embed_docs()` is a more
+#' `textstat_embedding()` takes a 'quanteda' [dfm][quanteda::dfm]. `embed_docs()` is a more
 #' versatile function for which acts directly on either a character vector or
 #' a column of texts in a dataframe.
 #'
-#' @param dfm a quanteda dfm
+#' @param dfm a quanteda [dfm][quanteda::dfm]
 #' @param model an [embeddings] object. For `embed_docs()`, `model`
 #' can alternatively be a function that takes a character vector and outputs a
 #' dataframe with a row for each element of the input.

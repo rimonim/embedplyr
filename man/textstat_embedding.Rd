@@ -41,7 +41,7 @@ embed_docs(x, ...)
 )
 }
 \arguments{
-\item{dfm}{a quanteda dfm}
+\item{dfm}{a quanteda \link[quanteda:dfm]{dfm}}
 
 \item{model}{an \link{embeddings} object. For \code{embed_docs()}, \code{model}
 can alternatively be a function that takes a character vector and outputs a
@@ -72,7 +72,7 @@ embeddings object, this value is passed to \code{\link[quanteda:dfm]{quanteda::d
 \item{.keep_all}{logical. Keep all columns from input? Ignored if \code{output_embeddings = TRUE}.}
 }
 \description{
-\code{textstat_embedding()} takes a 'quanteda' dfm. \code{embed_docs()} is a more
+\code{textstat_embedding()} takes a 'quanteda' \link[quanteda:dfm]{dfm}. \code{embed_docs()} is a more
 versatile function for which acts directly on either a character vector or
 a column of texts in a dataframe.
 }
