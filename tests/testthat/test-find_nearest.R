@@ -121,7 +121,7 @@ test_that("find_nearest errors when no tokens in newdata are in embeddings", {
 	embeddings <- as.embeddings(embeddings_matrix)
 
 	newdata <- c("unknown_token1", "unknown_token2")
-	expect_error(
+	expect_warning(
 		find_nearest(embeddings, newdata, top_n = 3),
 		"None of the items in `newdata` are tokens in the embeddings object"
 	)

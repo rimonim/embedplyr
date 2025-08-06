@@ -26,7 +26,9 @@ Suggests:
     rmarkdown,
     R.utils,
     testthat (>= 3.0.0),
-    text2vec
+    text2vec,
+    ggplot2,
+    microbenchmark
 Enhances:
     word2vec,
     text,
@@ -39,6 +41,7 @@ Collate:
     'align_embeddings.R'
     'average_embedding.R'
     'data.R'
+    'embed_docs.R'
     'embed_tokens.R'
     'embeddings-methods.R'
     'embeddings-predict.R'
@@ -55,7 +58,6 @@ Collate:
     'read_embeddings.R'
     'reduce_dimensionality.R'
     'sim_matrix.R'
-    'textstat_embedding.R'
     'total_dist.R'
     'vector_utilities.R'
 Depends: 
