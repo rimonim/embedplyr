@@ -56,7 +56,7 @@ make_embedding_weights <- function(x_names, w){
 #' @importFrom stats weighted.mean
 #' @examples
 #' happy_dict <- c("happy", "joy", "smile", "enjoy")
-#' happy_dict_embeddings <- predict(glove_twitter_25d, happy_dict)
+#' happy_dict_embeddings <- emb(glove_twitter_25d, happy_dict)
 #'
 #' happy_dict_vec <- average_embedding(happy_dict_embeddings)
 #' happy_dict_vec_weighted <- average_embedding(happy_dict_embeddings, w = "trillion_word")

@@ -105,8 +105,8 @@ test_that("load_embeddings loads from Internet", {
 	skip_if_not(curl::has_internet())
 	# without save
 	glove_test <- quiet(suppressMessages(load_embeddings("glove.6B.50d", save = FALSE)))
-	red_blue <- cos_sim(predict(glove_test, "red"), predict(glove_test, "blue"))
-	red_dimension <- cos_sim(predict(glove_test, "red"), predict(glove_test, "dimension"))
+	red_blue <- cos_sim(emb(glove_test, "red"), emb(glove_test, "blue"))
+	red_dimension <- cos_sim(emb(glove_test, "red"), emb(glove_test, "dimension"))
 	expect_true(red_blue > red_dimension)
 	# with save and words
 	expect_warning(
@@ -114,7 +114,7 @@ test_that("load_embeddings loads from Internet", {
 		"Saving only a subset of words is not supported for original format"
 		)
 	expect_equal(nrow(glove_test), 3)
-	expect_true(red_blue == cos_sim(predict(glove_test, "red"), predict(glove_test, "blue")))
+	expect_true(red_blue == cos_sim(emb(glove_test, "red"), emb(glove_test, "blue")))
 })
 
 # CRAN-friendly tests

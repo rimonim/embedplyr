@@ -21,12 +21,11 @@
 #' @examples
 #' words <- c("happy", "sad")
 #'
-#' texts_embeddings <- predict(glove_twitter_25d, words)
+#' texts_embeddings <- emb(glove_twitter_25d, words)
 #' texts_embeddings
 
-#' @rdname predict.embeddings
 #' @export
-predict.embeddings <- function(object, newdata, drop = TRUE, .keep_missing = FALSE){
+emb <- function(object, newdata, drop = TRUE, .keep_missing = FALSE){
   if (any(zchars <- !nzchar(newdata))) {
     warning(sprintf('Replacing %d empty strings with " ".', sum(zchars)))
     newdata[zchars] <- " "

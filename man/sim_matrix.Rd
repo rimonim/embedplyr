@@ -60,7 +60,7 @@ the similarity or distance metric.
 }
 
 \examples{
-emb <- predict(glove_twitter_25d, c("table", "chair", "cat"))
+emb <- emb(glove_twitter_25d, c("table", "chair", "cat"))
 
 sim_matrix(emb)
 sim_matrix(emb, method = "euclidean")

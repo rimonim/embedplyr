@@ -175,7 +175,7 @@ load_embeddings <- function(model, dir = NULL, words = NULL, save = TRUE, format
     message("Reading model from file...")
     if (!new_download && saved_format == "rds") {
       out <- readRDS(model_path)
-      if (is.character(words)) out <- predict.embeddings(out, words)
+      if (is.character(words)) out <- emb(out, words)
     }else{
       out <- read_embeddings(model_path, words)
     }

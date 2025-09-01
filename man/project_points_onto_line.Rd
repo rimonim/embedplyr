@@ -24,12 +24,12 @@ embeddings with respect to an anchored vector.
 }
 \examples{
 emotion_words <- c("happy", "sad", "scared", "angry", "anxious", "grateful")
-emotion_embeddings <- predict(glove_twitter_25d, emotion_words)
+emotion_embeddings <- emb(glove_twitter_25d, emotion_words)
 emotion_embeddings_2d <- reduce_dimensionality(emotion_embeddings, 2)
 
 # project points
-happy_vec_2d <- predict(emotion_embeddings_2d, "happy")
-sad_vec_2d <- predict(emotion_embeddings_2d, "sad")
+happy_vec_2d <- emb(emotion_embeddings_2d, "happy")
+sad_vec_2d <- emb(emotion_embeddings_2d, "sad")
 emotional_projections <- emotion_embeddings_2d |>
   project_points_onto_line(happy_vec_2d, sad_vec_2d)
 

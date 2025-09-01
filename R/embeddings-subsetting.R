@@ -12,7 +12,7 @@
 #' @inheritParams base::subset
 #'
 #' @details
-#' The difference between `embeddings[i,]` and [`predict(embeddings, i)`][predict.embeddings] is that
+#' The difference between `embeddings[i,]` and [`emb(embeddings, i)`][emb] is that
 #' the former will throw an error when items of `i` are not valid indices, whereas
 #' the latter will handle it gracefully (at the cost of a few more milliseconds
 #' if `i` is long).

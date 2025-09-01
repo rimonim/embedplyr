@@ -22,7 +22,7 @@ read_embeddings <- function(path, words = NULL) {
 		on.exit(unlink(tmpFile), add = TRUE)
 		utils::download.file(path, tmpFile)
 		out <- as.embeddings(readRDS(tmpFile))
-		if (is.character(words)) out <- predict.embeddings(out, words)
+		if (is.character(words)) out <- emb(out, words)
 	}else if (path_format == "bin" || grepl("\\.bin\\.", path) || grepl("word2vec", path)) {
 		# word2vec binary format
 		out <- tryCatch(

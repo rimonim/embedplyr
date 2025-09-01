@@ -93,10 +93,10 @@ The outcome is an embeddings object. An embeddings object is just a
 numeric matrix with fast hash table indexing by rownames (generally
 tokens). This means that it can be easily coerced to a dataframe or
 tibble, while also allowing special embeddings-specific methods and
-functions, such as `predict.embeddings()` and `find_nearest()`:
+functions, such as `emb()` and `find_nearest()`:
 
 ``` r
-moral_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
+moral_embeddings <- emb(glove_twitter_25d, c("good", "bad"))
 moral_embeddings
 #> # 25-dimensional embeddings with 2 rows
 #>      dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9 dim..      
@@ -192,8 +192,8 @@ this step requires only a dataframe, tibble, or embeddings object with
 numeric columns; the embeddings can come from any source.
 
 ``` r
-good_vec <- predict(glove_twitter_25d, "good")
-intense_vec <- predict(glove_twitter_25d, "intense")
+good_vec <- emb(glove_twitter_25d, "good")
+intense_vec <- emb(glove_twitter_25d, "intense")
 valence_quantified <- valence_embeddings_df |> 
     get_sims(
         dim_1:dim_25, 
@@ -274,7 +274,7 @@ valence_df_2d
 other embeddings not used to find the principle components.
 
 ``` r
-new_embeddings <- predict(glove_twitter_25d, c("new", "strange"))
+new_embeddings <- emb(glove_twitter_25d, c("new", "strange"))
 
 # get rotation with `output_rotation = TRUE`
 valence_rotation_2d <- valence_embeddings_df |> 

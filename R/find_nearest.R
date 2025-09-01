@@ -33,7 +33,7 @@
 #'
 #' @examples
 #' words <- c("happy", "sad")
-#' words_embeddings <- predict(glove_twitter_25d, words)
+#' words_embeddings <- emb(glove_twitter_25d, words)
 #'
 #' find_nearest(glove_twitter_25d, words)
 #' find_nearest(glove_twitter_25d, words_embeddings) # equivalent to previous

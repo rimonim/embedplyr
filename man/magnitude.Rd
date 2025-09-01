@@ -27,7 +27,7 @@ function will be called recursively and return a list.
 vec <- c(1, 4, 2)
 magnitude(vec)
 
-valence_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
+valence_embeddings <- emb(glove_twitter_25d, c("good", "bad"))
 magnitude(valence_embeddings)
 
 embeddings_list <- find_nearest(glove_twitter_25d, c("good", "bad"), each = TRUE)

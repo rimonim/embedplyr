@@ -45,9 +45,9 @@
 #'
 #' @import tibble
 #' @examples
-#' valence_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
-#' happy_vec <- predict(glove_twitter_25d, "happy")
-#' sad_vec <- predict(glove_twitter_25d, "sad")
+#' valence_embeddings <- emb(glove_twitter_25d, c("good", "bad"))
+#' happy_vec <- emb(glove_twitter_25d, "happy")
+#' sad_vec <- emb(glove_twitter_25d, "sad")
 #'
 #' valence_embeddings |>
 #'   get_sims(list(happy = happy_vec))

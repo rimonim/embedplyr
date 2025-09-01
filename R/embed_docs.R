@@ -115,7 +115,7 @@ textstat_embedding <- function(dfm, model, w = NULL, method = "mean", output_emb
     dfm <- suppressWarnings( quanteda::dfm_weight(dfm, weights = w) )
   }
   # find word embeddings
-  feat_embeddings <- predict.embeddings(model, feats, .keep_missing = TRUE)
+  feat_embeddings <- emb(model, feats, .keep_missing = TRUE)
 
   if (method == "median") {
     out_list <- lapply(seq_len(nrow(dfm)), function(r){

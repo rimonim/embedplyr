@@ -57,8 +57,8 @@ high_anx_dict <- c("anxious", "overwhelmed", "exhausted", "nervous", "stressed")
 low_anx_dict <- c("relaxed", "calm", "mellow")
 
 # embed dictionaries
-high_anx_dict_embeddings <- predict(glove_twitter_25d, high_anx_dict)
-low_anx_dict_embeddings <- predict(glove_twitter_25d, low_anx_dict)
+high_anx_dict_embeddings <- emb(glove_twitter_25d, high_anx_dict)
+low_anx_dict_embeddings <- emb(glove_twitter_25d, low_anx_dict)
 
 # average embeddings to create DDR
 high_anx_DDR <- average_embedding(high_anx_dict_embeddings)

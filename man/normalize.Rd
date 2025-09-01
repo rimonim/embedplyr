@@ -38,7 +38,7 @@ An object of the same class and dimensionality as x
 vec <- c(1, 4, 2)
 normalize(vec)
 
-valence_embeddings <- predict(glove_twitter_25d, c("good", "bad"))
+valence_embeddings <- emb(glove_twitter_25d, c("good", "bad"))
 normalize(valence_embeddings)
 
 embeddings_list <- find_nearest(glove_twitter_25d, c("good", "bad"), each = TRUE)
