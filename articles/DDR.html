@@ -114,8 +114,8 @@ low anxiety.</p>
 <span></span>
 <span><span class="va">psych_embeddings_df</span> <span class="op">&lt;-</span> <span class="va">psych_df</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/embed_docs.html">embed_docs</a></span><span class="op">(</span><span class="st">"text"</span>, <span class="va">glove_twitter_25d</span>, id_col <span class="op">=</span> <span class="st">"id"</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in predict.embeddings(model, feats, .keep_missing = TRUE): 1 items in</span></span>
-<span><span class="co">#&gt; `newdata` are not present in the embeddings object.</span></span>
+<span><span class="co">#&gt; Warning in emb(model, feats, .keep_missing = TRUE): 1 items in `newdata` are</span></span>
+<span><span class="co">#&gt; not present in the embeddings object.</span></span>
 <span></span>
 <span><span class="va">psych_embeddings_df</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 27</span></span></span>
@@ -142,12 +142,12 @@ dictionaries.</p>
 <span><span class="va">low_anx_dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"relaxed"</span>, <span class="st">"calm"</span>, <span class="st">"mellow"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># embed dictionaries</span></span>
-<span><span class="va">high_anx_dict_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="va">high_anx_dict</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in predict.embeddings(glove_twitter_25d, high_anx_dict): 3 items in</span></span>
-<span><span class="co">#&gt; `newdata` are not present in the embeddings object.</span></span>
-<span><span class="va">low_anx_dict_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="va">low_anx_dict</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in predict.embeddings(glove_twitter_25d, low_anx_dict): 1 items in</span></span>
-<span><span class="co">#&gt; `newdata` are not present in the embeddings object.</span></span>
+<span><span class="va">high_anx_dict_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/emb.html">emb</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="va">high_anx_dict</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in emb(glove_twitter_25d, high_anx_dict): 3 items in `newdata` are not</span></span>
+<span><span class="co">#&gt; present in the embeddings object.</span></span>
+<span><span class="va">low_anx_dict_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/emb.html">emb</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="va">low_anx_dict</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in emb(glove_twitter_25d, low_anx_dict): 1 items in `newdata` are not</span></span>
+<span><span class="co">#&gt; present in the embeddings object.</span></span>
 <span></span>
 <span><span class="co"># average embeddings to create DDR</span></span>
 <span><span class="va">high_anx_DDR</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/average_embedding.html">average_embedding</a></span><span class="op">(</span><span class="va">high_anx_dict_embeddings</span><span class="op">)</span></span>

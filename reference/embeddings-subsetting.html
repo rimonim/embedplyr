@@ -94,7 +94,7 @@ rownames in <code>x</code>, the <em>last</em> match will be returned.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The difference between <code>embeddings[i,]</code> and <code><a href="predict.embeddings.html">predict(embeddings, i)</a></code> is that
+    <p>The difference between <code>embeddings[i,]</code> and <code><a href="emb.html">emb(embeddings, i)</a></code> is that
 the former will throw an error when items of <code>i</code> are not valid indices, whereas
 the latter will handle it gracefully (at the cost of a few more milliseconds
 if <code>i</code> is long).</p>

@@ -117,9 +117,9 @@
 <span>    <span class="st">"eng.fiction.all_sgns.1800"</span>,</span>
 <span>    words <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"word"</span>, <span class="st">"token"</span>, <span class="st">"lemma"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
-<p>The outcome is an embeddings object. An embeddings object is just a numeric matrix with fast hash table indexing by rownames (generally tokens). This means that it can be easily coerced to a dataframe or tibble, while also allowing special embeddings-specific methods and functions, such as <code><a href="reference/predict.embeddings.html">predict.embeddings()</a></code> and <code><a href="reference/find_nearest.html">find_nearest()</a></code>:</p>
+<p>The outcome is an embeddings object. An embeddings object is just a numeric matrix with fast hash table indexing by rownames (generally tokens). This means that it can be easily coerced to a dataframe or tibble, while also allowing special embeddings-specific methods and functions, such as <code><a href="reference/emb.html">emb()</a></code> and <code><a href="reference/find_nearest.html">find_nearest()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">moral_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"good"</span>, <span class="st">"bad"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">moral_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/emb.html">emb</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"good"</span>, <span class="st">"bad"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">moral_embeddings</span></span>
 <span><span class="co">#&gt; # 25-dimensional embeddings with 2 rows</span></span>
 <span><span class="co">#&gt;      dim_1 dim_2 dim_3 dim_4 dim_5 dim_6 dim_7 dim_8 dim_9 dim..      </span></span>
@@ -190,8 +190,8 @@
 <span>        <span class="op">)</span></span></code></pre></div>
 <p>To quantify how good and how intense the texts are, we can compare them to the embeddings for “good” and “intense” using <code><a href="reference/get_sims.html">get_sims()</a></code>. Note that this step requires only a dataframe, tibble, or embeddings object with numeric columns; the embeddings can come from any source.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">good_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="st">"good"</span><span class="op">)</span></span>
-<span><span class="va">intense_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="st">"intense"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">good_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/emb.html">emb</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="st">"good"</span><span class="op">)</span></span>
+<span><span class="va">intense_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/emb.html">emb</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="st">"intense"</span><span class="op">)</span></span>
 <span><span class="va">valence_quantified</span> <span class="op">&lt;-</span> <span class="va">valence_embeddings_df</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="reference/get_sims.html">get_sims</a></span><span class="op">(</span></span>
 <span>        <span class="va">dim_1</span><span class="op">:</span><span class="va">dim_25</span>, </span>
@@ -266,7 +266,7 @@
 <span><span class="co">#&gt; 3 negative  1.35   0.640</span></span></code></pre></div>
 <p><code><a href="reference/reduce_dimensionality.html">reduce_dimensionality()</a></code> can also be used to apply the same rotation to other embeddings not used to find the principle components.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">new_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"new"</span>, <span class="st">"strange"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">new_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/emb.html">emb</a></span><span class="op">(</span><span class="va">glove_twitter_25d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"new"</span>, <span class="st">"strange"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># get rotation with `output_rotation = TRUE`</span></span>
 <span><span class="va">valence_rotation_2d</span> <span class="op">&lt;-</span> <span class="va">valence_embeddings_df</span> <span class="op">|&gt;</span> </span>
