@@ -10,6 +10,7 @@ Imports:
     curl,
     data.table,
     dplyr,
+    lifecycle,
     pillar,
     quanteda,
     readr,

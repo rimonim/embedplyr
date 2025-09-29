@@ -4,10 +4,10 @@
 \alias{emb}
 \title{Retrieve Token Embeddings}
 \usage{
-emb(object, newdata, drop = TRUE, .keep_missing = FALSE)
+emb(x, newdata, drop = TRUE, .keep_missing = FALSE)
 }
 \arguments{
-\item{object}{an embeddings object made by \code{load_embeddings()} or \code{as.embeddings()}}
+\item{x}{an embeddings object made by \code{load_embeddings()} or \code{as.embeddings()}}
 
 \item{newdata}{a character vector of tokens}
 
@@ -23,7 +23,7 @@ Retrieve Token Embeddings
 }
 \details{
 Duplicated items in \code{newdata} will result in duplicated rows in the output.
-If an item in \code{newdata} matches multiple rows in \code{object}, the last one will
+If an item in \code{newdata} matches multiple rows in \code{x}, the last one will
 be returned.
 }
 \section{Value}{
