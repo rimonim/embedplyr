@@ -355,3 +355,13 @@ magnitude(moral_embeddings)
 #>     good      bad 
 #> 6.005552 5.355951
 ```
+
+## Contributor Guidelines
+
+For issues, bug reports, and feature requests, [file a GitHub
+issue](https://github.com/rimonim/embedplyr/issues). For support or
+other inquiries, feel free to contact the maintainer by email at
+<info@ds4psych.com>. However, the best way to get something changed is
+to do it yourself. We welcome contributions! See the [contributor
+guidelines](https://github.com/rimonim/embedplyr/wiki/Contributor-Guidelines)
+for details.
