@@ -42,14 +42,14 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">emb</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, drop <span class="op">=</span> <span class="cn">TRUE</span>, .keep_missing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">emb</span><span class="op">(</span><span class="va">x</span>, <span class="va">newdata</span>, drop <span class="op">=</span> <span class="cn">TRUE</span>, .keep_missing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
+<dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>an embeddings object made by <code><a href="load_embeddings.html">load_embeddings()</a></code> or <code><a href="embeddings.html">as.embeddings()</a></code></p></dd>
 
 
@@ -71,7 +71,7 @@ will be ignored. If <code>TRUE</code>, they will be returned as <code>NA</code>.
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Duplicated items in <code>newdata</code> will result in duplicated rows in the output.
-If an item in <code>newdata</code> matches multiple rows in <code>object</code>, the last one will
+If an item in <code>newdata</code> matches multiple rows in <code>x</code>, the last one will
 be returned.</p>
     </div>
     <div class="section level2">
