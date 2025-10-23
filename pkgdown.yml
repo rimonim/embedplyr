@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   DDR: DDR.html
   performance: performance.html
-last_built: 2025-10-23T14:05Z
+last_built: 2025-10-23T14:10Z
 urls:
   reference: https://rimonim.github.io/embedplyr/reference
   article: https://rimonim.github.io/embedplyr/articles
