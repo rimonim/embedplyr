@@ -1,3 +1,9 @@
+# embedplyr 0.3.0
+
+* `predict.embeddings()` deprecated in favor of `emb()`
+* Improvements to documentation
+* JOSS peer review
+
 # embedplyr 0.2.0
 
 * `align_embeddings()` for aligning separately trained embeddings
@@ -6,4 +12,4 @@
 
 # embedplyr 0.1.0
 
-* Initial stable release.
+* Initial release.

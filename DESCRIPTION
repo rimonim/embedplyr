@@ -1,7 +1,7 @@
 Package: embedplyr
 Type: Package
 Title: Tools for Working With Text Embeddings
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: person("Louis", "Teitelbaum", email = "louist@post.bgu.ac.il", role = c("cre", "aut", "cph"), comment = c(ORCID = "0009-0001-9347-0145"))
 Description: Common operations with word and text embeddings within a 'tidyverse'/'quanteda' workflow, as demonstrated in "Data Science for Psychology: Natural Language". Includes simple functions for calculating common similarity metrics, as well as higher level functions for loading pretrained word embedding models (e.g. 'GloVe'), applying them to words, aggregating to produce text embeddings, and reducing dimensionality.
 License: GPL (>= 3)
