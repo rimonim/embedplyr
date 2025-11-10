@@ -171,4 +171,8 @@ Note that `get_sims()` requires only a dataframe, tibble, or embeddings object w
 
 **embedplyr** is licensed under the GNU General Public License (v3.0). All of its source code is stored publicly on Github (https://github.com/rimonim/embedplyr), with a corresponding issue tracker.
 
+# Acknowledgements
+
+The author thanks Almog Simchon for helpful feedback in the early stages of development. This work was supported in part by a grant by the Ministry of Aliyah and Integration of the State of Israel.
+
 # References
