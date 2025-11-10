@@ -1,0 +1,45 @@
+# Additional Vector Utilities
+
+Additional Vector Utilities
+
+## Usage
+
+``` r
+project_points_onto_line(points, line_start, line_end)
+```
+
+## Arguments
+
+- points:
+
+  a dataframe, matrix, or embeddings object in which each row represents
+  the coordinates of a point to be projected onto the line
+
+- line_start:
+
+  a vector of representing the coordinates of the line's start
+
+- line_end:
+
+  a vector representing the coordinates of the line's end
+
+## Details
+
+`project_points_onto_line` calculated the projections of a group of
+points onto a line defined by two end points. It is useful for graphing
+the positions of embeddings with respect to an anchored vector.
+
+## Examples
+
+``` r
+emotion_words <- c("happy", "sad", "scared", "angry", "anxious", "grateful")
+emotion_embeddings <- emb(glove_twitter_25d, emotion_words)
+#> Warning: 1 items in `newdata` are not present in the embeddings object.
+emotion_embeddings_2d <- reduce_dimensionality(emotion_embeddings, 2)
+
+# project points
+happy_vec_2d <- emb(emotion_embeddings_2d, "happy")
+sad_vec_2d <- emb(emotion_embeddings_2d, "sad")
+emotional_projections <- emotion_embeddings_2d |>
+  project_points_onto_line(happy_vec_2d, sad_vec_2d)
+```
