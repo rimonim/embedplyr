@@ -1,0 +1,14 @@
+bibentry(
+  bibtype   = "Article",
+  title     = "embedplyr: Tools for Working With Text Embeddings",
+  author    = person("Louis", "Teitelbaum", comment = c(ORCID = "0009-0001-9347-0145")),
+  journal   = "Journal of Open Source Software",
+  publisher = "Open Journals",
+  year      = "2025",
+  volume    = "10",
+  issue     = "115",
+  pages     = "8262",
+  doi       = "10.21105/joss.08262",
+  issn      = "2475-9066",
+  url       = "https://joss.theoj.org/papers/10.21105/joss.08262"
+)
