@@ -112,11 +112,11 @@ find_nearest <- function(object, newdata,
     sims_order <- order(sims, decreasing = decreasing)
     if (include_self) {
       sims_order <- sims_order[1:top_n]
-      object <- object[sims_order,]
+      object <- object[sims_order,,drop=FALSE]
     }else{
       sims_order <- sims_order[1:(top_n+length(available_tokens))]
       object <- object[sims_order,]
-      object <- object[!(rownames(object) %in% available_tokens),]
+      object <- object[!(rownames(object) %in% available_tokens),,drop=FALSE]
     }
     if (get_sims) {
       tibble::tibble(doc_id = rownames(object), {{method}} := sims[sims_order])
